@@ -1,22 +1,335 @@
 'use client';
-import {createContext,useContext,useEffect,useState,useRef,ReactNode} from 'react';
-import {allEntries,plain} from './content';
-export type Srs={due:number;interval:number;streak:number;wrong:number;reason:string};
-export type Progress={days:string[];mastered:string[];favorites:string[];completed:string[];srs:Record<string,Srs>;attempts:{id:string;correct:boolean;ms:number;at:number}[];reviews:any[];machineRuns:any[];dailyRuns:Record<string,import('./daily').DailyRun>};
-const empty:Progress={days:[],mastered:[],favorites:[],completed:[],srs:{},attempts:[],reviews:[],machineRuns:[],dailyRuns:{}};
-export type Settings={mode:string;speed:number;level:string;dark:boolean;font:number;ruby:number;audioProvider:string;ai:boolean};
-const initial:Settings={mode:'ruby',speed:1,level:'N2',dark:false,font:16,ruby:.53,audioProvider:'browser',ai:false};
-const C=createContext<any>(null);export const useLearning=()=>useContext(C);
-export function Provider({children}:{children:ReactNode}){const [progress,setProgress]=useState<Progress>(empty),[settings,setSettings]=useState<Settings>(initial),[loaded,setLoaded]=useState(false),[notice,setNotice]=useState('');
-useEffect(()=>{try{const p=JSON.parse(localStorage.getItem('tabi-progress-v1')||'null'),s=JSON.parse(localStorage.getItem('tabi-settings-v1')||'null');if(p&&Array.isArray(p.days)&&p.srs)setProgress({...empty,...p});if(s)setSettings({...initial,...s});}catch{setNotice('保存的数据无法读取，已使用默认设置。')}setLoaded(true);if('serviceWorker'in navigator)navigator.serviceWorker.register('/sw.js').then(async()=>{await navigator.serviceWorker.ready;const urls=[location.href,...performance.getEntriesByType('resource').map(e=>e.name)].filter(u=>{const x=new URL(u,location.origin);return x.origin===location.origin&&!x.pathname.startsWith('/api/')&&!x.pathname.includes('__')});const cache=await caches.open('tabi-v1');await Promise.allSettled(urls.map(u=>cache.add(u)));}).catch(()=>{});},[]);
-useEffect(()=>{if(!loaded)return;try{localStorage.setItem('tabi-progress-v1',JSON.stringify(progress));localStorage.setItem('tabi-settings-v1',JSON.stringify(settings));}catch{setNotice('浏览器未允许保存，本次进度可能无法保留。')}document.documentElement.classList.toggle('dark',settings.dark);document.documentElement.style.setProperty('--font-size',settings.font+'px');document.documentElement.style.setProperty('--ruby-size',settings.ruby+'em');},[progress,settings,loaded]);
-useEffect(()=>{if(!notice)return;const t=setTimeout(()=>setNotice(''),6000);return()=>clearTimeout(t)},[notice]);
-function mark(id:string,type:string){setProgress(p=>{const date=new Date().toLocaleDateString('sv-SE');const next={...p,days:[...new Set([...p.days,date])]};if(type==='favorite')next.favorites=p.favorites.includes(id)?p.favorites.filter(x=>x!==id):[...p.favorites,id];if(type==='mastered')next.mastered=[...new Set([...p.mastered,id])];if(type==='review'||type==='wrong'){next.srs={...p.srs,[id]:{due:Date.now(),interval:0,streak:0,wrong:(p.srs[id]?.wrong||0)+(type==='wrong'?1:0),reason:type==='wrong'?'答错或未听懂':'主动加入'}};if(type==='wrong')next.mastered=p.mastered.filter(x=>x!==id)}return next});setNotice(type==='favorite'?'收藏已更新':type==='mastered'?'已标记掌握':'已加入优先复习');}
-function answer(id:string,correct:boolean,ms:number){setProgress(p=>{const old=p.srs[id]||{interval:0,streak:0,wrong:0};const slow=ms>10000;const interval=correct&&!slow?(old.interval?Math.min(90,old.interval*2.2):1):0;return {...p,days:[...new Set([...p.days,new Date().toLocaleDateString('sv-SE')])],mastered:correct&&old.streak>=2?[...new Set([...p.mastered,id])]:p.mastered.filter(x=>correct||x!==id),srs:{...p.srs,[id]:{interval,streak:correct?old.streak+1:0,wrong:old.wrong+(correct?0:1),reason:!correct?'答错 / 未听懂':slow?'反应超过10秒':'间隔复习',due:Date.now()+(interval?interval*86400000:600000)}},attempts:[...p.attempts,{id,correct,ms,at:Date.now()}].slice(-2000)}})}
-useEffect(()=>{const mc=(document as any).modelContext;if(!mc?.registerTool)return;const ctrl=new AbortController();Promise.resolve(mc.registerTool({name:'add_expressions_to_review',description:'将已知词条加入当前设备复习队列，并显示复习页。',inputSchema:{type:'object',properties:{ids:{type:'array',items:{type:'string'},minItems:1,maxItems:20}},required:['ids'],additionalProperties:false},annotations:{readOnlyHint:false},execute(input:any){if(!Array.isArray(input?.ids)||input.ids.length<1||input.ids.length>20||input.ids.some((id:any)=>!allEntries.some(e=>e.id===id)))throw Error('Invalid expression IDs');input.ids.forEach((id:string)=>mark(id,'review'));history.pushState({},'','/review');window.dispatchEvent(new PopStateEvent('popstate'));return {queued:input.ids}}},{signal:ctrl.signal})).catch(()=>{});return()=>ctrl.abort()},[]);
-return <C.Provider value={{progress,setProgress,settings,setSettings,mark,answer,notice,setNotice,loaded}}>{children}{notice&&<div className="notice" role="status">{notice}</div>}</C.Provider>}
-export interface TTSProvider{play(text:string,rate:number,onEnd?:()=>void):Promise<void>;stop():void;pause():void;resume():void;}
-class BrowserTTS implements TTSProvider{generation=0;async play(text:string,rate:number,onEnd?:()=>void){if(!('speechSynthesis'in window))throw Error('当前浏览器不支持语音播放。');this.stop();const generation=this.generation;let voices=speechSynthesis.getVoices();if(!voices.length){await new Promise(r=>setTimeout(r,500));voices=speechSynthesis.getVoices()}if(generation!==this.generation)return;const ja=voices.filter(v=>/^ja[-_]JP$/i.test(v.lang));const voice=ja.find(v=>/Natural|Neural|Enhanced|Premium|Google|Kyoko|Nanami/i.test(v.name))||ja[0];if(!voice)throw Error('设备未安装日语语音。请在系统语音设置中添加日语，或使用已配置的云端语音。');const u=new SpeechSynthesisUtterance(text);u.lang='ja-JP';u.voice=voice;u.rate=rate;u.onend=()=>onEnd?.();u.onerror=()=>{};speechSynthesis.speak(u)}stop(){this.generation++;if('speechSynthesis'in window)speechSynthesis.cancel()}pause(){if('speechSynthesis'in window)speechSynthesis.pause()}resume(){if('speechSynthesis'in window)speechSynthesis.resume()}}
-class CloudTTS implements TTSProvider{audio:HTMLAudioElement|null=null;url='';controller:AbortController|null=null;generation=0;async play(text:string,rate:number,onEnd?:()=>void){this.stop();const generation=this.generation;this.controller=new AbortController();const r=await fetch('/api/speech',{method:'POST',headers:{'Content-Type':'application/json'},signal:this.controller.signal,body:JSON.stringify({text,rate,language:'ja-JP'})});if(!r.ok)throw Error('云端语音尚未配置或服务不可用，请切换设备日语语音。');const blob=await r.blob();if(generation!==this.generation)return;this.url=URL.createObjectURL(blob);this.audio=new Audio(this.url);this.audio.onended=()=>onEnd?.();await this.audio.play()}stop(){this.generation++;this.controller?.abort();this.controller=null;this.audio?.pause();if(this.url)URL.revokeObjectURL(this.url);this.audio=null;}pause(){this.audio?.pause()}resume(){void this.audio?.play()}}
-let browser:BrowserTTS,cloud:CloudTTS;export function tts(provider='browser'):TTSProvider{if(provider==='cloud')return cloud||=new CloudTTS();return browser||=new BrowserTTS()}
-export function useAudio(){const {settings,setNotice}=useLearning();const serial=useRef(0);function stop(){serial.current++;tts('browser').stop();tts('cloud').stop()}async function play(text:string,loop=false,rateOverride?:number){stop();const n=serial.current;const next=()=>{if(n===serial.current)tts(settings.audioProvider).play(plain(text),rateOverride??(settings.level==='Native Challenge'?1.15:settings.speed),loop?next:undefined).catch((e:Error)=>{if(e.name!=='AbortError')setNotice(e.message)})};next()}async function sequence(items:string[],a=0,b=items.length-1,loop=false){stop();const n=serial.current;let i=a;function next(){if(n!==serial.current)return;if(i>b){if(!loop)return;i=a}tts(settings.audioProvider).play(plain(items[i++]),settings.speed,next).catch((e:Error)=>{if(e.name!=='AbortError')setNotice(e.message)})}next()}useEffect(()=>()=>stop(),[]);return {play,stop,sequence,pause:()=>tts(settings.audioProvider).pause(),resume:()=>tts(settings.audioProvider).resume()}}
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+  ReactNode,
+} from 'react';
+import { allEntries, plain } from './content';
+import { tts } from './audio';
+export type Srs = {
+  due: number;
+  interval: number;
+  streak: number;
+  wrong: number;
+  reason: string;
+};
+export type Progress = {
+  days: string[];
+  mastered: string[];
+  favorites: string[];
+  completed: string[];
+  srs: Record<string, Srs>;
+  attempts: {
+    id: string;
+    correct: boolean;
+    ms: number;
+    at: number;
+    assisted?: boolean;
+  }[];
+  reviews: any[];
+  machineRuns: any[];
+  broadcastRuns: any[];
+  dailyRuns: Record<string, import('./daily').DailyRun>;
+};
+const empty: Progress = {
+  days: [],
+  mastered: [],
+  favorites: [],
+  completed: [],
+  srs: {},
+  attempts: [],
+  reviews: [],
+  machineRuns: [],
+  broadcastRuns: [],
+  dailyRuns: {},
+};
+export type Settings = {
+  mode: string;
+  speed: number;
+  level: string;
+  dark: boolean;
+  font: number;
+  ruby: number;
+  audioProvider: string;
+  ai: boolean;
+};
+const initial: Settings = {
+  mode: 'ruby',
+  speed: 1,
+  level: 'N2',
+  dark: false,
+  font: 16,
+  ruby: 0.53,
+  audioProvider: 'browser',
+  ai: false,
+};
+const C = createContext<any>(null);
+export const useLearning = () => useContext(C);
+export function Provider({ children }: { children: ReactNode }) {
+  const [progress, setProgress] = useState<Progress>(empty),
+    [settings, setSettings] = useState<Settings>(initial),
+    [loaded, setLoaded] = useState(false),
+    [notice, setNotice] = useState('');
+  useEffect(() => {
+    try {
+      const p = JSON.parse(localStorage.getItem('tabi-progress-v1') || 'null'),
+        s = JSON.parse(localStorage.getItem('tabi-settings-v1') || 'null');
+      if (p && Array.isArray(p.days) && p.srs) setProgress({ ...empty, ...p });
+      if (s) setSettings({ ...initial, ...s });
+    } catch {
+      setNotice('保存的数据无法读取，已使用默认设置。');
+    }
+    setLoaded(true);
+    if ('serviceWorker' in navigator)
+      navigator.serviceWorker
+        .register('/sw.js')
+        .then(async () => {
+          await navigator.serviceWorker.ready;
+          const urls = [
+            location.href,
+            ...performance.getEntriesByType('resource').map((e) => e.name),
+          ].filter((u) => {
+            const x = new URL(u, location.origin);
+            return (
+              x.origin === location.origin &&
+              !x.pathname.startsWith('/api/') &&
+              !x.pathname.includes('__')
+            );
+          });
+          const cache = await caches.open('tabi-v1');
+          await Promise.allSettled(urls.map((u) => cache.add(u)));
+        })
+        .catch(() => {});
+  }, []);
+  useEffect(() => {
+    if (!loaded) return;
+    try {
+      localStorage.setItem('tabi-progress-v1', JSON.stringify(progress));
+      localStorage.setItem('tabi-settings-v1', JSON.stringify(settings));
+    } catch {
+      setNotice('浏览器未允许保存，本次进度可能无法保留。');
+    }
+    document.documentElement.classList.toggle('dark', settings.dark);
+    document.documentElement.style.setProperty(
+      '--font-size',
+      settings.font + 'px',
+    );
+    document.documentElement.style.setProperty(
+      '--ruby-size',
+      settings.ruby + 'em',
+    );
+  }, [progress, settings, loaded]);
+  useEffect(() => {
+    if (!notice) return;
+    const t = setTimeout(() => setNotice(''), 6000);
+    return () => clearTimeout(t);
+  }, [notice]);
+  function mark(id: string, type: string) {
+    setProgress((p) => {
+      const date = new Date().toLocaleDateString('sv-SE');
+      const next = { ...p, days: [...new Set([...p.days, date])] };
+      if (type === 'favorite')
+        next.favorites = p.favorites.includes(id)
+          ? p.favorites.filter((x) => x !== id)
+          : [...p.favorites, id];
+      if (type === 'mastered')
+        next.mastered = [...new Set([...p.mastered, id])];
+      if (type === 'review' || type === 'wrong') {
+        next.srs = {
+          ...p.srs,
+          [id]: {
+            due: Date.now(),
+            interval: 0,
+            streak: 0,
+            wrong: (p.srs[id]?.wrong || 0) + (type === 'wrong' ? 1 : 0),
+            reason: type === 'wrong' ? '答错或未听懂' : '主动加入',
+          },
+        };
+        if (type === 'wrong')
+          next.mastered = p.mastered.filter((x) => x !== id);
+      }
+      return next;
+    });
+    setNotice(
+      type === 'favorite'
+        ? '收藏已更新'
+        : type === 'mastered'
+          ? '已标记掌握'
+          : '已加入优先复习',
+    );
+  }
+  function answer(
+    id: string,
+    correct: boolean,
+    ms: number,
+    options: { assisted?: boolean } = {},
+  ) {
+    setProgress((p) => {
+      const old = p.srs[id] || { interval: 0, streak: 0, wrong: 0 };
+      const slow = ms > 10000 || !!options.assisted;
+      const interval =
+        correct && !slow
+          ? old.interval
+            ? Math.min(90, old.interval * 2.2)
+            : 1
+          : 0;
+      return {
+        ...p,
+        days: [...new Set([...p.days, new Date().toLocaleDateString('sv-SE')])],
+        mastered:
+          correct && !slow && old.streak >= 2
+            ? [...new Set([...p.mastered, id])]
+            : p.mastered.filter((x) => correct || x !== id),
+        srs: {
+          ...p.srs,
+          [id]: {
+            interval,
+            streak: correct && !slow ? old.streak + 1 : 0,
+            wrong: old.wrong + (correct ? 0 : 1),
+            reason: options.assisted
+              ? '看过文字稿，需再次听辨'
+              : !correct
+                ? '答错 / 未听懂'
+                : slow
+                  ? '反应超过10秒'
+                  : '间隔复习',
+            due: Date.now() + (interval ? interval * 86400000 : 600000),
+          },
+        },
+        attempts: [
+          ...p.attempts,
+          { id, correct, ms, at: Date.now(), assisted: !!options.assisted },
+        ].slice(-2000),
+      };
+    });
+  }
+  useEffect(() => {
+    const mc = (document as any).modelContext;
+    if (!mc?.registerTool) return;
+    const ctrl = new AbortController();
+    Promise.resolve(
+      mc.registerTool(
+        {
+          name: 'add_expressions_to_review',
+          description: '将已知词条加入当前设备复习队列，并显示复习页。',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              ids: {
+                type: 'array',
+                items: { type: 'string' },
+                minItems: 1,
+                maxItems: 20,
+              },
+            },
+            required: ['ids'],
+            additionalProperties: false,
+          },
+          annotations: { readOnlyHint: false },
+          execute(input: any) {
+            if (
+              !Array.isArray(input?.ids) ||
+              input.ids.length < 1 ||
+              input.ids.length > 20 ||
+              input.ids.some((id: any) => !allEntries.some((e) => e.id === id))
+            )
+              throw Error('Invalid expression IDs');
+            input.ids.forEach((id: string) => mark(id, 'review'));
+            history.pushState({}, '', '/review');
+            window.dispatchEvent(new PopStateEvent('popstate'));
+            return { queued: input.ids };
+          },
+        },
+        { signal: ctrl.signal },
+      ),
+    ).catch(() => {});
+    return () => ctrl.abort();
+  }, []);
+  return (
+    <C.Provider
+      value={{
+        progress,
+        setProgress,
+        settings,
+        setSettings,
+        mark,
+        answer,
+        notice,
+        setNotice,
+        loaded,
+      }}
+    >
+      {children}
+      {notice && (
+        <div className="notice" role="status">
+          {notice}
+        </div>
+      )}
+    </C.Provider>
+  );
+}
+export { tts } from './audio';
+export function useAudio() {
+  const { settings, setNotice } = useLearning();
+  const serial = useRef(0);
+  function stop() {
+    serial.current++;
+    tts('browser').stop();
+    tts('cloud').stop();
+  }
+  async function play(text: string, loop = false, rateOverride?: number) {
+    stop();
+    const n = serial.current;
+    const next = async (): Promise<boolean> => {
+      if (n !== serial.current) return false;
+      try {
+        await tts(settings.audioProvider).play(
+          plain(text),
+          rateOverride ??
+            (settings.level === 'Native Challenge' ? 1.15 : settings.speed),
+        );
+        if (n !== serial.current) return false;
+        if (loop) void next();
+        return true;
+      } catch (e) {
+        if (e instanceof Error && e.name !== 'AbortError') setNotice(e.message);
+        return false;
+      }
+    };
+    return next();
+  }
+  async function sequence(
+    items: string[],
+    a = 0,
+    b = items.length - 1,
+    loop = false,
+  ) {
+    stop();
+    const n = serial.current;
+    let i = a;
+    function next() {
+      if (n !== serial.current) return;
+      if (i > b) {
+        if (!loop) return;
+        i = a;
+      }
+      tts(settings.audioProvider)
+        .play(plain(items[i++]), settings.speed, next)
+        .catch((e: Error) => {
+          if (e.name !== 'AbortError') setNotice(e.message);
+        });
+    }
+    next();
+  }
+  useEffect(() => () => stop(), []);
+  return {
+    play,
+    stop,
+    sequence,
+    pause: () => tts(settings.audioProvider).pause(),
+    resume: () => tts(settings.audioProvider).resume(),
+  };
+}

@@ -1,4 +1,5 @@
 'use client';
+import BroadcastTraining from '@/components/learning/broadcast-training';
 import { useState, useEffect, useRef } from 'react';
 import {
   Home,
@@ -166,6 +167,8 @@ function Shell() {
               />
               <Conversation initial={params?.get('scene') || 'hotel-checkin'} />
             </>
+          ) : path === 'broadcasts' ? (
+            <BroadcastTraining />
           ) : path === 'listening' ? (
             <Listening />
           ) : path === 'menu' ? (
