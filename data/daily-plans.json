@@ -1,0 +1,4 @@
+[
+ {"id":"tokyo-kyoto","title":"東京から京都へ","description":"退房、寄行李、乘车，到京都办理入住。","stops":[["hotel-checkout"],["hotel-luggage","life-parcel"],["train-gate"],["shinkansen-trip"],["shinkansen-seat-conflict"],["convenience-rapid"],["hotel-checkin"],["restaurant-order","payment-declined"]]},
+ {"id":"city-day","title":"日本で暮らす一日","description":"处理酒店和预约事务，出门购物、吃饭，再解决生活里的小插曲。","stops":[["hotel-key-failure","hotel-problem"],["booking-change","booking-late"],["life-parcel","hotel-luggage"],["train-gate"],["convenience-rapid"],["restaurant-order"],["payment-declined"],["life-lost-wallet","hotel-key-failure"]]}
+]

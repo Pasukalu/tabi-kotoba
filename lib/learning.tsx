@@ -2,8 +2,8 @@
 import {createContext,useContext,useEffect,useState,useRef,ReactNode} from 'react';
 import {allEntries,plain} from './content';
 export type Srs={due:number;interval:number;streak:number;wrong:number;reason:string};
-export type Progress={days:string[];mastered:string[];favorites:string[];completed:string[];srs:Record<string,Srs>;attempts:{id:string;correct:boolean;ms:number;at:number}[];reviews:any[];machineRuns:any[]};
-const empty:Progress={days:[],mastered:[],favorites:[],completed:[],srs:{},attempts:[],reviews:[],machineRuns:[]};
+export type Progress={days:string[];mastered:string[];favorites:string[];completed:string[];srs:Record<string,Srs>;attempts:{id:string;correct:boolean;ms:number;at:number}[];reviews:any[];machineRuns:any[];dailyRuns:Record<string,import('./daily').DailyRun>};
+const empty:Progress={days:[],mastered:[],favorites:[],completed:[],srs:{},attempts:[],reviews:[],machineRuns:[],dailyRuns:{}};
 export type Settings={mode:string;speed:number;level:string;dark:boolean;font:number;ruby:number;audioProvider:string;ai:boolean};
 const initial:Settings={mode:'ruby',speed:1,level:'N2',dark:false,font:16,ruby:.53,audioProvider:'browser',ai:false};
 const C=createContext<any>(null);export const useLearning=()=>useContext(C);

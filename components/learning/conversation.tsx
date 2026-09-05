@@ -1,19 +1,593 @@
 'use client';
-import {useState,useRef,useEffect}from'react';import{Mic,Send,Square,Volume2,ArrowRight,RotateCcw}from'lucide-react';import{useLearning,useAudio}from'@/lib/learning';import{scenarios,npcEntry,assessLocal}from'@/lib/dialogue';import{plain,allEntries}from'@/lib/content';import{Sentence,Japanese,Choice}from'./text';
-export interface RecognitionAdapter{start(onText:(s:string)=>void,onError:(s:string)=>void):void;stop():void;}
-class BrowserRecognition implements RecognitionAdapter{recognition:any;start(onText:(s:string)=>void,onError:(s:string)=>void){const R=(window as any).SpeechRecognition||(window as any).webkitSpeechRecognition;if(!R)throw Error('当前浏览器不支持语音识别。可以录音回听，或打字回答。');this.recognition=new R();this.recognition.lang='ja-JP';this.recognition.interimResults=false;this.recognition.onresult=(e:any)=>onText(e.results[0][0].transcript);this.recognition.onerror=(e:any)=>onError('语音识别未完成：'+e.error);this.recognition.start()}stop(){this.recognition?.stop()}}
-export function Conversation({initial='hotel-checkin',daily=false}:{initial?:string;daily?:boolean}){const{settings,setSettings,setProgress,mark,setNotice}=useLearning(),audio=useAudio();const [sceneId,setSceneId]=useState(initial),[index,setIndex]=useState(0),[input,setInput]=useState(''),[history,setHistory]=useState<any[]>([]),[results,setResults]=useState<any[]>([]),[done,setDone]=useState(false),[busy,setBusy]=useState(false),[custom,setCustom]=useState<any>(null),[recording,setRecording]=useState(false),[recordUrl,setRecordUrl]=useState(''),[aiReview,setAiReview]=useState<any>(null),[dailyIndex,setDailyIndex]=useState(0);const start=useRef(Date.now()),rec=useRef<MediaRecorder|null>(null),stream=useRef<MediaStream|null>(null),recognition=useRef<RecognitionAdapter|null>(null),held=useRef(false),recordUrlRef=useRef('');
-const journey=['hotel-checkout','hotel-luggage','train-gate','shinkansen-trip','convenience-rapid','hotel-checkin','booking-late','restaurant-order'];const scene=scenarios.find(s=>s.id===sceneId)||scenarios[0];const step=scene.steps[Math.min(index,scene.steps.length-1)];const npc=custom||npcEntry(step.npc);const native=settings.level==='Native Challenge';
-function reset(id:string){audio.stop();setSceneId(id);setIndex(0);setInput('');setHistory([]);setResults([]);setDone(false);setCustom(null);setAiReview(null);start.current=Date.now()}
-useEffect(()=>{reset(daily?journey[0]:initial)},[initial,daily]);useEffect(()=>{start.current=Date.now()},[index]);useEffect(()=>()=>{held.current=false;if(rec.current?.state==='recording')rec.current.stop();stream.current?.getTracks().forEach(t=>t.stop());recognition.current?.stop();if(recordUrlRef.current)URL.revokeObjectURL(recordUrlRef.current)},[]);
-async function recordStart(){if(recording||held.current)return;held.current=true;try{if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder)throw Error('当前环境不支持录音，请使用 HTTPS 或本机浏览器。');const s=await navigator.mediaDevices.getUserMedia({audio:true});if(!held.current){s.getTracks().forEach(t=>t.stop());return}stream.current=s;const recorder=new MediaRecorder(s);rec.current=recorder;const chunks:BlobPart[]=[];recorder.ondataavailable=e=>chunks.push(e.data);recorder.onstop=()=>{if(recordUrlRef.current)URL.revokeObjectURL(recordUrlRef.current);const url=URL.createObjectURL(new Blob(chunks,{type:recorder.mimeType}));recordUrlRef.current=url;setRecordUrl(url);s.getTracks().forEach(t=>t.stop())};recorder.start();setRecording(true)}catch(e:any){held.current=false;setNotice(e.message)}}
-function recordStop(){held.current=false;if(rec.current?.state==='recording')rec.current.stop();setRecording(false)}
-function recognize(){try{recognition.current=new BrowserRecognition();recognition.current.start(setInput,setNotice);setNotice('正在识别日语；识别服务由浏览器提供。')}catch(e:any){setNotice(e.message)}}
-async function submit(){if(!input.trim()||busy)return;const original=input.trim(),ms=Date.now()-start.current;let accepted=new RegExp(step.accept,'i').test(original);const repeat=/もう一度|もういちど|聞き取れ|聞こえ|ゆっくり/.test(original);if(repeat){const rate=/ゆっくり/.test(original)?.85:settings.speed;if(rate!==settings.speed)setSettings({...settings,speed:rate});audio.play(npc.japanese,false,rate);setHistory(h=>[...h,{role:'user',text:original},{role:'staff',text:npc.japanese}]);setInput('');start.current=Date.now();return}let ai:any=null;const nextHistory=[...history,{role:'staff',text:npc.japanese},{role:'user',text:original}];if(settings.ai){setBusy(true);try{const r=await fetch('/api/conversation',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({scenario:{...scene,currentStep:index,level:settings.level},messages:nextHistory.map(h=>({role:h.role==='user'?'user':'assistant',content:plain(h.text)}))})});const data:any=await r.json();if(!r.ok)throw Error(data.error);ai=data;accepted=ai.advance;setCustom({...npcEntry(ai.japanese),chinese:ai.chinese||'',explanation:ai.explanation||''})}catch(e:any){setNotice(e.message);setBusy(false);return}setBusy(false)}
-setHistory(nextHistory);setInput('');const result={...assessLocal(original,step.reply,accepted,ms),entryId:allEntries.find(e=>e.id===step.npc)?.id,goal:step.goal};const nextResults=[...results,result];setResults(nextResults);if(!accepted){if(!ai)setCustom(npcEntry('[恐|おそ]れ[入|い]ります。もう[一度|いちど]お[願|ねが]いできますか。'));start.current=Date.now();return}setCustom(ai?{...npcEntry(ai.japanese),chinese:ai.chinese||''}:null);
-if(index===scene.steps.length-1){setDone(true);audio.stop();setProgress((p:any)=>({...p,days:[...new Set([...p.days,new Date().toLocaleDateString('sv-SE')])],completed:[...new Set([...p.completed,scene.id])],reviews:[{scene:scene.id,at:Date.now(),results:nextResults},...p.reviews].slice(0,30)}));nextResults.filter(x=>x.entryId&&(!x.accepted||x.ms>10000)).forEach(x=>mark(x.entryId,'review'));}else setIndex(index+1)}
-async function reviewAI(){setBusy(true);try{const r=await fetch('/api/conversation',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({review:true,scenario:{...scene,responseTimes:results.map(x=>x.ms)},messages:history.map(h=>({role:h.role==='user'?'user':'assistant',content:plain(h.text)}))})});const d:any=await r.json();if(!r.ok)throw Error(d.error);setAiReview(d)}catch(e:any){setNotice(e.message)}setBusy(false)}
-const remembered=[...new Set(results.map(r=>r.entryId).filter(Boolean))].slice(0,5);
-return <div className="conversation-layout"><div><div className="row spaced"><Choice label="选择对话场景" value={sceneId} onChange={reset} items={scenarios.map(s=>[s.id,s.title])}/><span className="tag">{settings.ai?'AI 在线模式':'离线情景模拟'}</span></div>{daily&&<div className="daily-route">今日任务 {dailyIndex+1}/8 · {['办理退房','寄存行李','解决闸机问题','东京→京都','买便当','京都入住','电话说明迟到','餐厅点餐'][dailyIndex]}</div>}<section className="task-brief"><h2>{scene.title}</h2><p>{scene.description}</p><div className="muted">{done?'练习结束':`进度 ${index+1} / ${scene.steps.length}`} · {settings.level}</div></section>{history.length>0&&<details className="history"><summary>查看已发生的对话（{history.length}）</summary>{history.map((h,i)=><div key={i} className={'chat-line '+h.role}><small>{h.role==='user'?'あなた':scene.role}</small><p>{h.role==='user'?h.text:<Japanese text={h.text} mode={native?'native':'ruby'}/>}</p></div>)}</details>}{!done?<><div className="npc-label"><span className="avatar">{scene.role[0]}</span><b>{scene.role}</b><small>あなたの番です</small></div><Sentence key={sceneId+'-'+index+'-'+npc.japanese} entry={npc} compact defaultMode={native?'hidden':undefined}/><form onSubmit={e=>{e.preventDefault();submit()}} className="reply-form"><label htmlFor="reply">あなたの返答</label><textarea id="reply" value={input} onChange={e=>setInput(e.target.value)} maxLength={1000} placeholder="用日语回应。也可以请求重复或放慢。" rows={3}/><div className="row spaced"><div className="row"><button type="button" className={'secondary '+(recording?'recording':'')} onPointerDown={e=>{e.currentTarget.setPointerCapture(e.pointerId);recordStart()}} onPointerUp={recordStop} onPointerCancel={recordStop} onKeyDown={e=>{if(e.key===' '&&!e.repeat){e.preventDefault();recordStart()}}} onKeyUp={e=>{if(e.key===' '){e.preventDefault();recordStop()}}} onBlur={recordStop}><Mic size={17}/>{recording?'松开结束':'按住录音'}</button><button type="button" className="secondary" onClick={recognize}>语音识别</button></div><button className="primary" disabled={busy||!input.trim()}><Send size={16}/>{busy?'正在回应…':'发送回答'}</button></div>{recordUrl&&<div className="record-result"><audio src={recordUrl} controls/><a href={recordUrl} download="japanese-practice.webm">保存录音</a><small>录音仅在本机。识别后请确认文字再发送。</small></div>}</form>{!native&&<details className="help"><summary>需要帮助？查看当前沟通目标</summary><p>{step.goal}。本地模式按关键信息推进，无法覆盖所有同义表达。</p><button className="text-link" onClick={()=>setInput(plain(step.reply))}>显示并使用示例回答</button></details>}</>:<section className="review-result"><span className="tag">ふりかえり</span><h2>一次真实的交流，比一句满分答案更有价值。</h2><p><Japanese text={scene.end}/></p><div className="stats"><div className="stat"><span>场景完成</span><strong>✓</strong></div><div className="stat"><span>信息识别率</span><strong>{Math.round(results.filter(x=>x.accepted).length/Math.max(1,results.length)*100)}<small>%</small></strong></div><div className="stat"><span>平均回应耗时</span><strong>{(results.reduce((a,x)=>a+x.ms,0)/Math.max(1,results.length)/1000).toFixed(1)}<small>秒</small></strong></div></div><p className="muted">以上是练习记录，不是 AI 能力评分。听力、语法与自然度需要语境评估；自由输入不按模板唯一判定。</p><div className="metric-grid">{['自然度','语法','词汇','敬语','反应速度','场景适切度','听力理解','表达效率'].map(k=><div key={k}><span>{k}</span><b>{aiReview?.metrics?.[k]??'待 AI 评估'}</b></div>)}</div>{settings.ai&&<button className="secondary" onClick={reviewAI} disabled={busy}>{busy?'评估中…':'AI 语境复盘'}</button>}{(aiReview?.items||results).map((r:any,i:number)=><article className="review-item" key={i}><div className="row spaced"><b>あなた：{r.original}</b><span className="tag">{r.stars?'★'.repeat(r.stars)+'☆'.repeat(5-r.stars):'自然度未判定'}</span></div><p><small>より自然 · 可选表达</small><br/><Japanese text={r.natural}/></p><p><small>日本人更常见的表达</small><br/><Japanese text={r.common}/></p><p><small>店員なら · 工作人员说法</small><br/><Japanese text={r.staff}/></p><p>{r.why}</p><div className="muted">书面程度：{r.written} · 敬语过度：{r.overpolite} · 礼貌不足：{r.underpolite}</div></article>)}<h3>今日覚えるべき表現</h3>{remembered.map(id=><Sentence key={id} compact entry={allEntries.find(e=>e.id===id)!}/>)}<div className="row"><button className="primary" onClick={()=>remembered.forEach(id=>mark(id,'review'))}>将本次重点加入 SRS</button><button className="secondary" onClick={()=>reset(scene.id)}><RotateCcw size={16}/>再练一次</button>{daily&&dailyIndex<7&&<button className="primary" onClick={()=>{setDailyIndex(dailyIndex+1);reset(journey[dailyIndex+1])}}>下一段旅程 <ArrowRight size={16}/></button>}</div>{daily&&dailyIndex===7&&<p className="success">✓ 今天的八个任务已完成，复盘已保存在当前设备。</p>}</section>}</div><aside className="conversation-aside"><section className="panel"><h3>練習の設定</h3><p className="muted">现实流程、自然回应。需要时主动向对方确认。</p><Choice label="模拟方式" value={settings.ai?'ai':'offline'} onChange={v=>setSettings({...settings,ai:v==='ai'})} items={[[ 'offline','离线情景模拟'],['ai','AI 角色扮演（需配置）']]}/><p className="muted">AI 模式需服务端连接模型。未连接时会明确报错，保留你的回答。</p><button className="secondary" onClick={()=>audio.play(npc.japanese)}><Volume2 size={17}/>听当前一句</button></section><section className="panel"><h3>让对方重复，也是一种能力。</h3>{['convenience-store-repeat','phrases-fine'].map(id=><Sentence key={id} entry={allEntries.find(e=>e.id===id)!} compact/>)}</section></aside></div>}
-
-
+import { useState, useRef, useEffect } from 'react';
+import type { ConversationDraft } from '@/lib/daily';
+import {
+  Mic,
+  Send,
+  Square,
+  Volume2,
+  ArrowRight,
+  RotateCcw,
+} from 'lucide-react';
+import { useLearning, useAudio } from '@/lib/learning';
+import { scenarios, npcEntry, assessLocal } from '@/lib/dialogue';
+import { plain, allEntries } from '@/lib/content';
+import { Sentence, Japanese, Choice } from './text';
+export interface RecognitionAdapter {
+  start(onText: (s: string) => void, onError: (s: string) => void): void;
+  stop(): void;
+}
+class BrowserRecognition implements RecognitionAdapter {
+  recognition: any;
+  start(onText: (s: string) => void, onError: (s: string) => void) {
+    const R =
+      (window as any).SpeechRecognition ||
+      (window as any).webkitSpeechRecognition;
+    if (!R) throw Error('当前浏览器不支持语音识别。可以录音回听，或打字回答。');
+    this.recognition = new R();
+    this.recognition.lang = 'ja-JP';
+    this.recognition.interimResults = false;
+    this.recognition.onresult = (e: any) => onText(e.results[0][0].transcript);
+    this.recognition.onerror = (e: any) =>
+      onError('语音识别未完成：' + e.error);
+    this.recognition.start();
+  }
+  stop() {
+    this.recognition?.stop();
+  }
+}
+export function Conversation({
+  initial = 'hotel-checkin',
+  draft,
+  onSnapshot,
+  onComplete,
+  locked = false,
+}: {
+  initial?: string;
+  draft?: ConversationDraft | null;
+  onSnapshot?: (draft: ConversationDraft) => void;
+  onComplete?: (results: any[]) => void;
+  locked?: boolean;
+}) {
+  const { settings, setSettings, setProgress, mark, setNotice } = useLearning(),
+    audio = useAudio();
+  const [sceneId, setSceneId] = useState(initial),
+    [index, setIndex] = useState(draft?.index || 0),
+    [input, setInput] = useState(draft?.input || ''),
+    [history, setHistory] = useState<any[]>(draft?.history || []),
+    [results, setResults] = useState<any[]>(draft?.results || []),
+    [done, setDone] = useState(draft?.done || false),
+    [busy, setBusy] = useState(false),
+    [custom, setCustom] = useState<any>(draft?.custom || null),
+    [recording, setRecording] = useState(false),
+    [recordUrl, setRecordUrl] = useState(''),
+    [aiReview, setAiReview] = useState<any>(draft?.aiReview || null);
+  const start = useRef(Date.now()),
+    rec = useRef<MediaRecorder | null>(null),
+    stream = useRef<MediaStream | null>(null),
+    recognition = useRef<RecognitionAdapter | null>(null),
+    held = useRef(false),
+    recordUrlRef = useRef('');
+  const scene = scenarios.find((s) => s.id === sceneId) || scenarios[0];
+  const step = scene.steps[Math.min(index, scene.steps.length - 1)];
+  const npc = custom || npcEntry(step.npc);
+  const native = settings.level === 'Native Challenge';
+  function reset(id: string) {
+    audio.stop();
+    setSceneId(id);
+    setIndex(0);
+    setInput('');
+    setHistory([]);
+    setResults([]);
+    setDone(false);
+    setCustom(null);
+    setAiReview(null);
+    start.current = Date.now();
+  }
+  const initialRef = useRef(initial);
+  useEffect(() => {
+    if (initialRef.current !== initial) {
+      initialRef.current = initial;
+      reset(initial);
+    }
+  }, [initial]);
+  useEffect(() => {
+    onSnapshot?.({
+      sceneId,
+      index,
+      input,
+      history,
+      results,
+      done,
+      custom,
+      aiReview,
+    });
+  }, [
+    sceneId,
+    index,
+    input,
+    history,
+    results,
+    done,
+    custom,
+    aiReview,
+    onSnapshot,
+  ]);
+  useEffect(() => {
+    start.current = Date.now();
+  }, [index]);
+  useEffect(
+    () => () => {
+      held.current = false;
+      if (rec.current?.state === 'recording') rec.current.stop();
+      stream.current?.getTracks().forEach((t) => t.stop());
+      recognition.current?.stop();
+      if (recordUrlRef.current) URL.revokeObjectURL(recordUrlRef.current);
+    },
+    [],
+  );
+  async function recordStart() {
+    if (recording || held.current) return;
+    held.current = true;
+    try {
+      if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder)
+        throw Error('当前环境不支持录音，请使用 HTTPS 或本机浏览器。');
+      const s = await navigator.mediaDevices.getUserMedia({ audio: true });
+      if (!held.current) {
+        s.getTracks().forEach((t) => t.stop());
+        return;
+      }
+      stream.current = s;
+      const recorder = new MediaRecorder(s);
+      rec.current = recorder;
+      const chunks: BlobPart[] = [];
+      recorder.ondataavailable = (e) => chunks.push(e.data);
+      recorder.onstop = () => {
+        if (recordUrlRef.current) URL.revokeObjectURL(recordUrlRef.current);
+        const url = URL.createObjectURL(
+          new Blob(chunks, { type: recorder.mimeType }),
+        );
+        recordUrlRef.current = url;
+        setRecordUrl(url);
+        s.getTracks().forEach((t) => t.stop());
+      };
+      recorder.start();
+      setRecording(true);
+    } catch (e: any) {
+      held.current = false;
+      setNotice(e.message);
+    }
+  }
+  function recordStop() {
+    held.current = false;
+    if (rec.current?.state === 'recording') rec.current.stop();
+    setRecording(false);
+  }
+  function recognize() {
+    try {
+      recognition.current = new BrowserRecognition();
+      recognition.current.start(setInput, setNotice);
+      setNotice('正在识别日语；识别服务由浏览器提供。');
+    } catch (e: any) {
+      setNotice(e.message);
+    }
+  }
+  async function submit() {
+    if (!input.trim() || busy) return;
+    const original = input.trim(),
+      ms = Date.now() - start.current;
+    let accepted = new RegExp(step.accept, 'i').test(original);
+    const repeat = /もう一度|もういちど|聞き取れ|聞こえ|ゆっくり/.test(
+      original,
+    );
+    if (repeat) {
+      const rate = /ゆっくり/.test(original) ? 0.85 : settings.speed;
+      if (rate !== settings.speed) setSettings({ ...settings, speed: rate });
+      audio.play(npc.japanese, false, rate);
+      setHistory((h) => [
+        ...h,
+        { role: 'user', text: original },
+        { role: 'staff', text: npc.japanese },
+      ]);
+      setInput('');
+      start.current = Date.now();
+      return;
+    }
+    let ai: any = null;
+    const nextHistory = [
+      ...history,
+      { role: 'staff', text: npc.japanese },
+      { role: 'user', text: original },
+    ];
+    if (settings.ai) {
+      setBusy(true);
+      try {
+        const r = await fetch('/api/conversation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            scenario: { ...scene, currentStep: index, level: settings.level },
+            messages: nextHistory.map((h) => ({
+              role: h.role === 'user' ? 'user' : 'assistant',
+              content: plain(h.text),
+            })),
+          }),
+        });
+        const data: any = await r.json();
+        if (!r.ok) throw Error(data.error);
+        ai = data;
+        accepted = ai.advance;
+        setCustom({
+          ...npcEntry(ai.japanese),
+          chinese: ai.chinese || '',
+          explanation: ai.explanation || '',
+        });
+      } catch (e: any) {
+        setNotice(e.message);
+        setBusy(false);
+        return;
+      }
+      setBusy(false);
+    }
+    setHistory(nextHistory);
+    setInput('');
+    const result = {
+      ...assessLocal(original, step.reply, accepted, ms),
+      entryId:
+        allEntries.find((e) => e.id === step.npc)?.id ||
+        allEntries.find((e) => e.id === scene.id + '-step-' + index)?.id,
+      goal: step.goal,
+    };
+    const nextResults = [...results, result];
+    setResults(nextResults);
+    if (!accepted) {
+      if (!ai)
+        setCustom(
+          npcEntry(
+            '[恐|おそ]れ[入|い]ります。もう[一度|いちど]お[願|ねが]いできますか。',
+          ),
+        );
+      start.current = Date.now();
+      return;
+    }
+    setCustom(
+      ai ? { ...npcEntry(ai.japanese), chinese: ai.chinese || '' } : null,
+    );
+    if (index === scene.steps.length - 1) {
+      setDone(true);
+      audio.stop();
+      onComplete?.(nextResults);
+      setProgress((p: any) => ({
+        ...p,
+        days: [...new Set([...p.days, new Date().toLocaleDateString('sv-SE')])],
+        completed: [...new Set([...p.completed, scene.id])],
+        reviews: [
+          { scene: scene.id, at: Date.now(), results: nextResults },
+          ...p.reviews,
+        ].slice(0, 30),
+      }));
+      nextResults
+        .filter((x) => x.entryId && (!x.accepted || x.ms > 10000))
+        .forEach((x) => mark(x.entryId, 'review'));
+    } else setIndex(index + 1);
+  }
+  async function reviewAI() {
+    setBusy(true);
+    try {
+      const r = await fetch('/api/conversation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          review: true,
+          scenario: { ...scene, responseTimes: results.map((x) => x.ms) },
+          messages: history.map((h) => ({
+            role: h.role === 'user' ? 'user' : 'assistant',
+            content: plain(h.text),
+          })),
+        }),
+      });
+      const d: any = await r.json();
+      if (!r.ok) throw Error(d.error);
+      setAiReview(d);
+    } catch (e: any) {
+      setNotice(e.message);
+    }
+    setBusy(false);
+  }
+  const remembered = [
+    ...new Set(results.map((r) => r.entryId).filter(Boolean)),
+  ].slice(0, 5);
+  return (
+    <div className="conversation-layout">
+      <div>
+        <div className="row spaced">
+          {locked ? (
+            <b>{scene.title}</b>
+          ) : (
+            <Choice
+              label="选择对话场景"
+              value={sceneId}
+              onChange={reset}
+              items={scenarios.map((s) => [s.id, s.title])}
+            />
+          )}
+          <span className="tag">
+            {settings.ai ? 'AI 在线模式' : '离线情景模拟'}
+          </span>
+        </div>
+        <section className="task-brief">
+          <h2>{scene.title}</h2>
+          <p>{scene.description}</p>
+          <div className="muted">
+            {done ? '练习结束' : `进度 ${index + 1} / ${scene.steps.length}`} ·{' '}
+            {settings.level}
+          </div>
+        </section>
+        {history.length > 0 && (
+          <details className="history">
+            <summary>查看已发生的对话（{history.length}）</summary>
+            {history.map((h, i) => (
+              <div key={i} className={'chat-line ' + h.role}>
+                <small>{h.role === 'user' ? 'あなた' : scene.role}</small>
+                <p>
+                  {h.role === 'user' ? (
+                    h.text
+                  ) : (
+                    <Japanese text={h.text} mode={native ? 'native' : 'ruby'} />
+                  )}
+                </p>
+              </div>
+            ))}
+          </details>
+        )}
+        {!done ? (
+          <>
+            <div className="npc-label">
+              <span className="avatar">{scene.role[0]}</span>
+              <b>{scene.role}</b>
+              <small>あなたの番です</small>
+            </div>
+            <Sentence
+              key={sceneId + '-' + index + '-' + npc.japanese}
+              entry={npc}
+              compact
+              defaultMode={native ? 'hidden' : undefined}
+            />
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                submit();
+              }}
+              className="reply-form"
+            >
+              <label htmlFor="reply">あなたの返答</label>
+              <textarea
+                id="reply"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                maxLength={1000}
+                placeholder="用日语回应。也可以请求重复或放慢。"
+                rows={3}
+              />
+              <div className="row spaced">
+                <div className="row">
+                  <button
+                    type="button"
+                    className={'secondary ' + (recording ? 'recording' : '')}
+                    onPointerDown={(e) => {
+                      e.currentTarget.setPointerCapture(e.pointerId);
+                      recordStart();
+                    }}
+                    onPointerUp={recordStop}
+                    onPointerCancel={recordStop}
+                    onKeyDown={(e) => {
+                      if (e.key === ' ' && !e.repeat) {
+                        e.preventDefault();
+                        recordStart();
+                      }
+                    }}
+                    onKeyUp={(e) => {
+                      if (e.key === ' ') {
+                        e.preventDefault();
+                        recordStop();
+                      }
+                    }}
+                    onBlur={recordStop}
+                  >
+                    <Mic size={17} />
+                    {recording ? '松开结束' : '按住录音'}
+                  </button>
+                  <button
+                    type="button"
+                    className="secondary"
+                    onClick={recognize}
+                  >
+                    语音识别
+                  </button>
+                </div>
+                <button className="primary" disabled={busy || !input.trim()}>
+                  <Send size={16} />
+                  {busy ? '正在回应…' : '发送回答'}
+                </button>
+              </div>
+              {recordUrl && (
+                <div className="record-result">
+                  <audio src={recordUrl} controls />
+                  <a href={recordUrl} download="japanese-practice.webm">
+                    保存录音
+                  </a>
+                  <small>录音仅在本机。识别后请确认文字再发送。</small>
+                </div>
+              )}
+            </form>
+            {!native && (
+              <details className="help">
+                <summary>需要帮助？查看当前沟通目标</summary>
+                <p>
+                  {step.goal}。本地模式按关键信息推进，无法覆盖所有同义表达。
+                </p>
+                <button
+                  className="text-link"
+                  onClick={() => setInput(plain(step.reply))}
+                >
+                  显示并使用示例回答
+                </button>
+              </details>
+            )}
+          </>
+        ) : (
+          <section className="review-result">
+            <span className="tag">ふりかえり</span>
+            <h2>一次真实的交流，比一句满分答案更有价值。</h2>
+            <p>
+              <Japanese text={scene.end} />
+            </p>
+            <div className="stats">
+              <div className="stat">
+                <span>场景完成</span>
+                <strong>✓</strong>
+              </div>
+              <div className="stat">
+                <span>信息识别率</span>
+                <strong>
+                  {Math.round(
+                    (results.filter((x) => x.accepted).length /
+                      Math.max(1, results.length)) *
+                      100,
+                  )}
+                  <small>%</small>
+                </strong>
+              </div>
+              <div className="stat">
+                <span>平均回应耗时</span>
+                <strong>
+                  {(
+                    results.reduce((a, x) => a + x.ms, 0) /
+                    Math.max(1, results.length) /
+                    1000
+                  ).toFixed(1)}
+                  <small>秒</small>
+                </strong>
+              </div>
+            </div>
+            <p className="muted">
+              以上是练习记录，不是 AI
+              能力评分。听力、语法与自然度需要语境评估；自由输入不按模板唯一判定。
+            </p>
+            <div className="metric-grid">
+              {[
+                '自然度',
+                '语法',
+                '词汇',
+                '敬语',
+                '反应速度',
+                '场景适切度',
+                '听力理解',
+                '表达效率',
+              ].map((k) => (
+                <div key={k}>
+                  <span>{k}</span>
+                  <b>{aiReview?.metrics?.[k] ?? '待 AI 评估'}</b>
+                </div>
+              ))}
+            </div>
+            {settings.ai && (
+              <button className="secondary" onClick={reviewAI} disabled={busy}>
+                {busy ? '评估中…' : 'AI 语境复盘'}
+              </button>
+            )}
+            {(aiReview?.items || results).map((r: any, i: number) => (
+              <article className="review-item" key={i}>
+                <div className="row spaced">
+                  <b>あなた：{r.original}</b>
+                  <span className="tag">
+                    {r.stars
+                      ? '★'.repeat(r.stars) + '☆'.repeat(5 - r.stars)
+                      : '自然度未判定'}
+                  </span>
+                </div>
+                <p>
+                  <small>より自然 · 可选表达</small>
+                  <br />
+                  <Japanese text={r.natural} />
+                </p>
+                <p>
+                  <small>日本人更常见的表达</small>
+                  <br />
+                  <Japanese text={r.common} />
+                </p>
+                <p>
+                  <small>店員なら · 工作人员说法</small>
+                  <br />
+                  <Japanese text={r.staff} />
+                </p>
+                <p>{r.why}</p>
+                <div className="muted">
+                  书面程度：{r.written} · 敬语过度：{r.overpolite} · 礼貌不足：
+                  {r.underpolite}
+                </div>
+              </article>
+            ))}
+            <h3>今日覚えるべき表現</h3>
+            {remembered.map((id) => (
+              <Sentence
+                key={id}
+                compact
+                entry={allEntries.find((e) => e.id === id)!}
+              />
+            ))}
+            <div className="row">
+              <button
+                className="primary"
+                onClick={() => remembered.forEach((id) => mark(id, 'review'))}
+              >
+                将本次重点加入 SRS
+              </button>
+              {!locked && (
+                <button className="secondary" onClick={() => reset(scene.id)}>
+                  <RotateCcw size={16} />
+                  再练一次
+                </button>
+              )}
+            </div>
+          </section>
+        )}
+      </div>
+      <aside className="conversation-aside">
+        <section className="panel">
+          <h3>練習の設定</h3>
+          <p className="muted">现实流程、自然回应。需要时主动向对方确认。</p>
+          <Choice
+            label="模拟方式"
+            value={settings.ai ? 'ai' : 'offline'}
+            onChange={(v) => setSettings({ ...settings, ai: v === 'ai' })}
+            items={[
+              ['offline', '离线情景模拟'],
+              ['ai', 'AI 角色扮演（需配置）'],
+            ]}
+          />
+          <p className="muted">
+            AI 模式需服务端连接模型。未连接时会明确报错，保留你的回答。
+          </p>
+          <button
+            className="secondary"
+            onClick={() => audio.play(npc.japanese)}
+          >
+            <Volume2 size={17} />
+            听当前一句
+          </button>
+        </section>
+        <section className="panel">
+          <h3>让对方重复，也是一种能力。</h3>
+          {['convenience-store-repeat', 'phrases-fine'].map((id) => (
+            <Sentence
+              key={id}
+              entry={allEntries.find((e) => e.id === id)!}
+              compact
+            />
+          ))}
+        </section>
+      </aside>
+    </div>
+  );
+}
