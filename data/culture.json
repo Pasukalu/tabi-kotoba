@@ -1,0 +1,162 @@
+[
+  {
+    "id": "passport",
+    "title": "入住与护照",
+    "text": "在日本没有住所的外国住宿者需登记国籍、护照号码等，并按要求出示护照、配合复印。不是所有外国居民都适用同一护照要求。",
+    "scope": "対象者による",
+    "source": "厚生劳动省",
+    "sourceUrl": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000130600_00001.html",
+    "lastVerified": "2026-09-05",
+    "type": "rule"
+  },
+  {
+    "id": "ic",
+    "title": "交通 IC 与出站",
+    "text": "东京地铁可使用兼容交通 IC 卡。进出闸机都感应同一张卡；余额不足或出不了闸机时向站务员说明。具体可用范围需确认。",
+    "scope": "鉄道会社による",
+    "source": "Tokyo Metro",
+    "sourceUrl": "https://www.tokyometro.jp/en/tips/after.html",
+    "lastVerified": "2026-09-05",
+    "type": "rule"
+  },
+  {
+    "id": "ex",
+    "title": "新干线的乘车凭证",
+    "text": "SmartEX 有指定交通 IC 卡、QR Ticket 或纸票等乘车方式；具体以所用地区版本、商品与预约页面为准。预约关联的 IC 卡用作识别，并非直接从 Suica 余额支付新干线票价。",
+    "scope": "商品・サービスによる",
+    "source": "SmartEX",
+    "sourceUrl": "https://smart-ex.jp/en/entraining/",
+    "lastVerified": "2026-09-05",
+    "type": "rule"
+  },
+  {
+    "id": "baggage",
+    "title": "东海道・山阳・九州新干线大件行李",
+    "text": "三边合计超过160厘米且不超过250厘米的行李，原则上需预约特大行李空间附带座席；部分物品有例外。训练箱体设为180厘米。不要把此规定推广到所有铁路。",
+    "scope": "路線・荷物による",
+    "source": "SmartEX",
+    "sourceUrl": "https://www.smart-ex.jp/reservation/reserve_smart/oversized-baggage/",
+    "lastVerified": "2026-09-05",
+    "type": "rule"
+  },
+  {
+    "id": "amenity",
+    "title": "用品并非统一摆在客房",
+    "text": "房间内、大堂自取、前台领取、按需提供或收费，都有可能。留意用品台标识与入住说明；是否免费要按具体酒店确认。",
+    "scope": "ホテルによる",
+    "type": "memo",
+    "source": "教学情境提示，非统一规章",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "onsen",
+    "title": "先洗身体，再入浴池",
+    "text": "通常先在洗浴区清洁身体，再进入浴池。毛巾、纹身、泳衣等规定看设施说明，不能一概而论。",
+    "scope": "施設による",
+    "type": "memo",
+    "source": "教学情境提示，非统一规章",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "otoshi",
+    "title": "没点的小菜也可能收费",
+    "text": "部分居酒屋提供お通し并收费，可能另有席费；入店前查看菜单或询问。不是每家餐厅都会收。",
+    "scope": "店舗による",
+    "type": "memo",
+    "source": "教学情境提示，非统一规章",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "lastorder",
+    "title": "先看最后点单时间",
+    "text": "厨房或饮品最后点单可能早于关店。酒店早餐还可能有最后入场时间。",
+    "scope": "店舗・ホテルによる",
+    "type": "memo",
+    "source": "教学情境提示，非统一规章",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "train",
+    "title": "车内通话与排队",
+    "text": "通常将手机静音，避免在座席区域通话；按站台标线排队、先下后上、不要堵门。以现场指示为准。",
+    "scope": "鉄道会社による",
+    "type": "memo",
+    "source": "教学情境提示，非统一规章",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "escalator",
+    "title": "扶梯不背全国统一左右规则",
+    "text": "地区习惯并不一致；优先服从现场安全提示，不在扶梯行走。",
+    "scope": "地域・施設による",
+    "type": "memo",
+    "source": "教学情境提示，非统一规章",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "trash",
+    "title": "垃圾分类看当地说明",
+    "text": "分类项目和投放日依自治体、住宿设施不同。外出垃圾桶不一定容易找到，准备小袋暂存。",
+    "scope": "地域による",
+    "type": "memo",
+    "source": "教学情境提示，非统一规章",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "booking",
+    "title": "预约迟到请提前联络",
+    "text": "报姓名、原预约时间、预计晚到多久，确认能否保留；取消费用与迟到处理以预约条件为准。",
+    "scope": "店舗による",
+    "type": "memo",
+    "source": "教学情境提示，非统一规章",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "hotel-time",
+    "title": "入住、早餐和退房时间",
+    "text": "把入住时间、早餐最后入场、退房截止分别记下。提前入住、延迟退房和退房后寄存都需确认是否收费、是否可用。",
+    "scope": "ホテルによる",
+    "type": "memo",
+    "source": "教学情境提示，非统一规章",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "tickets",
+    "title": "误车与退票不套用单一规则",
+    "text": "持票种类、购买渠道、发车前后会影响处理。先给工作人员看预约信息，再询问可用方案。",
+    "scope": "商品・鉄道会社による",
+    "type": "memo",
+    "source": "教学情境提示，非统一规章",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "cash",
+    "title": "准备备用付款方式",
+    "text": "确认店门和收银台的支付标识；接受交通IC不代表接受所有二维码支付。付款失败先确认是否扣款再重试。",
+    "scope": "店舗による",
+    "type": "memo",
+    "source": "教学情境提示，非统一规章",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "food",
+    "title": "生食和过敏原要直接确认",
+    "text": "菜单词能帮助识别料理，但不能保证熟度或过敏安全。向店家确认配料和交叉接触；不确定时另选。",
+    "scope": "店舗による",
+    "type": "memo",
+    "source": "教学情境提示，非统一规章",
+    "sourceUrl": null,
+    "lastVerified": null
+  }
+]

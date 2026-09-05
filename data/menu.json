@@ -1,0 +1,330 @@
+[
+  {
+    "id": "menu-0",
+    "japanese": "[特製|とくせい][濃厚|のうこう][魚介|ぎょかい]つけ[麺|めん]",
+    "chinese": "特制浓厚海鲜蘸面",
+    "notes": "鱼贝类风味的浓汤与面分开供应；蘸食。常搭配叉烧、蛋，不能仅凭名字排除过敏原。",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "丁寧",
+    "frequency": 4,
+    "nativeFrequency": "常见场景表达；非语料统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "根据语境选择表达，不把例句当作唯一答案。",
+    "explanation": "その[場面|ばめん]で[使|つか]う[表現|ひょうげん]です。",
+    "meat": "鱼贝类风味",
+    "method": "蘸面",
+    "flavor": "浓厚鲜味",
+    "price": 1280,
+    "kana": "とくせいのうこうぎょかいつけめん",
+    "romaji": "tokusei nōkō gyokai tsuke men",
+    "components": [
+      {
+        "text": "特製",
+        "meaning": "店家特别制作／额外配料"
+      },
+      {
+        "text": "濃厚",
+        "meaning": "浓郁厚重"
+      },
+      {
+        "text": "魚介",
+        "meaning": "鱼类与贝类等海产"
+      },
+      {
+        "text": "つけ",
+        "meaning": "蘸着吃"
+      },
+      {
+        "text": "麺",
+        "meaning": "面条"
+      }
+    ]
+  },
+  {
+    "id": "menu-1",
+    "japanese": "[炙|あぶ]りサーモン",
+    "chinese": "炙烤三文鱼",
+    "notes": "表面炙烤，内部可能仍是生的；炙り不等于全熟。",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "丁寧",
+    "frequency": 4,
+    "nativeFrequency": "常见场景表达；非语料统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "根据语境选择表达，不把例句当作唯一答案。",
+    "explanation": "その[場面|ばめん]で[使|つか]う[表現|ひょうげん]です。",
+    "meat": "三文鱼",
+    "method": "表面炙烤",
+    "flavor": "鲜香",
+    "price": 620,
+    "kana": "あぶりサーモン",
+    "romaji": "abu risāmon",
+    "components": [
+      {
+        "text": "炙",
+        "meaning": "用火炙烤表面"
+      },
+      {
+        "text": "りサーモン",
+        "meaning": "炙り的词尾＋三文鱼"
+      }
+    ]
+  },
+  {
+    "id": "menu-2",
+    "japanese": "[鶏|とり]もも[塩焼|しおや]き",
+    "chinese": "盐烤鸡腿肉",
+    "notes": "もも指腿肉。具体熟度要看出品，不从菜名保证食品安全。",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "丁寧",
+    "frequency": 4,
+    "nativeFrequency": "常见场景表达；非语料统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "根据语境选择表达，不把例句当作唯一答案。",
+    "explanation": "その[場面|ばめん]で[使|つか]う[表現|ひょうげん]です。",
+    "meat": "鸡肉",
+    "method": "盐烤",
+    "flavor": "咸鲜",
+    "price": 780,
+    "kana": "とりももしおやき",
+    "romaji": "tori momo shioya ki",
+    "components": [
+      {
+        "text": "鶏",
+        "meaning": "鸡"
+      },
+      {
+        "text": "もも",
+        "meaning": "腿肉"
+      },
+      {
+        "text": "塩焼",
+        "meaning": "盐烤"
+      },
+      {
+        "text": "き",
+        "meaning": "词尾"
+      }
+    ]
+  },
+  {
+    "id": "menu-3",
+    "japanese": "[牛|ぎゅう]タン[炭火焼|すみびや]き",
+    "chinese": "炭火烤牛舌",
+    "notes": "タン来自tongue。通常切片炭烤。",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "丁寧",
+    "frequency": 4,
+    "nativeFrequency": "常见场景表达；非语料统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "根据语境选择表达，不把例句当作唯一答案。",
+    "explanation": "その[場面|ばめん]で[使|つか]う[表現|ひょうげん]です。",
+    "meat": "牛舌",
+    "method": "炭火烤",
+    "flavor": "炭香",
+    "price": 1480,
+    "kana": "ぎゅうタンすみびやき",
+    "romaji": "gyū tan sumibiya ki",
+    "components": [
+      {
+        "text": "牛",
+        "meaning": "牛"
+      },
+      {
+        "text": "タン",
+        "meaning": "舌（来自 tongue）"
+      },
+      {
+        "text": "炭火焼",
+        "meaning": "炭火烤"
+      },
+      {
+        "text": "き",
+        "meaning": "词尾"
+      }
+    ]
+  },
+  {
+    "id": "menu-4",
+    "japanese": "だし[巻|ま]き[玉子|たまご]",
+    "chinese": "高汤鸡蛋卷",
+    "notes": "鸡蛋中加入高汤，口感湿润柔软。",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "丁寧",
+    "frequency": 4,
+    "nativeFrequency": "常见场景表达；非语料统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "根据语境选择表达，不把例句当作唯一答案。",
+    "explanation": "その[場面|ばめん]で[使|つか]う[表現|ひょうげん]です。",
+    "meat": "鸡蛋",
+    "method": "卷煎",
+    "flavor": "高汤鲜味",
+    "price": 580,
+    "kana": "だしまきたまご",
+    "romaji": "dashi ma ki tamago",
+    "components": [
+      {
+        "text": "だし",
+        "meaning": "高汤"
+      },
+      {
+        "text": "巻",
+        "meaning": "卷"
+      },
+      {
+        "text": "き",
+        "meaning": "词尾"
+      },
+      {
+        "text": "玉子",
+        "meaning": "鸡蛋"
+      }
+    ]
+  },
+  {
+    "id": "menu-5",
+    "japanese": "[釜揚|かまあ]げしらす[丼|どん]",
+    "chinese": "熟小银鱼盖饭",
+    "notes": "釜揚げ表示煮制；区别于生しらす。",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "丁寧",
+    "frequency": 4,
+    "nativeFrequency": "常见场景表达；非语料统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "根据语境选择表达，不把例句当作唯一答案。",
+    "explanation": "その[場面|ばめん]で[使|つか]う[表現|ひょうげん]です。",
+    "meat": "小鱼",
+    "method": "煮制",
+    "flavor": "咸鲜",
+    "price": 980,
+    "kana": "かまあげしらすどん",
+    "romaji": "kamaa geshirasu don",
+    "components": [
+      {
+        "text": "釜揚",
+        "meaning": "煮熟捞起"
+      },
+      {
+        "text": "げしらす",
+        "meaning": "釜揚げ词尾＋小鱼仔"
+      },
+      {
+        "text": "丼",
+        "meaning": "盖饭"
+      }
+    ]
+  },
+  {
+    "id": "menu-6",
+    "japanese": "[豚汁定食|とんじるていしょく]",
+    "chinese": "猪肉味噌汤定食",
+    "notes": "含猪肉和蔬菜的味噌汤，配饭及小菜；配菜依店铺。",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "丁寧",
+    "frequency": 4,
+    "nativeFrequency": "常见场景表达；非语料统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "根据语境选择表达，不把例句当作唯一答案。",
+    "explanation": "その[場面|ばめん]で[使|つか]う[表現|ひょうげん]です。",
+    "meat": "猪肉",
+    "method": "炖煮",
+    "flavor": "味噌",
+    "price": 1080,
+    "kana": "とんじるていしょく",
+    "romaji": "tonjiruteishoku",
+    "components": [
+      {
+        "text": "豚汁定食",
+        "meaning": "猪肉味噌汤＋米饭小菜套餐"
+      }
+    ]
+  },
+  {
+    "id": "menu-7",
+    "japanese": "[明太|めんたい]クリームうどん",
+    "chinese": "明太子奶油乌冬",
+    "notes": "明太子与奶油酱的组合，常含鱼卵与乳制品。",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "丁寧",
+    "frequency": 4,
+    "nativeFrequency": "常见场景表达；非语料统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "根据语境选择表达，不把例句当作唯一答案。",
+    "explanation": "その[場面|ばめん]で[使|つか]う[表現|ひょうげん]です。",
+    "meat": "鱼卵",
+    "method": "拌酱",
+    "flavor": "奶香微辣",
+    "price": 1180,
+    "kana": "めんたいクリームうどん",
+    "romaji": "mentai kurīmūdon",
+    "components": [
+      {
+        "text": "明太",
+        "meaning": "明太子／调味鳕鱼卵"
+      },
+      {
+        "text": "クリームうどん",
+        "meaning": "奶油酱乌冬"
+      }
+    ]
+  },
+  {
+    "id": "menu-8",
+    "japanese": "ねぎ[塩|しお]カルビ",
+    "chinese": "葱盐牛肋肉",
+    "notes": "カルビ常指牛肋肉类部位，具体肉类与切法以菜单说明为准。",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "丁寧",
+    "frequency": 4,
+    "nativeFrequency": "常见场景表达；非语料统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "根据语境选择表达，不把例句当作唯一答案。",
+    "explanation": "その[場面|ばめん]で[使|つか]う[表現|ひょうげん]です。",
+    "meat": "通常牛肉",
+    "method": "常见烤制",
+    "flavor": "葱盐",
+    "price": 880,
+    "kana": "ねぎしおカルビ",
+    "romaji": "negi shio karubi",
+    "components": [
+      {
+        "text": "ねぎ",
+        "meaning": "葱"
+      },
+      {
+        "text": "塩",
+        "meaning": "盐味"
+      },
+      {
+        "text": "カルビ",
+        "meaning": "常见为牛肋肉类部位"
+      }
+    ]
+  }
+]
