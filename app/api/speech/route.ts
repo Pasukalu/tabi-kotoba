@@ -1,1 +1,45 @@
-export async function POST(request:Request){const env=(process as any).env;if(!env.TTS_API_URL||!env.TTS_API_TOKEN)return Response.json({error:'Cloud TTS not configured'},{status:503});const body=await request.json() as any;if(typeof body.text!=='string'||body.text.length>2000)return Response.json({error:'Invalid input'},{status:400});try{const r=await fetch(env.TTS_API_URL,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${env.TTS_API_TOKEN}`},body:JSON.stringify({text:body.text,rate:[.7,.85,1,1.15].includes(body.rate)?body.rate:1,language:'ja-JP'}),signal:AbortSignal.timeout(30000)});if(!r.ok||!r.headers.get('Content-Type')?.startsWith('audio/'))throw Error();return new Response(r.body,{headers:{'Content-Type':r.headers.get('Content-Type')!,'Cache-Control':'no-store'}})}catch{return Response.json({error:'Speech provider unavailable'},{status:502})}}
+import { serviceCapabilities, speechRequest } from '@/lib/service-config';
+export async function POST(request: Request) {
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return Response.json({ error: '音频请求格式不正确。' }, { status: 400 });
+  }
+  const input = body as { text?: unknown; rate?: unknown } | null;
+  if (
+    !input ||
+    typeof input.text !== 'string' ||
+    !input.text.trim() ||
+    input.text.length > 2000 ||
+    ![0.7, 0.85, 1, 1.15].includes(Number(input.rate))
+  )
+    return Response.json(
+      { error: '请选择有效的文本和播放速度。' },
+      { status: 400 },
+    );
+  if (!serviceCapabilities(process.env).speech)
+    return Response.json({ error: '云端语音尚未连接。' }, { status: 503 });
+  try {
+    const upstream = speechRequest(process.env, input.text, Number(input.rate));
+    const r = await fetch(upstream.url, {
+      method: 'POST',
+      headers: upstream.headers as Record<string, string>,
+      body: upstream.body,
+      signal: AbortSignal.timeout(30000),
+    });
+    if (!r.ok || !r.headers.get('Content-Type')?.startsWith('audio/'))
+      throw Error('upstream');
+    return new Response(r.body, {
+      headers: {
+        'Content-Type': r.headers.get('Content-Type')!,
+        'Cache-Control': 'no-store',
+      },
+    });
+  } catch {
+    return Response.json(
+      { error: '云端发音暂不可用，请稍后重试。' },
+      { status: 502 },
+    );
+  }
+}

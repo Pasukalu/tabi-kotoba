@@ -1,6 +1,8 @@
 'use client';
+import VisualTrainer from '@/components/learning/visual-trainer';
 import BroadcastTraining from '@/components/learning/broadcast-training';
 import { useState, useEffect, useRef } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
 import {
   Home,
   Map,
@@ -34,7 +36,7 @@ import {
   Profile,
   Heading,
 } from '@/components/learning/views';
-import { Conversation } from '@/components/learning/conversation';
+import ConversationSession from '@/components/learning/conversation-session';
 import DailyChallenge from '@/components/learning/daily-challenge';
 const nav = [
   ['ホーム', '', Home],
@@ -49,8 +51,12 @@ const nav = [
 ] as const;
 function Shell() {
   const { settings, setSettings, progress } = useLearning();
-  const [path, setPath] = useState(''),
-    [params, setParams] = useState<URLSearchParams | null>(null),
+  const pathname = usePathname(),
+    searchParams = useSearchParams();
+  const [path, setPath] = useState(pathname.split('/')[1] || ''),
+    [params, setParams] = useState<URLSearchParams | null>(
+      new URLSearchParams(searchParams.toString()),
+    ),
     [query, setQuery] = useState('');
   const searchRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
@@ -165,8 +171,12 @@ function Shell() {
                 }
                 sub="听懂对方，完成任务，再回头看自己的表达。"
               />
-              <Conversation initial={params?.get('scene') || 'hotel-checkin'} />
+              <ConversationSession
+                initial={params?.get('scene') || 'hotel-checkin'}
+              />
             </>
+          ) : path === 'reading' ? (
+            <VisualTrainer />
           ) : path === 'broadcasts' ? (
             <BroadcastTraining />
           ) : path === 'listening' ? (

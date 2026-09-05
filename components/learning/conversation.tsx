@@ -1,5 +1,8 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
+import { difficulty } from '@/lib/difficulty';
+import { reviewExpressions } from '@/lib/review-expressions';
+import { useCapabilities } from './service-status';
 import type { ConversationDraft } from '@/lib/daily';
 import {
   Mic,
@@ -10,32 +13,9 @@ import {
   RotateCcw,
 } from 'lucide-react';
 import { useLearning, useAudio } from '@/lib/learning';
-import { scenarios, npcEntry, assessLocal } from '@/lib/dialogue';
+import { scenarios, npcEntry, assessLocal, acceptsLocal } from '@/lib/dialogue';
 import { plain, allEntries } from '@/lib/content';
 import { Sentence, Japanese, Choice } from './text';
-export interface RecognitionAdapter {
-  start(onText: (s: string) => void, onError: (s: string) => void): void;
-  stop(): void;
-}
-class BrowserRecognition implements RecognitionAdapter {
-  recognition: any;
-  start(onText: (s: string) => void, onError: (s: string) => void) {
-    const R =
-      (window as any).SpeechRecognition ||
-      (window as any).webkitSpeechRecognition;
-    if (!R) throw Error('当前浏览器不支持语音识别。可以录音回听，或打字回答。');
-    this.recognition = new R();
-    this.recognition.lang = 'ja-JP';
-    this.recognition.interimResults = false;
-    this.recognition.onresult = (e: any) => onText(e.results[0][0].transcript);
-    this.recognition.onerror = (e: any) =>
-      onError('语音识别未完成：' + e.error);
-    this.recognition.start();
-  }
-  stop() {
-    this.recognition?.stop();
-  }
-}
 export function Conversation({
   initial = 'hotel-checkin',
   draft,
@@ -51,6 +31,10 @@ export function Conversation({
 }) {
   const { settings, setSettings, setProgress, mark, setNotice } = useLearning(),
     audio = useAudio();
+  const capabilities = useCapabilities();
+  const activeAI = settings.ai && capabilities.conversation;
+  const pendingRequest = useRef<AbortController | null>(null);
+  const requestVersion = useRef(0);
   const [sceneId, setSceneId] = useState(initial),
     [index, setIndex] = useState(draft?.index || 0),
     [input, setInput] = useState(draft?.input || ''),
@@ -65,7 +49,6 @@ export function Conversation({
   const start = useRef(Date.now()),
     rec = useRef<MediaRecorder | null>(null),
     stream = useRef<MediaStream | null>(null),
-    recognition = useRef<RecognitionAdapter | null>(null),
     held = useRef(false),
     recordUrlRef = useRef('');
   const scene = scenarios.find((s) => s.id === sceneId) || scenarios[0];
@@ -73,6 +56,9 @@ export function Conversation({
   const npc = custom || npcEntry(step.npc);
   const native = settings.level === 'Native Challenge';
   function reset(id: string) {
+    requestVersion.current++;
+    pendingRequest.current?.abort();
+    setBusy(false);
     audio.stop();
     setSceneId(id);
     setIndex(0);
@@ -118,10 +104,11 @@ export function Conversation({
   }, [index]);
   useEffect(
     () => () => {
+      requestVersion.current++;
+      pendingRequest.current?.abort();
       held.current = false;
       if (rec.current?.state === 'recording') rec.current.stop();
       stream.current?.getTracks().forEach((t) => t.stop());
-      recognition.current?.stop();
       if (recordUrlRef.current) URL.revokeObjectURL(recordUrlRef.current);
     },
     [],
@@ -163,20 +150,11 @@ export function Conversation({
     if (rec.current?.state === 'recording') rec.current.stop();
     setRecording(false);
   }
-  function recognize() {
-    try {
-      recognition.current = new BrowserRecognition();
-      recognition.current.start(setInput, setNotice);
-      setNotice('正在识别日语；识别服务由浏览器提供。');
-    } catch (e: any) {
-      setNotice(e.message);
-    }
-  }
   async function submit() {
     if (!input.trim() || busy) return;
     const original = input.trim(),
       ms = Date.now() - start.current;
-    let accepted = new RegExp(step.accept, 'i').test(original);
+    let accepted = acceptsLocal(original, step);
     const repeat = /もう一度|もういちど|聞き取れ|聞こえ|ゆっくり/.test(
       original,
     );
@@ -199,11 +177,15 @@ export function Conversation({
       { role: 'staff', text: npc.japanese },
       { role: 'user', text: original },
     ];
-    if (settings.ai) {
+    if (activeAI) {
+      const version = ++requestVersion.current;
+      pendingRequest.current?.abort();
+      pendingRequest.current = new AbortController();
       setBusy(true);
       try {
         const r = await fetch('/api/conversation', {
           method: 'POST',
+          signal: pendingRequest.current!.signal,
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             scenario: { ...scene, currentStep: index, level: settings.level },
@@ -214,6 +196,7 @@ export function Conversation({
           }),
         });
         const data: any = await r.json();
+        if (version !== requestVersion.current) return;
         if (!r.ok) throw Error(data.error);
         ai = data;
         accepted = ai.advance;
@@ -223,6 +206,7 @@ export function Conversation({
           explanation: ai.explanation || '',
         });
       } catch (e: any) {
+        if (version !== requestVersion.current) return;
         setNotice(e.message);
         setBusy(false);
         return;
@@ -272,10 +256,14 @@ export function Conversation({
     } else setIndex(index + 1);
   }
   async function reviewAI() {
+    const version = ++requestVersion.current;
+    pendingRequest.current?.abort();
+    pendingRequest.current = new AbortController();
     setBusy(true);
     try {
       const r = await fetch('/api/conversation', {
         method: 'POST',
+        signal: pendingRequest.current!.signal,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           review: true,
@@ -287,9 +275,42 @@ export function Conversation({
         }),
       });
       const d: any = await r.json();
+      if (version !== requestVersion.current) return;
       if (!r.ok) throw Error(d.error);
+      const remembered = reviewExpressions(d.remember, scene.category);
+      setProgress((p: any) => ({
+        ...p,
+        extraEntries: [
+          ...p.extraEntries.filter(
+            (e: any) => !remembered.some((x) => x.id === e.id),
+          ),
+          ...remembered,
+        ],
+        srs: {
+          ...p.srs,
+          ...Object.fromEntries(
+            remembered.map((e) => [
+              e.id,
+              {
+                due: Date.now(),
+                interval: 0,
+                streak: 0,
+                wrong: 0,
+                reason: 'AI 复盘重点',
+              },
+            ]),
+          ),
+        },
+      }));
       setAiReview(d);
+      setProgress((p: any) => ({
+        ...p,
+        reviews: p.reviews.map((r: any, i: number) =>
+          i === 0 && r.scene === scene.id ? { ...r, aiReview: d } : r,
+        ),
+      }));
     } catch (e: any) {
+      if (version !== requestVersion.current) return;
       setNotice(e.message);
     }
     setBusy(false);
@@ -312,7 +333,7 @@ export function Conversation({
             />
           )}
           <span className="tag">
-            {settings.ai ? 'AI 在线模式' : '离线情景模拟'}
+            {activeAI ? 'AI 在线模式' : '离线情景模拟'}
           </span>
         </div>
         <section className="task-brief">
@@ -397,13 +418,6 @@ export function Conversation({
                     <Mic size={17} />
                     {recording ? '松开结束' : '按住录音'}
                   </button>
-                  <button
-                    type="button"
-                    className="secondary"
-                    onClick={recognize}
-                  >
-                    语音识别
-                  </button>
                 </div>
                 <button className="primary" disabled={busy || !input.trim()}>
                   <Send size={16} />
@@ -416,12 +430,15 @@ export function Conversation({
                   <a href={recordUrl} download="japanese-practice.webm">
                     保存录音
                   </a>
-                  <small>录音仅在本机。识别后请确认文字再发送。</small>
+                  <small>可选录音仅供自己回听，不识别、不上传。</small>
                 </div>
               )}
             </form>
             {!native && (
-              <details className="help">
+              <details
+                className="help"
+                open={difficulty(settings.level).help || undefined}
+              >
                 <summary>需要帮助？查看当前沟通目标</summary>
                 <p>
                   {step.goal}。本地模式按关键信息推进，无法覆盖所有同义表达。
@@ -491,7 +508,7 @@ export function Conversation({
                 </div>
               ))}
             </div>
-            {settings.ai && (
+            {activeAI && (
               <button className="secondary" onClick={reviewAI} disabled={busy}>
                 {busy ? '评估中…' : 'AI 语境复盘'}
               </button>
@@ -529,6 +546,16 @@ export function Conversation({
               </article>
             ))}
             <h3>今日覚えるべき表現</h3>
+            {aiReview?.remember?.length > 0 && (
+              <>
+                <p className="muted">AI 推荐表达已加入个人词库与 SRS。</p>
+                {reviewExpressions(aiReview.remember, scene.category).map(
+                  (e) => (
+                    <Sentence key={e.id} entry={e} compact />
+                  ),
+                )}
+              </>
+            )}
             {remembered.map((id) => (
               <Sentence
                 key={id}
@@ -559,15 +586,26 @@ export function Conversation({
           <p className="muted">现实流程、自然回应。需要时主动向对方确认。</p>
           <Choice
             label="模拟方式"
-            value={settings.ai ? 'ai' : 'offline'}
-            onChange={(v) => setSettings({ ...settings, ai: v === 'ai' })}
-            items={[
-              ['offline', '离线情景模拟'],
-              ['ai', 'AI 角色扮演（需配置）'],
-            ]}
+            value={activeAI ? 'ai' : 'offline'}
+            onChange={(v) => {
+              reset(scene.id);
+              setSettings({ ...settings, ai: v === 'ai' });
+            }}
+            items={
+              capabilities.conversation
+                ? [
+                    ['offline', '离线情景模拟'],
+                    ['ai', 'DeepSeek 角色扮演'],
+                  ]
+                : [['offline', '离线情景模拟']]
+            }
           />
           <p className="muted">
-            AI 模式需服务端连接模型。未连接时会明确报错，保留你的回答。
+            {!capabilities.loaded
+              ? '正在检查 AI 连接配置…'
+              : capabilities.conversation
+                ? 'AI 已配置。选择在线模式后，对话内容会发送给配置的模型服务。'
+                : 'DeepSeek 尚未配置。填写私有配置后刷新页面即可启用。'}
           </p>
           <button
             className="secondary"

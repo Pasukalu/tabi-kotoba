@@ -7,6 +7,7 @@ export interface TTSProvider {
 }
 const cancelled = () => new DOMException('播放已取消', 'AbortError');
 export class BrowserTTS implements TTSProvider {
+  preferredVoice = '';
   generation = 0;
   private pending: ((reason: Error) => void) | null = null;
   async play(text: string, rate: number, onEnd?: () => void) {
@@ -22,9 +23,11 @@ export class BrowserTTS implements TTSProvider {
     if (generation !== this.generation) throw cancelled();
     const ja = voices.filter((v) => /^ja[-_]JP$/i.test(v.lang));
     const voice =
+      ja.find((v) => v.name === this.preferredVoice) ||
       ja.find((v) =>
         /Natural|Neural|Enhanced|Premium|Google|Kyoko|Nanami/i.test(v.name),
-      ) || ja[0];
+      ) ||
+      ja[0];
     if (!voice)
       throw Error(
         '设备未安装日语语音。请添加系统日语语音，或使用已配置的云端语音。',
@@ -84,6 +87,7 @@ export class BrowserTTS implements TTSProvider {
   }
 }
 export class CloudTTS implements TTSProvider {
+  private cache = new Map<string, Blob>();
   audio: HTMLAudioElement | null = null;
   url = '';
   controller: AbortController | null = null;
@@ -96,15 +100,25 @@ export class CloudTTS implements TTSProvider {
     const timeout = setTimeout(() => this.controller?.abort(), 35000);
     let blob: Blob;
     try {
-      const r = await fetch('/api/speech', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        signal: this.controller.signal,
-        body: JSON.stringify({ text, rate, language: 'ja-JP' }),
-      });
-      if (!r.ok)
-        throw Error('云端语音尚未配置或服务不可用，请切换设备日语语音。');
-      blob = await r.blob();
+      const key = JSON.stringify([text, rate]);
+      const saved = this.cache.get(key);
+      if (saved) blob = saved;
+      else {
+        const r = await fetch('/api/speech', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          signal: this.controller.signal,
+          body: JSON.stringify({ text, rate, language: 'ja-JP' }),
+        });
+        if (!r.ok)
+          throw Error('云端语音尚未配置或服务不可用，请切换设备日语语音。');
+        blob = await r.blob();
+        if (blob.size <= 5_000_000 && generation === this.generation) {
+          this.cache.set(key, blob);
+          while (this.cache.size > 20)
+            this.cache.delete(this.cache.keys().next().value!);
+        }
+      }
     } catch (e) {
       if (generation !== this.generation) throw cancelled();
       throw e instanceof Error && e.name === 'AbortError'
@@ -118,20 +132,26 @@ export class CloudTTS implements TTSProvider {
     const audio = new Audio(this.url);
     this.audio = audio;
     return new Promise<void>((resolve, reject) => {
-      this.pending = reject;
+      let settled = false;
+      const fail = (e: Error) => {
+        if (settled) return;
+        settled = true;
+        this.pending = null;
+        reject(e);
+      };
+      this.pending = fail;
       audio.onended = () => {
-        if (generation !== this.generation) return;
+        if (generation !== this.generation || settled) return;
+        settled = true;
         this.pending = null;
         resolve();
         onEnd?.();
       };
       audio.onerror = () => {
-        this.pending = null;
-        reject(Error('音频无法播放，请重试。'));
+        fail(Error('音频无法播放，请重试。'));
       };
       audio.play().catch((e) => {
-        this.pending = null;
-        reject(e);
+        fail(e);
       });
     });
   }
@@ -154,8 +174,9 @@ export class CloudTTS implements TTSProvider {
   }
 }
 let browser: BrowserTTS, cloud: CloudTTS;
-export function tts(provider = 'browser'): TTSProvider {
-  return provider === 'cloud'
-    ? (cloud ||= new CloudTTS())
-    : (browser ||= new BrowserTTS());
+export function tts(provider = 'browser', voiceName?: string): TTSProvider {
+  if (provider === 'cloud') return (cloud ||= new CloudTTS());
+  browser ||= new BrowserTTS();
+  if (voiceName !== undefined) browser.preferredVoice = voiceName;
+  return browser;
 }

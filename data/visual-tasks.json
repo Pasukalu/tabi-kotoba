@@ -1,0 +1,599 @@
+[
+  {
+    "id": "hotel-elevator",
+    "category": "hotel",
+    "title": "酒店电梯与楼层牌",
+    "task": "你住508房。先到房间，再去二楼吃早餐，最后回一楼前台。",
+    "taskJapanese": "[五階|ごかい]のお[部屋|へや]、[二階|にかい]の[朝食会場|ちょうしょくかいじょう]、[一階|いっかい]のフロントの[順|じゅん]に[向|む]かってください。",
+    "steps": [
+      {
+        "heading": "フロアガイド",
+        "goal": "先找到508房所在楼层。",
+        "notice": "[客室|きゃくしつ]は3F〜8Fです。",
+        "options": [
+          {
+            "japanese": "2F レストラン",
+            "chinese": "二楼餐厅"
+          },
+          {
+            "japanese": "5F [客室|きゃくしつ]",
+            "chinese": "五楼客房"
+          },
+          {
+            "japanese": "B1F [駐車場|ちゅうしゃじょう]",
+            "chinese": "地下一楼停车场"
+          }
+        ],
+        "correct": 1,
+        "entryId": "visual-hotel-elevator-0"
+      },
+      {
+        "heading": "[朝食|ちょうしょく]のご[案内|あんない]",
+        "goal": "前往早餐场地。",
+        "notice": "[朝食会場|ちょうしょくかいじょう]：2F ／ [最終入場|さいしゅうにゅうじょう]：9:30",
+        "options": [
+          {
+            "japanese": "1F フロント",
+            "chinese": "一楼前台"
+          },
+          {
+            "japanese": "2F レストラン",
+            "chinese": "二楼餐厅"
+          },
+          {
+            "japanese": "3F [大浴場|だいよくじょう]",
+            "chinese": "三楼大浴场"
+          }
+        ],
+        "correct": 1,
+        "entryId": "visual-hotel-elevator-1"
+      },
+      {
+        "heading": "お[帰|かえ]り",
+        "goal": "到前台询问寄存行李。",
+        "notice": "フロント・ロビー：1F",
+        "options": [
+          {
+            "japanese": "1F フロント",
+            "chinese": "一楼前台"
+          },
+          {
+            "japanese": "B1F [駐車場|ちゅうしゃじょう]",
+            "chinese": "地下一楼停车场"
+          },
+          {
+            "japanese": "5F [客室|きゃくしつ]",
+            "chinese": "五楼客房"
+          }
+        ],
+        "correct": 0,
+        "entryId": "visual-hotel-elevator-2"
+      }
+    ]
+  },
+  {
+    "id": "amenity-shelf",
+    "category": "amenities",
+    "title": "用品台与领取说明",
+    "task": "你需要牙刷和剃须刀，但只领取一套。根据模拟酒店说明，剃须刀在前台领取。",
+    "taskJapanese": "[歯|は]ブラシとカミソリを[一|ひと]つずつ[受|う]け[取|と]ってください。",
+    "steps": [
+      {
+        "heading": "アメニティバー",
+        "goal": "找到牙刷。",
+        "notice": "[必要|ひつよう]な[分|ぶん]だけお[持|も]ちください。",
+        "options": [
+          {
+            "japanese": "[歯|は]ブラシ",
+            "chinese": "牙刷"
+          },
+          {
+            "japanese": "ヘアブラシ",
+            "chinese": "发梳"
+          },
+          {
+            "japanese": "[綿棒|めんぼう]",
+            "chinese": "棉签"
+          }
+        ],
+        "correct": 0,
+        "entryId": "visual-amenity-shelf-0"
+      },
+      {
+        "heading": "カミソリのご[案内|あんない]",
+        "goal": "找到剃须刀领取位置。",
+        "notice": "カミソリはフロントでお[渡|わた]ししております。",
+        "options": [
+          {
+            "japanese": "[客室|きゃくしつ]へ[戻|もど]る",
+            "chinese": "回客房"
+          },
+          {
+            "japanese": "フロントへ[行|い]く",
+            "chinese": "去前台"
+          },
+          {
+            "japanese": "[売店|ばいてん]へ[行|い]く",
+            "chinese": "去商店"
+          }
+        ],
+        "correct": 1,
+        "entryId": "visual-amenity-shelf-1"
+      },
+      {
+        "heading": "[数量|すうりょう]を[選択|せんたく]",
+        "goal": "你只需要一把。",
+        "notice": "お[一人様|ひとりさま][一|ひと]つを[目安|めやす]にお[願|ねが]いします。",
+        "options": [
+          {
+            "japanese": "1[個|こ]",
+            "chinese": "一个"
+          },
+          {
+            "japanese": "2[個|こ]",
+            "chinese": "两个"
+          },
+          {
+            "japanese": "5[個|こ]",
+            "chinese": "五个"
+          }
+        ],
+        "correct": 0,
+        "entryId": "visual-amenity-shelf-2"
+      }
+    ]
+  },
+  {
+    "id": "ramen-kiosk",
+    "category": "restaurant",
+    "title": "拉面店食券机",
+    "task": "想点酱油拉面，但它卖完了。改点盐味拉面，使用现金，最后拿走食券而不是找零单。",
+    "taskJapanese": "[醤油|しょうゆ]ラーメンが[売|う]り[切|き]れなら、[塩|しお]ラーメンを[現金|げんきん]で[買|か]ってください。",
+    "steps": [
+      {
+        "heading": "[食券|しょっけん]をお[買|か]い[求|もと]めください",
+        "goal": "酱油拉面售罄，改选盐味。",
+        "notice": "[醤油|しょうゆ]ラーメン：[売切|うりきれ] ／ [塩|しお]ラーメン：[販売中|はんばいちゅう]",
+        "options": [
+          {
+            "japanese": "[醤油|しょうゆ]ラーメン",
+            "chinese": "酱油拉面（售罄）"
+          },
+          {
+            "japanese": "[塩|しお]ラーメン",
+            "chinese": "盐味拉面"
+          },
+          {
+            "japanese": "[替玉|かえだま]",
+            "chinese": "加面"
+          }
+        ],
+        "correct": 1,
+        "entryId": "visual-ramen-kiosk-0"
+      },
+      {
+        "heading": "お[支払|しはら]い[方法|ほうほう]",
+        "goal": "按任务要求使用现金。",
+        "notice": "[金額|きんがく]：850[円|えん]",
+        "options": [
+          {
+            "japanese": "[現金|げんきん]",
+            "chinese": "现金"
+          },
+          {
+            "japanese": "[交通系|こうつうけい]IC",
+            "chinese": "交通IC"
+          },
+          {
+            "japanese": "[取消|とりけし]",
+            "chinese": "取消"
+          }
+        ],
+        "correct": 0,
+        "entryId": "visual-ramen-kiosk-1"
+      },
+      {
+        "heading": "[購入完了|こうにゅうかんりょう]",
+        "goal": "取走交给店员的凭证。",
+        "notice": "[食券|しょっけん]をお[取|と]りください。",
+        "options": [
+          {
+            "japanese": "[食券|しょっけん]を[取|と]る",
+            "chinese": "取食券"
+          },
+          {
+            "japanese": "[領収書|りょうしゅうしょ]のみ[取|と]る",
+            "chinese": "只取领收书"
+          },
+          {
+            "japanese": "[再購入|さいこうにゅう]する",
+            "chinese": "再次购买"
+          }
+        ],
+        "correct": 0,
+        "entryId": "visual-ramen-kiosk-2"
+      }
+    ]
+  },
+  {
+    "id": "station-exit",
+    "category": "train",
+    "title": "站内出口导向",
+    "task": "地图写着A3出口，途中先跟随A1–A4方向，最后找到A3。",
+    "taskJapanese": "A3[出口|でぐち]から[地上|ちじょう]へ[出|で]てください。",
+    "steps": [
+      {
+        "heading": "[出口案内|でぐちあんない]",
+        "goal": "选择包含A3的出口分组。",
+        "notice": "← A1〜A4　　B1〜B3 →",
+        "options": [
+          {
+            "japanese": "← A1〜A4",
+            "chinese": "A1至A4方向"
+          },
+          {
+            "japanese": "B1〜B3 →",
+            "chinese": "B1至B3方向"
+          },
+          {
+            "japanese": "[乗換|のりかえ] →",
+            "chinese": "换乘方向"
+          }
+        ],
+        "correct": 0,
+        "entryId": "visual-station-exit-0"
+      },
+      {
+        "heading": "A[出口|でぐち]",
+        "goal": "继续前往A3。",
+        "notice": "A1・A2 ←　　A3・A4 →",
+        "options": [
+          {
+            "japanese": "A1・A2 ←",
+            "chinese": "A1、A2方向"
+          },
+          {
+            "japanese": "A3・A4 →",
+            "chinese": "A3、A4方向"
+          },
+          {
+            "japanese": "[改札内|かいさつない]へ",
+            "chinese": "返回闸内"
+          }
+        ],
+        "correct": 1,
+        "entryId": "visual-station-exit-1"
+      },
+      {
+        "heading": "[地上出口|ちじょうでぐち]",
+        "goal": "选择地图指定出口。",
+        "notice": "A3：[中央通|ちゅうおうどお]り ／ A4：[公園|こうえん]",
+        "options": [
+          {
+            "japanese": "A3 [中央通|ちゅうおうどお]り",
+            "chinese": "A3中央大街"
+          },
+          {
+            "japanese": "A4 [公園|こうえん]",
+            "chinese": "A4公园"
+          },
+          {
+            "japanese": "[乗換口|のりかえぐち]",
+            "chinese": "换乘口"
+          }
+        ],
+        "correct": 0,
+        "entryId": "visual-station-exit-2"
+      }
+    ]
+  },
+  {
+    "id": "ic-charge",
+    "category": "train",
+    "title": "IC充值机",
+    "task": "余额200日元，想充值1000日元。按屏幕顺序选择充值、金额，再确认余额1200日元。",
+    "taskJapanese": "[残高|ざんだか]200[円|えん]のICカードに1,000[円|えん]チャージしてください。",
+    "steps": [
+      {
+        "heading": "メニュー",
+        "goal": "选择给现有交通卡充值。",
+        "notice": "カードを[置|お]いてください。",
+        "options": [
+          {
+            "japanese": "チャージ",
+            "chinese": "充值"
+          },
+          {
+            "japanese": "[新規購入|しんきこうにゅう]",
+            "chinese": "购买新卡"
+          },
+          {
+            "japanese": "[履歴印字|りれきいんじ]",
+            "chinese": "打印记录"
+          }
+        ],
+        "correct": 0,
+        "entryId": "visual-ic-charge-0"
+      },
+      {
+        "heading": "[金額|きんがく]をお[選|えら]びください",
+        "goal": "充值1000日元。",
+        "notice": "[現在|げんざい]の[残高|ざんだか]：200[円|えん]",
+        "options": [
+          {
+            "japanese": "500[円|えん]",
+            "chinese": "五百日元"
+          },
+          {
+            "japanese": "1,000[円|えん]",
+            "chinese": "一千日元"
+          },
+          {
+            "japanese": "5,000[円|えん]",
+            "chinese": "五千日元"
+          }
+        ],
+        "correct": 1,
+        "entryId": "visual-ic-charge-1"
+      },
+      {
+        "heading": "[内容確認|ないようかくにん]",
+        "goal": "确认增加后的余额。",
+        "notice": "チャージ[金額|きんがく]：1,000[円|えん]",
+        "options": [
+          {
+            "japanese": "[残高|ざんだか]：1,200[円|えん]",
+            "chinese": "余额一千二百日元"
+          },
+          {
+            "japanese": "[残高|ざんだか]：800[円|えん]",
+            "chinese": "余额八百日元"
+          },
+          {
+            "japanese": "[残高|ざんだか]：200[円|えん]",
+            "chinese": "余额二百日元"
+          }
+        ],
+        "correct": 0,
+        "entryId": "visual-ic-charge-2"
+      }
+    ]
+  },
+  {
+    "id": "locker-panel",
+    "category": "life",
+    "title": "IC储物柜界面",
+    "task": "先寄存行李，选择空的小柜并锁好。回来后选择取出，使用当时的IC卡。",
+    "taskJapanese": "[小型|こがた]ロッカーに[預|あず]け、[同|おな]じICカードで[取|と]り[出|だ]してください。",
+    "steps": [
+      {
+        "heading": "ロッカー[操作|そうさ]",
+        "goal": "先寄存。",
+        "notice": "ご[利用|りよう]の[操作|そうさ]をお[選|えら]びください。",
+        "options": [
+          {
+            "japanese": "[預|あず]け[入|い]れ",
+            "chinese": "存入"
+          },
+          {
+            "japanese": "[取|と]り[出|だ]し",
+            "chinese": "取出"
+          },
+          {
+            "japanese": "[言語|げんご]",
+            "chinese": "语言"
+          }
+        ],
+        "correct": 0,
+        "entryId": "visual-locker-panel-0"
+      },
+      {
+        "heading": "[空|あ]き[状況|じょうきょう]",
+        "goal": "选择空的小柜。",
+        "notice": "○：[空|あ]き　×：[使用中|しようちゅう]",
+        "options": [
+          {
+            "japanese": "101 [小型|こがた] ○",
+            "chinese": "101小柜空闲"
+          },
+          {
+            "japanese": "102 [小型|こがた] ×",
+            "chinese": "102小柜使用中"
+          },
+          {
+            "japanese": "201 [大型|おおがた] ○",
+            "chinese": "201大柜空闲"
+          }
+        ],
+        "correct": 0,
+        "entryId": "visual-locker-panel-1"
+      },
+      {
+        "heading": "お[荷物|にもつ]のお[受|う]け[取|と]り",
+        "goal": "回来后取出行李。",
+        "notice": "[預|あず]けたときのICカードをご[用意|ようい]ください。",
+        "options": [
+          {
+            "japanese": "[新|あたら]しいICカードを[買|か]う",
+            "chinese": "买新IC卡"
+          },
+          {
+            "japanese": "[取|と]り[出|だ]し → [同|おな]じカードをタッチ",
+            "chinese": "取出→刷同一张卡"
+          },
+          {
+            "japanese": "[預|あず]け[入|い]れ → [現金|げんきん]",
+            "chinese": "存入→现金"
+          }
+        ],
+        "correct": 1,
+        "entryId": "visual-locker-panel-2"
+      }
+    ]
+  },
+  {
+    "id": "vending",
+    "category": "life",
+    "title": "自动售货机的冷热与售罄",
+    "task": "想买热茶。冷茶不能替代，售罄的商品也不能买；选可售的热茶后取商品和找零。",
+    "taskJapanese": "[販売中|はんばいちゅう]の[温|あたた]かいお[茶|ちゃ]を[買|か]ってください。",
+    "steps": [
+      {
+        "heading": "[商品選択|しょうひんせんたく]",
+        "goal": "选择热茶。",
+        "notice": "あたたかい：[温|おん] ／ つめたい：[冷|れい]",
+        "options": [
+          {
+            "japanese": "お[茶|ちゃ]・あたたかい ○",
+            "chinese": "热茶，可售"
+          },
+          {
+            "japanese": "お[茶|ちゃ]・つめたい ○",
+            "chinese": "冷茶，可售"
+          },
+          {
+            "japanese": "コーヒー・あたたかい ×",
+            "chinese": "热咖啡，售罄"
+          }
+        ],
+        "correct": 0,
+        "entryId": "visual-vending-0"
+      },
+      {
+        "heading": "お[支払|しはら]い",
+        "goal": "使用现金。",
+        "notice": "[現金|げんきん]を[入|い]れてから[商品|しょうひん]ボタンを[押|お]してください。",
+        "options": [
+          {
+            "japanese": "[現金投入|げんきんとうにゅう] → [商品|しょうひん]ボタン",
+            "chinese": "先投现金再按商品"
+          },
+          {
+            "japanese": "[返却|へんきゃく]レバーのみ",
+            "chinese": "只按退币杆"
+          },
+          {
+            "japanese": "[売切|うりきれ]ボタン",
+            "chinese": "按售罄按钮"
+          }
+        ],
+        "correct": 0,
+        "entryId": "visual-vending-1"
+      },
+      {
+        "heading": "お[取|と]り[忘|わす]れにご[注意|ちゅうい]ください",
+        "goal": "最后取齐物品。",
+        "notice": "[商品|しょうひん]とお[釣|つ]りをお[取|と]りください。",
+        "options": [
+          {
+            "japanese": "[商品|しょうひん]だけ",
+            "chinese": "只取商品"
+          },
+          {
+            "japanese": "お[釣|つ]りだけ",
+            "chinese": "只取找零"
+          },
+          {
+            "japanese": "[商品|しょうひん]とお[釣|つ]り",
+            "chinese": "商品和找零"
+          }
+        ],
+        "correct": 2,
+        "entryId": "visual-vending-2"
+      }
+    ]
+  },
+  {
+    "id": "restaurant-booking",
+    "category": "life",
+    "title": "餐厅预约页面",
+    "task": "预约9月12日晚上七点，两个人。姓名应填假名栏，最后先核对内容再确认。",
+    "taskJapanese": "9[月|がつ]12[日|にち]19[時|じ]、2[名|めい]で[予約|よやく]してください。",
+    "steps": [
+      {
+        "heading": "[日時選択|にちじせんたく]",
+        "goal": "选择指定日期和晚七点。",
+        "notice": "○：[予約可|よやくか] ／ ×：[満席|まんせき]",
+        "options": [
+          {
+            "japanese": "9/12 19:00 ○",
+            "chinese": "九月十二日十九点"
+          },
+          {
+            "japanese": "9/12 07:00 ○",
+            "chinese": "九月十二日早七点"
+          },
+          {
+            "japanese": "9/13 19:00 ○",
+            "chinese": "九月十三日十九点"
+          }
+        ],
+        "correct": 0,
+        "entryId": "visual-restaurant-booking-0"
+      },
+      {
+        "heading": "[人数|にんずう]",
+        "goal": "预约两位。",
+        "notice": "お[子様|こさま]を[含|ふく]む[合計人数|ごうけいにんずう]をお[選|えら]びください。",
+        "options": [
+          {
+            "japanese": "1[名|めい]",
+            "chinese": "一位"
+          },
+          {
+            "japanese": "2[名|めい]",
+            "chinese": "两位"
+          },
+          {
+            "japanese": "3[名|めい]",
+            "chinese": "三位"
+          }
+        ],
+        "correct": 1,
+        "entryId": "visual-restaurant-booking-1"
+      },
+      {
+        "heading": "お[名前|なまえ]（フリガナ）",
+        "goal": "按栏位要求填写名字。",
+        "notice": "フリガナはカタカナでご[入力|にゅうりょく]ください。",
+        "options": [
+          {
+            "japanese": "Pascal",
+            "chinese": "拉丁字母"
+          },
+          {
+            "japanese": "ぱすかる",
+            "chinese": "平假名"
+          },
+          {
+            "japanese": "パスカル",
+            "chinese": "片假名"
+          }
+        ],
+        "correct": 2,
+        "entryId": "visual-restaurant-booking-2"
+      },
+      {
+        "heading": "[予約内容|よやくないよう]の[確認|かくにん]",
+        "goal": "核对本次预约。",
+        "notice": "9/12 19:00 ／ 2[名|めい] ／ パスカル",
+        "options": [
+          {
+            "japanese": "[予約|よやく]を[確定|かくてい]する（[練習|れんしゅう]）",
+            "chinese": "确认预约（仅练习）"
+          },
+          {
+            "japanese": "[日時|にちじ]を[変更|へんこう]する",
+            "chinese": "更改日期"
+          },
+          {
+            "japanese": "[取消|とりけし]",
+            "chinese": "取消"
+          }
+        ],
+        "correct": 0,
+        "entryId": "visual-restaurant-booking-3"
+      }
+    ]
+  }
+]

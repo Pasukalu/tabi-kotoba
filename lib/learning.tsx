@@ -8,6 +8,7 @@ import {
   ReactNode,
 } from 'react';
 import { allEntries, plain } from './content';
+import { validateProgress, normalizeSettings } from './storage';
 import { tts } from './audio';
 export type Srs = {
   due: number;
@@ -17,6 +18,8 @@ export type Srs = {
   reason: string;
 };
 export type Progress = {
+  conversationDrafts: Record<string, import('./daily').ConversationDraft>;
+  extraEntries: import('./content').Entry[];
   days: string[];
   mastered: string[];
   favorites: string[];
@@ -35,6 +38,8 @@ export type Progress = {
   dailyRuns: Record<string, import('./daily').DailyRun>;
 };
 const empty: Progress = {
+  conversationDrafts: {},
+  extraEntries: [],
   days: [],
   mastered: [],
   favorites: [],
@@ -47,6 +52,7 @@ const empty: Progress = {
   dailyRuns: {},
 };
 export type Settings = {
+  voiceName: string;
   mode: string;
   speed: number;
   level: string;
@@ -57,6 +63,7 @@ export type Settings = {
   ai: boolean;
 };
 const initial: Settings = {
+  voiceName: '',
   mode: 'ruby',
   speed: 1,
   level: 'N2',
@@ -77,8 +84,8 @@ export function Provider({ children }: { children: ReactNode }) {
     try {
       const p = JSON.parse(localStorage.getItem('tabi-progress-v1') || 'null'),
         s = JSON.parse(localStorage.getItem('tabi-settings-v1') || 'null');
-      if (p && Array.isArray(p.days) && p.srs) setProgress({ ...empty, ...p });
-      if (s) setSettings({ ...initial, ...s });
+      if (p) setProgress(validateProgress(p));
+      if (s) setSettings(normalizeSettings(s));
     } catch {
       setNotice('保存的数据无法读取，已使用默认设置。');
     }
@@ -260,6 +267,7 @@ export function Provider({ children }: { children: ReactNode }) {
         notice,
         setNotice,
         loaded,
+        entries: [...allEntries, ...progress.extraEntries],
       }}
     >
       {children}
@@ -286,7 +294,7 @@ export function useAudio() {
     const next = async (): Promise<boolean> => {
       if (n !== serial.current) return false;
       try {
-        await tts(settings.audioProvider).play(
+        await tts(settings.audioProvider, settings.voiceName).play(
           plain(text),
           rateOverride ??
             (settings.level === 'Native Challenge' ? 1.15 : settings.speed),
@@ -308,6 +316,10 @@ export function useAudio() {
     loop = false,
   ) {
     stop();
+    if (!items.length || a < 0 || b >= items.length || a > b) {
+      setNotice('请先选择有效的音频句子区间。');
+      return;
+    }
     const n = serial.current;
     let i = a;
     function next() {
@@ -316,8 +328,12 @@ export function useAudio() {
         if (!loop) return;
         i = a;
       }
-      tts(settings.audioProvider)
-        .play(plain(items[i++]), settings.speed, next)
+      tts(settings.audioProvider, settings.voiceName)
+        .play(
+          plain(items[i++]),
+          settings.level === 'Native Challenge' ? 1.15 : settings.speed,
+          next,
+        )
         .catch((e: Error) => {
           if (e.name !== 'AbortError') setNotice(e.message);
         });
@@ -329,7 +345,7 @@ export function useAudio() {
     play,
     stop,
     sequence,
-    pause: () => tts(settings.audioProvider).pause(),
-    resume: () => tts(settings.audioProvider).resume(),
+    pause: () => tts(settings.audioProvider, settings.voiceName).pause(),
+    resume: () => tts(settings.audioProvider, settings.voiceName).resume(),
   };
 }

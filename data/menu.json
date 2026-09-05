@@ -41,7 +41,8 @@
         "text": "麺",
         "meaning": "面条"
       }
-    ]
+    ],
+    "rawRisk": "通常熟食"
   },
   {
     "id": "menu-1",
@@ -73,7 +74,8 @@
         "text": "りサーモン",
         "meaning": "炙り的词尾＋三文鱼"
       }
-    ]
+    ],
+    "rawRisk": "需向店家确认"
   },
   {
     "id": "menu-2",
@@ -113,7 +115,8 @@
         "text": "き",
         "meaning": "词尾"
       }
-    ]
+    ],
+    "rawRisk": "通常熟食"
   },
   {
     "id": "menu-3",
@@ -153,7 +156,8 @@
         "text": "き",
         "meaning": "词尾"
       }
-    ]
+    ],
+    "rawRisk": "通常熟食"
   },
   {
     "id": "menu-4",
@@ -193,7 +197,8 @@
         "text": "玉子",
         "meaning": "鸡蛋"
       }
-    ]
+    ],
+    "rawRisk": "通常熟食"
   },
   {
     "id": "menu-5",
@@ -229,7 +234,8 @@
         "text": "丼",
         "meaning": "盖饭"
       }
-    ]
+    ],
+    "rawRisk": "需向店家确认"
   },
   {
     "id": "menu-6",
@@ -257,7 +263,8 @@
         "text": "豚汁定食",
         "meaning": "猪肉味噌汤＋米饭小菜套餐"
       }
-    ]
+    ],
+    "rawRisk": "通常熟食"
   },
   {
     "id": "menu-7",
@@ -289,7 +296,8 @@
         "text": "クリームうどん",
         "meaning": "奶油酱乌冬"
       }
-    ]
+    ],
+    "rawRisk": "通常熟食"
   },
   {
     "id": "menu-8",
@@ -325,7 +333,8 @@
         "text": "カルビ",
         "meaning": "常见为牛肋肉类部位"
       }
-    ]
+    ],
+    "rawRisk": "通常熟食"
   },
   {
     "id": "menu-v2-0",
@@ -361,7 +370,8 @@
         "text": "味噌煮",
         "meaning": "以味噌调味炖煮"
       }
-    ]
+    ],
+    "rawRisk": "通常熟食"
   },
   {
     "id": "menu-v2-1",
@@ -393,7 +403,8 @@
         "text": "おろしそば",
         "meaning": "搭配萝卜泥的荞麦面"
       }
-    ]
+    ],
+    "rawRisk": "通常熟食"
   },
   {
     "id": "menu-v2-2",
@@ -433,7 +444,8 @@
         "text": "げ",
         "meaning": "唐揚げ的词尾"
       }
-    ]
+    ],
+    "rawRisk": "通常熟食"
   },
   {
     "id": "menu-v2-3",
@@ -473,6 +485,893 @@
         "text": "き",
         "meaning": "焼き的词尾"
       }
-    ]
+    ],
+    "rawRisk": "需向店家确认"
+  },
+  {
+    "id": "menu-expanded-0",
+    "japanese": "[鶏|とり]の[唐揚|からあ]げ",
+    "chinese": "日式炸鸡",
+    "meat": "鸡肉",
+    "method": "油炸",
+    "flavor": "咸鲜",
+    "rawRisk": "通常熟食",
+    "notes": "鸡块裹粉油炸，常见姜蒜酱油调味，外酥内嫩。",
+    "components": [
+      {
+        "text": "鶏",
+        "meaning": "鸡肉"
+      },
+      {
+        "text": "唐揚げ",
+        "meaning": "裹粉油炸"
+      }
+    ],
+    "kana": "とりのからあげ",
+    "romaji": "tori no karaa ge",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "菜单",
+    "frequency": 4,
+    "nativeFrequency": "常见菜单构词；非频率统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "名称不能完整说明配料、交叉接触或熟度。有饮食限制时向店家确认。",
+    "explanation": "[食材|しょくざい]と[調理方法|ちょうりほうほう]を[組|く]み[合|あ]わせて[料理|りょうり]を[説明|せつめい]しています。",
+    "price": 580
+  },
+  {
+    "id": "menu-expanded-1",
+    "japanese": "[若鶏|わかどり]の[竜田揚|たつたあ]げ",
+    "chinese": "龙田炸鸡",
+    "meat": "鸡肉",
+    "method": "油炸",
+    "flavor": "酱油姜香",
+    "rawRisk": "通常熟食",
+    "notes": "腌制鸡块裹淀粉炸，表层常带白色粉壳。并不是一种鱼。",
+    "components": [
+      {
+        "text": "若鶏",
+        "meaning": "嫩鸡"
+      },
+      {
+        "text": "竜田揚げ",
+        "meaning": "腌制后裹淀粉炸"
+      }
+    ],
+    "kana": "わかどりのたつたあげ",
+    "romaji": "wakadori no tatsutaa ge",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "菜单",
+    "frequency": 4,
+    "nativeFrequency": "常见菜单构词；非频率统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "名称不能完整说明配料、交叉接触或熟度。有饮食限制时向店家确认。",
+    "explanation": "[食材|しょくざい]と[調理方法|ちょうりほうほう]を[組|く]み[合|あ]わせて[料理|りょうり]を[説明|せつめい]しています。",
+    "price": 620
+  },
+  {
+    "id": "menu-expanded-2",
+    "japanese": "[豚|ぶた]の[生姜焼|しょうがや]き[定食|ていしょく]",
+    "chinese": "姜烧猪肉定食",
+    "meat": "猪肉",
+    "method": "煎炒",
+    "flavor": "姜香咸甜",
+    "rawRisk": "通常熟食",
+    "notes": "姜汁猪肉配米饭、味噌汤和配菜；生姜的生字不表示生食。",
+    "components": [
+      {
+        "text": "豚",
+        "meaning": "猪肉"
+      },
+      {
+        "text": "生姜焼き",
+        "meaning": "姜汁煎烧"
+      },
+      {
+        "text": "定食",
+        "meaning": "套餐"
+      }
+    ],
+    "kana": "ぶたのしょうがやきていしょく",
+    "romaji": "buta no shōgaya ki teishoku",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "菜单",
+    "frequency": 4,
+    "nativeFrequency": "常见菜单构词；非频率统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "名称不能完整说明配料、交叉接触或熟度。有饮食限制时向店家确认。",
+    "explanation": "[食材|しょくざい]と[調理方法|ちょうりほうほう]を[組|く]み[合|あ]わせて[料理|りょうり]を[説明|せつめい]しています。",
+    "price": 660
+  },
+  {
+    "id": "menu-expanded-3",
+    "japanese": "[厚切|あつぎ]りロースカツ",
+    "chinese": "厚切里脊炸猪排",
+    "meat": "猪肉",
+    "method": "油炸",
+    "flavor": "炸衣咸香",
+    "rawRisk": "通常熟食",
+    "notes": "较厚的猪里脊裹面包糠炸制，常配卷心菜丝。",
+    "components": [
+      {
+        "text": "厚切り",
+        "meaning": "厚切"
+      },
+      {
+        "text": "ロース",
+        "meaning": "里脊部位"
+      },
+      {
+        "text": "カツ",
+        "meaning": "炸肉排"
+      }
+    ],
+    "kana": "あつぎりロースカツ",
+    "romaji": "atsugi rirōsukatsu",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "菜单",
+    "frequency": 4,
+    "nativeFrequency": "常见菜单构词；非频率统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "名称不能完整说明配料、交叉接触或熟度。有饮食限制时向店家确认。",
+    "explanation": "[食材|しょくざい]と[調理方法|ちょうりほうほう]を[組|く]み[合|あ]わせて[料理|りょうり]を[説明|せつめい]しています。",
+    "price": 700
+  },
+  {
+    "id": "menu-expanded-4",
+    "japanese": "[牛|ぎゅう]すじ[煮込|にこ]み",
+    "chinese": "炖牛筋",
+    "meat": "牛肉",
+    "method": "炖煮",
+    "flavor": "浓郁咸鲜",
+    "rawRisk": "通常熟食",
+    "notes": "牛筋与蔬菜等久炖，汤底可能是味噌或酱油，不同店铺不同。",
+    "components": [
+      {
+        "text": "牛すじ",
+        "meaning": "牛筋"
+      },
+      {
+        "text": "煮込み",
+        "meaning": "炖煮"
+      }
+    ],
+    "kana": "ぎゅうすじにこみ",
+    "romaji": "gyū suji niko mi",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "菜单",
+    "frequency": 4,
+    "nativeFrequency": "常见菜单构词；非频率统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "名称不能完整说明配料、交叉接触或熟度。有饮食限制时向店家确认。",
+    "explanation": "[食材|しょくざい]と[調理方法|ちょうりほうほう]を[組|く]み[合|あ]わせて[料理|りょうり]を[説明|せつめい]しています。",
+    "price": 740
+  },
+  {
+    "id": "menu-expanded-5",
+    "japanese": "[砂肝|すなぎも]の[塩焼|しおや]き",
+    "chinese": "盐烤鸡胗",
+    "meat": "鸡内脏",
+    "method": "烤制",
+    "flavor": "盐味",
+    "rawRisk": "通常熟食",
+    "notes": "口感有嚼劲的鸡胗；不是鸡肝。",
+    "components": [
+      {
+        "text": "砂肝",
+        "meaning": "鸡胗"
+      },
+      {
+        "text": "塩焼き",
+        "meaning": "盐烤"
+      }
+    ],
+    "kana": "すなぎものしおやき",
+    "romaji": "sunagimo no shioya ki",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "菜单",
+    "frequency": 4,
+    "nativeFrequency": "常见菜单构词；非频率统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "名称不能完整说明配料、交叉接触或熟度。有饮食限制时向店家确认。",
+    "explanation": "[食材|しょくざい]と[調理方法|ちょうりほうほう]を[組|く]み[合|あ]わせて[料理|りょうり]を[説明|せつめい]しています。",
+    "price": 780
+  },
+  {
+    "id": "menu-expanded-6",
+    "japanese": "[鶏皮|とりかわ]ポン[酢|ず]",
+    "chinese": "鸡皮柑橘醋拌菜",
+    "meat": "鸡皮",
+    "method": "凉拌",
+    "flavor": "酸鲜",
+    "rawRisk": "通常熟食",
+    "notes": "鸡皮煮熟后切条，用柑橘醋酱拌食，凉菜不代表生肉。",
+    "components": [
+      {
+        "text": "鶏皮",
+        "meaning": "鸡皮"
+      },
+      {
+        "text": "ポン酢",
+        "meaning": "柑橘醋酱"
+      }
+    ],
+    "kana": "とりかわポンず",
+    "romaji": "torikawa pon zu",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "菜单",
+    "frequency": 4,
+    "nativeFrequency": "常见菜单构词；非频率统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "名称不能完整说明配料、交叉接触或熟度。有饮食限制时向店家确认。",
+    "explanation": "[食材|しょくざい]と[調理方法|ちょうりほうほう]を[組|く]み[合|あ]わせて[料理|りょうり]を[説明|せつめい]しています。",
+    "price": 820
+  },
+  {
+    "id": "menu-expanded-7",
+    "japanese": "[合鴨|あいがも]ロース",
+    "chinese": "合鸭胸肉",
+    "meat": "鸭肉",
+    "method": "依店家确认",
+    "flavor": "依店家确认",
+    "rawRisk": "需向店家确认",
+    "notes": "可能是烟熏、蒸煮或低温烹饪的鸭胸切片，仅凭名字不能确定做法和熟度。",
+    "components": [
+      {
+        "text": "合鴨",
+        "meaning": "合鸭"
+      },
+      {
+        "text": "ロース",
+        "meaning": "胸肉等菜单部位称呼"
+      }
+    ],
+    "kana": "あいがもロース",
+    "romaji": "aigamo rōsu",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "菜单",
+    "frequency": 4,
+    "nativeFrequency": "常见菜单构词；非频率统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "名称不能完整说明配料、交叉接触或熟度。有饮食限制时向店家确认。",
+    "explanation": "[食材|しょくざい]と[調理方法|ちょうりほうほう]を[組|く]み[合|あ]わせて[料理|りょうり]を[説明|せつめい]しています。",
+    "price": 860
+  },
+  {
+    "id": "menu-expanded-8",
+    "japanese": "[鯖|さば]の[味噌煮|みそに]",
+    "chinese": "味噌煮鲭鱼",
+    "meat": "鱼类",
+    "method": "炖煮",
+    "flavor": "味噌咸甜",
+    "rawRisk": "通常熟食",
+    "notes": "鲭鱼切段以味噌、姜等炖煮，常作为定食主菜。",
+    "components": [
+      {
+        "text": "鯖",
+        "meaning": "鲭鱼"
+      },
+      {
+        "text": "味噌煮",
+        "meaning": "味噌炖煮"
+      }
+    ],
+    "kana": "さばのみそに",
+    "romaji": "saba no misoni",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "菜单",
+    "frequency": 4,
+    "nativeFrequency": "常见菜单构词；非频率统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "名称不能完整说明配料、交叉接触或熟度。有饮食限制时向店家确认。",
+    "explanation": "[食材|しょくざい]と[調理方法|ちょうりほうほう]を[組|く]み[合|あ]わせて[料理|りょうり]を[説明|せつめい]しています。",
+    "price": 900
+  },
+  {
+    "id": "menu-expanded-9",
+    "japanese": "[縞|しま]ホッケの[開|ひら]き",
+    "chinese": "开片烤花鲫鱼",
+    "meat": "鱼类",
+    "method": "烤制",
+    "flavor": "咸鲜",
+    "rawRisk": "通常熟食",
+    "notes": "ホッケ剖开后盐渍晾干再烤，注意鱼刺。菜单的開き指开片形态。",
+    "components": [
+      {
+        "text": "縞ホッケ",
+        "meaning": "一种ホッケ鱼"
+      },
+      {
+        "text": "開き",
+        "meaning": "剖开晾制的形态"
+      }
+    ],
+    "kana": "しまホッケのひらき",
+    "romaji": "shima hokkeno hira ki",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "菜单",
+    "frequency": 4,
+    "nativeFrequency": "常见菜单构词；非频率统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "名称不能完整说明配料、交叉接触或熟度。有饮食限制时向店家确认。",
+    "explanation": "[食材|しょくざい]と[調理方法|ちょうりほうほう]を[組|く]み[合|あ]わせて[料理|りょうり]を[説明|せつめい]しています。",
+    "price": 940
+  },
+  {
+    "id": "menu-expanded-10",
+    "japanese": "[真鯛|まだい]の[刺身|さしみ]",
+    "chinese": "真鲷刺身",
+    "meat": "鱼类",
+    "method": "生切",
+    "flavor": "清淡鲜味",
+    "rawRisk": "含生食",
+    "notes": "鲜鱼切片，常配酱油、芥末等，刺身意味着生食鱼肉。",
+    "components": [
+      {
+        "text": "真鯛",
+        "meaning": "真鲷"
+      },
+      {
+        "text": "刺身",
+        "meaning": "生切刺身"
+      }
+    ],
+    "kana": "まだいのさしみ",
+    "romaji": "madai no sashimi",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "菜单",
+    "frequency": 4,
+    "nativeFrequency": "常见菜单构词；非频率统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "名称不能完整说明配料、交叉接触或熟度。有饮食限制时向店家确认。",
+    "explanation": "[食材|しょくざい]と[調理方法|ちょうりほうほう]を[組|く]み[合|あ]わせて[料理|りょうり]を[説明|せつめい]しています。",
+    "price": 980
+  },
+  {
+    "id": "menu-expanded-11",
+    "japanese": "[締|し]め[鯖|さば]",
+    "chinese": "醋渍鲭鱼",
+    "meat": "鱼类",
+    "method": "醋渍",
+    "flavor": "酸鲜",
+    "rawRisk": "含未充分加热食材",
+    "notes": "盐渍后用醋处理，不应当成全熟鱼；醋腌不等于加热。",
+    "components": [
+      {
+        "text": "締め",
+        "meaning": "盐醋处理"
+      },
+      {
+        "text": "鯖",
+        "meaning": "鲭鱼"
+      }
+    ],
+    "kana": "しめさば",
+    "romaji": "shi me saba",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "菜单",
+    "frequency": 4,
+    "nativeFrequency": "常见菜单构词；非频率统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "名称不能完整说明配料、交叉接触或熟度。有饮食限制时向店家确认。",
+    "explanation": "[食材|しょくざい]と[調理方法|ちょうりほうほう]を[組|く]み[合|あ]わせて[料理|りょうり]を[説明|せつめい]しています。",
+    "price": 1020
+  },
+  {
+    "id": "menu-expanded-12",
+    "japanese": "[牡蠣|かき]フライ",
+    "chinese": "炸牡蛎",
+    "meat": "贝类",
+    "method": "油炸",
+    "flavor": "炸衣咸香",
+    "rawRisk": "通常熟食",
+    "notes": "牡蛎裹面包糠油炸，常搭塔塔酱。不能仅凭菜名排除所有过敏原。",
+    "components": [
+      {
+        "text": "牡蠣",
+        "meaning": "牡蛎"
+      },
+      {
+        "text": "フライ",
+        "meaning": "裹衣油炸"
+      }
+    ],
+    "kana": "かきフライ",
+    "romaji": "kaki furai",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "菜单",
+    "frequency": 4,
+    "nativeFrequency": "常见菜单构词；非频率统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "名称不能完整说明配料、交叉接触或熟度。有饮食限制时向店家确认。",
+    "explanation": "[食材|しょくざい]と[調理方法|ちょうりほうほう]を[組|く]み[合|あ]わせて[料理|りょうり]を[説明|せつめい]しています。",
+    "price": 1060
+  },
+  {
+    "id": "menu-expanded-13",
+    "japanese": "[帆立|ほたて]バター[焼|や]き",
+    "chinese": "黄油烤扇贝",
+    "meat": "贝类",
+    "method": "煎烤",
+    "flavor": "黄油鲜香",
+    "rawRisk": "需向店家确认",
+    "notes": "扇贝以黄油煎烤，可能带贝壳上桌；熟度因做法而异。",
+    "components": [
+      {
+        "text": "帆立",
+        "meaning": "扇贝"
+      },
+      {
+        "text": "バター",
+        "meaning": "黄油"
+      },
+      {
+        "text": "焼き",
+        "meaning": "煎烤"
+      }
+    ],
+    "kana": "ほたてバターやき",
+    "romaji": "hotate batā ya ki",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "菜单",
+    "frequency": 4,
+    "nativeFrequency": "常见菜单构词；非频率统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "名称不能完整说明配料、交叉接触或熟度。有饮食限制时向店家确认。",
+    "explanation": "[食材|しょくざい]と[調理方法|ちょうりほうほう]を[組|く]み[合|あ]わせて[料理|りょうり]を[説明|せつめい]しています。",
+    "price": 1100
+  },
+  {
+    "id": "menu-expanded-14",
+    "japanese": "[海老|えび]と[季節野菜|きせつやさい]の[天|てん]ぷら",
+    "chinese": "虾与时蔬天妇罗",
+    "meat": "虾与蔬菜",
+    "method": "油炸",
+    "flavor": "清淡咸鲜",
+    "rawRisk": "通常熟食",
+    "notes": "轻薄面糊包裹虾和当季蔬菜，常配蘸汁或盐。",
+    "components": [
+      {
+        "text": "海老",
+        "meaning": "虾"
+      },
+      {
+        "text": "季節野菜",
+        "meaning": "时令蔬菜"
+      },
+      {
+        "text": "天ぷら",
+        "meaning": "天妇罗"
+      }
+    ],
+    "kana": "えびときせつやさいのてんぷら",
+    "romaji": "ebi to kisetsuyasai no ten pura",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "菜单",
+    "frequency": 4,
+    "nativeFrequency": "常见菜单构词；非频率统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "名称不能完整说明配料、交叉接触或熟度。有饮食限制时向店家确认。",
+    "explanation": "[食材|しょくざい]と[調理方法|ちょうりほうほう]を[組|く]み[合|あ]わせて[料理|りょうり]を[説明|せつめい]しています。",
+    "price": 1140
+  },
+  {
+    "id": "menu-expanded-15",
+    "japanese": "[揚|あ]げ[出|だ]し[豆腐|どうふ]",
+    "chinese": "日式高汤炸豆腐",
+    "meat": "豆腐",
+    "method": "炸后浇汁",
+    "flavor": "高汤鲜味",
+    "rawRisk": "通常熟食",
+    "notes": "豆腐薄裹粉炸制，浸在热出汁中；汤底可能含鱼类，不能自动视为纯素。",
+    "components": [
+      {
+        "text": "揚げ出し",
+        "meaning": "油炸后配汤汁"
+      },
+      {
+        "text": "豆腐",
+        "meaning": "豆腐"
+      }
+    ],
+    "kana": "あげだしどうふ",
+    "romaji": "a ge da shi dōfu",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "菜单",
+    "frequency": 4,
+    "nativeFrequency": "常见菜单构词；非频率统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "名称不能完整说明配料、交叉接触或熟度。有饮食限制时向店家确认。",
+    "explanation": "[食材|しょくざい]と[調理方法|ちょうりほうほう]を[組|く]み[合|あ]わせて[料理|りょうり]を[説明|せつめい]しています。",
+    "price": 1180
+  },
+  {
+    "id": "menu-expanded-16",
+    "japanese": "[茄子|なす]の[揚|あ]げ[浸|びた]し",
+    "chinese": "炸茄子浸高汤",
+    "meat": "蔬菜",
+    "method": "炸后浸汁",
+    "flavor": "高汤咸鲜",
+    "rawRisk": "通常熟食",
+    "notes": "炸软的茄子浸在调味高汤中，可冷可热。",
+    "components": [
+      {
+        "text": "茄子",
+        "meaning": "茄子"
+      },
+      {
+        "text": "揚げ浸し",
+        "meaning": "油炸后浸入汤汁"
+      }
+    ],
+    "kana": "なすのあげびたし",
+    "romaji": "nasu no a ge bita shi",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "菜单",
+    "frequency": 4,
+    "nativeFrequency": "常见菜单构词；非频率统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "名称不能完整说明配料、交叉接触或熟度。有饮食限制时向店家确认。",
+    "explanation": "[食材|しょくざい]と[調理方法|ちょうりほうほう]を[組|く]み[合|あ]わせて[料理|りょうり]を[説明|せつめい]しています。",
+    "price": 1220
+  },
+  {
+    "id": "menu-expanded-17",
+    "japanese": "[山芋|やまいも]の[短冊|たんざく]",
+    "chinese": "山药条",
+    "meat": "山药",
+    "method": "切条",
+    "flavor": "清淡",
+    "rawRisk": "可能生食",
+    "notes": "山药切成长条，常直接配酱油和海苔食用，口感脆滑。",
+    "components": [
+      {
+        "text": "山芋",
+        "meaning": "山药"
+      },
+      {
+        "text": "短冊",
+        "meaning": "长方形细条切法"
+      }
+    ],
+    "kana": "やまいものたんざく",
+    "romaji": "yamaimo no tanzaku",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "菜单",
+    "frequency": 4,
+    "nativeFrequency": "常见菜单构词；非频率统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "名称不能完整说明配料、交叉接触或熟度。有饮食限制时向店家确认。",
+    "explanation": "[食材|しょくざい]と[調理方法|ちょうりほうほう]を[組|く]み[合|あ]わせて[料理|りょうり]を[説明|せつめい]しています。",
+    "price": 1260
+  },
+  {
+    "id": "menu-expanded-18",
+    "japanese": "[温玉|おんたま]シーザーサラダ",
+    "chinese": "温泉蛋凯撒沙拉",
+    "meat": "鸡蛋与蔬菜",
+    "method": "凉拌",
+    "flavor": "奶香咸鲜",
+    "rawRisk": "含半熟蛋",
+    "notes": "沙拉上加半凝固蛋黄的温泉蛋。温玉通常不是全熟鸡蛋。",
+    "components": [
+      {
+        "text": "温玉",
+        "meaning": "温泉蛋的简称"
+      },
+      {
+        "text": "シーザーサラダ",
+        "meaning": "凯撒沙拉"
+      }
+    ],
+    "kana": "おんたまシーザーサラダ",
+    "romaji": "ontama shīzāsarada",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "菜单",
+    "frequency": 4,
+    "nativeFrequency": "常见菜单构词；非频率统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "名称不能完整说明配料、交叉接触或熟度。有饮食限制时向店家确认。",
+    "explanation": "[食材|しょくざい]と[調理方法|ちょうりほうほう]を[組|く]み[合|あ]わせて[料理|りょうり]を[説明|せつめい]しています。",
+    "price": 1300
+  },
+  {
+    "id": "menu-expanded-19",
+    "japanese": "[親子|おやこ][丼|どん]",
+    "chinese": "亲子丼",
+    "meat": "鸡肉与鸡蛋",
+    "method": "煮后盖饭",
+    "flavor": "高汤咸甜",
+    "rawRisk": "可能含半熟蛋",
+    "notes": "鸡肉与鸡蛋同煮后盖在米饭上，亲子指鸡与蛋。蛋的熟度依店家。",
+    "components": [
+      {
+        "text": "親子",
+        "meaning": "鸡肉与蛋的组合"
+      },
+      {
+        "text": "丼",
+        "meaning": "盖饭"
+      }
+    ],
+    "kana": "おやこどん",
+    "romaji": "oyakodon",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "菜单",
+    "frequency": 4,
+    "nativeFrequency": "常见菜单构词；非频率统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "名称不能完整说明配料、交叉接触或熟度。有饮食限制时向店家确认。",
+    "explanation": "[食材|しょくざい]と[調理方法|ちょうりほうほう]を[組|く]み[合|あ]わせて[料理|りょうり]を[説明|せつめい]しています。",
+    "price": 1340
+  },
+  {
+    "id": "menu-expanded-20",
+    "japanese": "[月見|つきみ]そば",
+    "chinese": "月见荞麦面",
+    "meat": "荞麦面与鸡蛋",
+    "method": "汤面",
+    "flavor": "高汤鲜味",
+    "rawRisk": "可能含生蛋",
+    "notes": "以蛋黄比作月亮，常把鸡蛋直接打在热面汤上；不能保证全熟。",
+    "components": [
+      {
+        "text": "月見",
+        "meaning": "赏月，引申为加蛋"
+      },
+      {
+        "text": "そば",
+        "meaning": "荞麦面"
+      }
+    ],
+    "kana": "つきみそば",
+    "romaji": "tsukimi soba",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "菜单",
+    "frequency": 4,
+    "nativeFrequency": "常见菜单构词；非频率统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "名称不能完整说明配料、交叉接触或熟度。有饮食限制时向店家确认。",
+    "explanation": "[食材|しょくざい]と[調理方法|ちょうりほうほう]を[組|く]み[合|あ]わせて[料理|りょうり]を[説明|せつめい]しています。",
+    "price": 1380
+  },
+  {
+    "id": "menu-expanded-21",
+    "japanese": "[冷|ひ]やし[担々麺|たんたんめん]",
+    "chinese": "冷担担面",
+    "meat": "面条，肉末依店家",
+    "method": "冷面",
+    "flavor": "芝麻辛辣",
+    "rawRisk": "需向店家确认",
+    "notes": "冷食的担担面，常有肉末、芝麻和辣油；不能仅凭名称判断辣度。",
+    "components": [
+      {
+        "text": "冷やし",
+        "meaning": "冷食"
+      },
+      {
+        "text": "担々麺",
+        "meaning": "担担面"
+      }
+    ],
+    "kana": "ひやしたんたんめん",
+    "romaji": "hi yashi tantanmen",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "菜单",
+    "frequency": 4,
+    "nativeFrequency": "常见菜单构词；非频率统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "名称不能完整说明配料、交叉接触或熟度。有饮食限制时向店家确认。",
+    "explanation": "[食材|しょくざい]と[調理方法|ちょうりほうほう]を[組|く]み[合|あ]わせて[料理|りょうり]を[説明|せつめい]しています。",
+    "price": 1420
+  },
+  {
+    "id": "menu-expanded-22",
+    "japanese": "[鉄火|てっか][巻|まき]",
+    "chinese": "金枪鱼细卷",
+    "meat": "鱼类",
+    "method": "寿司卷",
+    "flavor": "清淡鲜味",
+    "rawRisk": "含生食",
+    "notes": "细海苔卷包金枪鱼，通常为生鱼。鉄火并不表示用火烤。",
+    "components": [
+      {
+        "text": "鉄火",
+        "meaning": "金枪鱼寿司用名"
+      },
+      {
+        "text": "巻",
+        "meaning": "卷寿司"
+      }
+    ],
+    "kana": "てっかまき",
+    "romaji": "tekkamaki",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "菜单",
+    "frequency": 4,
+    "nativeFrequency": "常见菜单构词；非频率统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "名称不能完整说明配料、交叉接触或熟度。有饮食限制时向店家确认。",
+    "explanation": "[食材|しょくざい]と[調理方法|ちょうりほうほう]を[組|く]み[合|あ]わせて[料理|りょうり]を[説明|せつめい]しています。",
+    "price": 1460
+  },
+  {
+    "id": "menu-expanded-23",
+    "japanese": "[穴子|あなご]の[一本|いっぽん][握|にぎ]り",
+    "chinese": "整条星鳗握寿司",
+    "meat": "鱼类",
+    "method": "煮或烤后做寿司",
+    "flavor": "酱汁咸甜",
+    "rawRisk": "通常熟食",
+    "notes": "较长星鳗覆在寿司饭上，通常经煮制或烤制。",
+    "components": [
+      {
+        "text": "穴子",
+        "meaning": "星鳗"
+      },
+      {
+        "text": "一本",
+        "meaning": "整条"
+      },
+      {
+        "text": "握り",
+        "meaning": "握寿司"
+      }
+    ],
+    "kana": "あなごのいっぽんにぎり",
+    "romaji": "anago no ipponnigi ri",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "菜单",
+    "frequency": 4,
+    "nativeFrequency": "常见菜单构词；非频率统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "名称不能完整说明配料、交叉接触或熟度。有饮食限制时向店家确认。",
+    "explanation": "[食材|しょくざい]と[調理方法|ちょうりほうほう]を[組|く]み[合|あ]わせて[料理|りょうり]を[説明|せつめい]しています。",
+    "price": 1500
+  },
+  {
+    "id": "menu-expanded-24",
+    "japanese": "[抹茶|まっちゃ][白玉|しらたま]パフェ",
+    "chinese": "抹茶白玉芭菲",
+    "meat": "甜品",
+    "method": "组合甜品",
+    "flavor": "甜，抹茶微苦",
+    "rawRisk": "通常不含生肉鱼",
+    "notes": "抹茶冰淇淋或奶油搭配糯米小团子、红豆等，配方因店铺不同。",
+    "components": [
+      {
+        "text": "抹茶",
+        "meaning": "抹茶"
+      },
+      {
+        "text": "白玉",
+        "meaning": "糯米小团子"
+      },
+      {
+        "text": "パフェ",
+        "meaning": "芭菲"
+      }
+    ],
+    "kana": "まっちゃしらたまパフェ",
+    "romaji": "matcha shiratama pafe",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "菜单",
+    "frequency": 4,
+    "nativeFrequency": "常见菜单构词；非频率统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "名称不能完整说明配料、交叉接触或熟度。有饮食限制时向店家确认。",
+    "explanation": "[食材|しょくざい]と[調理方法|ちょうりほうほう]を[組|く]み[合|あ]わせて[料理|りょうり]を[説明|せつめい]しています。",
+    "price": 1540
+  },
+  {
+    "id": "menu-expanded-25",
+    "japanese": "[黒蜜|くろみつ]きなこアイス",
+    "chinese": "黑糖浆黄豆粉冰淇淋",
+    "meat": "甜品",
+    "method": "冷冻甜品",
+    "flavor": "黑糖甜香",
+    "rawRisk": "通常不含生肉鱼",
+    "notes": "冰淇淋上淋黑糖浆并撒黄豆粉。きなこ不是花生粉。",
+    "components": [
+      {
+        "text": "黒蜜",
+        "meaning": "黑糖浆"
+      },
+      {
+        "text": "きなこ",
+        "meaning": "炒黄豆粉"
+      },
+      {
+        "text": "アイス",
+        "meaning": "冰淇淋"
+      }
+    ],
+    "kana": "くろみつきなこアイス",
+    "romaji": "kuromitsu kinakoaisu",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "菜单",
+    "frequency": 4,
+    "nativeFrequency": "常见菜单构词；非频率统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "名称不能完整说明配料、交叉接触或熟度。有饮食限制时向店家确认。",
+    "explanation": "[食材|しょくざい]と[調理方法|ちょうりほうほう]を[組|く]み[合|あ]わせて[料理|りょうり]を[説明|せつめい]しています。",
+    "price": 1580
   }
 ]

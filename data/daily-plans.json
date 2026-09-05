@@ -1,4 +1,169 @@
 [
- {"id":"tokyo-kyoto","title":"東京から京都へ","description":"退房、寄行李、乘车，到京都办理入住。","stops":[["hotel-checkout"],["hotel-luggage","life-parcel"],["train-gate"],["shinkansen-trip"],["shinkansen-seat-conflict"],["convenience-rapid"],["hotel-checkin"],["restaurant-order","payment-declined"]]},
- {"id":"city-day","title":"日本で暮らす一日","description":"处理酒店和预约事务，出门购物、吃饭，再解决生活里的小插曲。","stops":[["hotel-key-failure","hotel-problem"],["booking-change","booking-late"],["life-parcel","hotel-luggage"],["train-gate"],["convenience-rapid"],["restaurant-order"],["payment-declined"],["life-lost-wallet","hotel-key-failure"]]}
+  {
+    "id": "tokyo-kyoto",
+    "title": "東京から京都へ",
+    "description": "退房、寄行李、乘车，到京都办理入住。",
+    "stops": [
+      [
+        "hotel-checkout"
+      ],
+      [
+        "hotel-luggage",
+        "life-parcel"
+      ],
+      [
+        "train-gate"
+      ],
+      [
+        "shinkansen-trip"
+      ],
+      [
+        "shinkansen-seat-conflict"
+      ],
+      [
+        "convenience-rapid"
+      ],
+      [
+        "hotel-checkin"
+      ],
+      [
+        "restaurant-order",
+        "payment-declined"
+      ]
+    ]
+  },
+  {
+    "id": "city-day",
+    "title": "日本で暮らす一日",
+    "description": "处理酒店和预约事务，出门购物、吃饭，再解决生活里的小插曲。",
+    "stops": [
+      [
+        "hotel-key-failure",
+        "hotel-problem"
+      ],
+      [
+        "booking-change",
+        "booking-late"
+      ],
+      [
+        "life-parcel",
+        "hotel-luggage"
+      ],
+      [
+        "train-gate"
+      ],
+      [
+        "convenience-rapid"
+      ],
+      [
+        "restaurant-order"
+      ],
+      [
+        "payment-declined"
+      ],
+      [
+        "life-lost-wallet",
+        "hotel-key-failure"
+      ]
+    ]
+  },
+  {
+    "id": "hotel-day",
+    "title": "ホテルを拠点に過ごす一日",
+    "description": "入住前寄存、领取用品、午餐、购物、回酒店处理设施和休息安排。各站的具体条件见任务卡。",
+    "stops": [
+      [
+        "hotel-early"
+      ],
+      [
+        "hotel-amenitybar"
+      ],
+      [
+        "restaurant-ticket",
+        "restaurant-cafe"
+      ],
+      [
+        "life-supermarket"
+      ],
+      [
+        "life-wifi"
+      ],
+      [
+        "hotel-bathrules"
+      ],
+      [
+        "hotel-cleaning",
+        "hotel-charger"
+      ],
+      [
+        "hotel-wakeup",
+        "hotel-noise"
+      ]
+    ]
+  },
+  {
+    "id": "local-day",
+    "title": "生活の用事を日本語で",
+    "description": "处理预约、理发、寄明信片、购物和晚餐，再解决回程交通。各任务按自己的模拟条件完成。",
+    "stops": [
+      [
+        "booking-change"
+      ],
+      [
+        "life-haircut"
+      ],
+      [
+        "life-post"
+      ],
+      [
+        "life-clothes"
+      ],
+      [
+        "restaurant-wait"
+      ],
+      [
+        "restaurant-izakaya",
+        "restaurant-yakitori"
+      ],
+      [
+        "restaurant-split"
+      ],
+      [
+        "train-last",
+        "life-taxi"
+      ]
+    ]
+  },
+  {
+    "id": "travel-trouble",
+    "title": "予定どおりにいかない旅",
+    "description": "房间、付款、交通和餐厅各有小插曲，练习先说明情况再协商解决办法。",
+    "stops": [
+      [
+        "hotel-key-failure"
+      ],
+      [
+        "hotel-noise"
+      ],
+      [
+        "hotel-lateout"
+      ],
+      [
+        "payment-declined"
+      ],
+      [
+        "train-interruption",
+        "train-wrongway"
+      ],
+      [
+        "shinkansen-missed"
+      ],
+      [
+        "restaurant-sushi"
+      ],
+      [
+        "life-locker"
+      ]
+    ]
+  }
 ]
