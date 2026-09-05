@@ -326,5 +326,153 @@
         "meaning": "常见为牛肋肉类部位"
       }
     ]
+  },
+  {
+    "id": "menu-v2-0",
+    "japanese": "[鯖|さば]の[味噌煮|みそに]",
+    "chinese": "味噌炖鲭鱼",
+    "notes": "鲭鱼与味噌调味炖煮，留意鱼刺；配料依店家。",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "丁寧",
+    "frequency": 4,
+    "nativeFrequency": "常见场景表达；非语料统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "根据语境选择表达，不把例句当作唯一答案。",
+    "explanation": "その[場面|ばめん]で[使|つか]う[表現|ひょうげん]です。",
+    "meat": "鲭鱼",
+    "method": "味噌炖煮",
+    "flavor": "味噌咸甜",
+    "price": 980,
+    "kana": "さばのみそに",
+    "romaji": "saba no misoni",
+    "components": [
+      {
+        "text": "鯖",
+        "meaning": "鲭鱼"
+      },
+      {
+        "text": "の",
+        "meaning": "连接食材与做法"
+      },
+      {
+        "text": "味噌煮",
+        "meaning": "以味噌调味炖煮"
+      }
+    ]
+  },
+  {
+    "id": "menu-v2-1",
+    "japanese": "[海老天|えびてん]おろしそば",
+    "chinese": "虾天妇罗萝卜泥荞麦面",
+    "notes": "おろし在此通常指大根おろし，不是卸货。常含虾、小麦和荞麦，需向店家核对。",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "丁寧",
+    "frequency": 4,
+    "nativeFrequency": "常见场景表达；非语料统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "根据语境选择表达，不把例句当作唯一答案。",
+    "explanation": "その[場面|ばめん]で[使|つか]う[表現|ひょうげん]です。",
+    "meat": "虾",
+    "method": "天妇罗搭配荞麦面",
+    "flavor": "萝卜泥清爽味",
+    "price": 1280,
+    "kana": "えびてんおろしそば",
+    "romaji": "ebiten oroshisoba",
+    "components": [
+      {
+        "text": "海老天",
+        "meaning": "虾天妇罗"
+      },
+      {
+        "text": "おろしそば",
+        "meaning": "搭配萝卜泥的荞麦面"
+      }
+    ]
+  },
+  {
+    "id": "menu-v2-2",
+    "japanese": "[若鶏|わかどり]の[唐揚|からあ]げ",
+    "chinese": "炸鸡块",
+    "notes": "鸡肉调味后裹粉油炸；并不是来自中国的料理这一字面意思。",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "丁寧",
+    "frequency": 4,
+    "nativeFrequency": "常见场景表达；非语料统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "根据语境选择表达，不把例句当作唯一答案。",
+    "explanation": "その[場面|ばめん]で[使|つか]う[表現|ひょうげん]です。",
+    "meat": "鸡肉",
+    "method": "裹粉油炸",
+    "flavor": "咸香",
+    "price": 680,
+    "kana": "わかどりのからあげ",
+    "romaji": "wakadori no karaa ge",
+    "components": [
+      {
+        "text": "若鶏",
+        "meaning": "嫩鸡"
+      },
+      {
+        "text": "の",
+        "meaning": "连接助词"
+      },
+      {
+        "text": "唐揚",
+        "meaning": "油炸做法"
+      },
+      {
+        "text": "げ",
+        "meaning": "唐揚げ的词尾"
+      }
+    ]
+  },
+  {
+    "id": "menu-v2-3",
+    "japanese": "[豚|ぶた]ロース[生姜焼|しょうがや]き",
+    "chinese": "姜汁烧猪里脊",
+    "notes": "生姜整体读しょうが，不能把生单独理解成生食。",
+    "jlpt": "生活",
+    "category": "menu",
+    "scene": "restaurant",
+    "formality": "丁寧",
+    "frequency": 4,
+    "nativeFrequency": "常见场景表达；非语料统计",
+    "example": null,
+    "audio": null,
+    "pitfalls": "根据语境选择表达，不把例句当作唯一答案。",
+    "explanation": "その[場面|ばめん]で[使|つか]う[表現|ひょうげん]です。",
+    "meat": "猪肉",
+    "method": "姜汁煎烧",
+    "flavor": "姜香咸甜",
+    "price": 1080,
+    "kana": "ぶたロースしょうがやき",
+    "romaji": "buta rōsu shōgaya ki",
+    "components": [
+      {
+        "text": "豚",
+        "meaning": "猪肉"
+      },
+      {
+        "text": "ロース",
+        "meaning": "里脊类部位"
+      },
+      {
+        "text": "生姜焼",
+        "meaning": "姜汁烧"
+      },
+      {
+        "text": "き",
+        "meaning": "焼き的词尾"
+      }
+    ]
   }
 ]
