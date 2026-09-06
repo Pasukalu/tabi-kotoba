@@ -11,6 +11,7 @@ import { allEntries, plain } from './content';
 import { validateProgress, normalizeSettings } from './storage';
 import { readPreserving, recoveryCopies } from './persistence';
 import { tts } from './audio';
+import { offlineCache, cacheableLearningUrl } from './offline';
 export type Srs = {
   due: number;
   interval: number;
@@ -124,15 +125,16 @@ export function Provider({ children }: { children: ReactNode }) {
             location.href,
             ...performance.getEntriesByType('resource').map((e) => e.name),
           ].filter((u) => {
-            const x = new URL(u, location.origin);
-            return (
-              x.origin === location.origin &&
-              !x.pathname.startsWith('/api/') &&
-              !x.pathname.includes('__')
-            );
+            return !!cacheableLearningUrl(u, location.origin);
           });
-          const cache = await caches.open('tabi-v6');
-          await Promise.allSettled(urls.map((u) => cache.add(u)));
+          const cache = await caches.open(offlineCache);
+          await Promise.allSettled(
+            urls.map(async (u) => {
+              const response = await fetch(u);
+              if (response.ok && !response.redirected)
+                await cache.put(u, response);
+            }),
+          );
         })
         .catch(() => {});
   }, []);
@@ -216,7 +218,7 @@ export function Provider({ children }: { children: ReactNode }) {
         mastered:
           correct && !slow && old.streak >= 2
             ? [...new Set([...p.mastered, id])]
-            : p.mastered.filter((x) => correct || x !== id),
+            : p.mastered.filter((x) => (correct && !slow) || x !== id),
         srs: {
           ...p.srs,
           [id]: {
@@ -224,7 +226,7 @@ export function Provider({ children }: { children: ReactNode }) {
             streak: correct && !slow ? old.streak + 1 : 0,
             wrong: old.wrong + (correct ? 0 : 1),
             reason: options.assisted
-              ? '看过文字稿，需再次听辨'
+              ? '使用过读音或文字提示，需独立复习'
               : !correct
                 ? '答错 / 未听懂'
                 : slow

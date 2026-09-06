@@ -15,6 +15,7 @@ export default function ContextQuiz() {
   const timer = useStopwatch();
   const questions = allQuestions.slice(group * 6, group * 6 + 6);
   const q = questions[i];
+  const native = settings.level === 'Native Challenge';
   return (
     <section className="panel context-quiz">
       <span className="tag">ことばと文脈</span>
@@ -32,14 +33,17 @@ export default function ContextQuiz() {
         items={Array.from(
           { length: Math.ceil(allQuestions.length / 6) },
           (_, n) =>
-            [String(n), `第 ${n + 1} 组 · ${allQuestions[n * 6].context}`] as [
-              string,
-              string,
-            ],
+            [
+              String(n),
+              native
+                ? `セット ${n + 1}`
+                : `第 ${n + 1} 组 · ${allQuestions[n * 6].context}`,
+            ] as [string, string],
         )}
       />
       <p className="muted">
-        {i + 1} / {questions.length} · {q.context}
+        {i + 1} / {questions.length} ·{' '}
+        {native ? <Japanese text={q.nativeContext} mode="native" /> : q.context}
       </p>
       <div className="context-dialogue">
         <p>
@@ -72,7 +76,7 @@ export default function ContextQuiz() {
         </p>
       </div>
       <div className="answers">
-        {q.options.map((text, n) => (
+        {(native ? q.nativeOptions : q.options).map((text, n) => (
           <button
             className={
               'answer ' +
@@ -86,7 +90,7 @@ export default function ContextQuiz() {
             }}
             key={text}
           >
-            {text}
+            {native ? <Japanese text={text} mode="native" /> : text}
             {chosen === n && (n === q.correct ? ' ✓' : ' ✗')}
           </button>
         ))}
@@ -98,7 +102,20 @@ export default function ContextQuiz() {
               ? '✓ 理解了上下文'
               : '✗ 再看前一句和当时的动作'}
           </b>
-          <p>{q.why}</p>
+          <p>
+            {native ? (
+              <Japanese
+                text={
+                  'この[場面|ばめん]では、' +
+                  q.nativeOptions[q.correct] +
+                  'という[意味|いみ]です。'
+                }
+                mode="native"
+              />
+            ) : (
+              q.why
+            )}
+          </p>
           {i === questions.length - 1 ? (
             <>
               <p>

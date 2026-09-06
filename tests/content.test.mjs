@@ -51,6 +51,10 @@ for (const group of comparisons) {
   );
 }
 for (const s of scenes) {
+  check(
+    c.allEntries.some((entry) => entry.japanese === s.end),
+    'closing sentence missing display/audio data ' + s.id,
+  );
   for (const step of s.steps) {
     check(
       new RegExp(step.accept, 'i').test(c.plain(step.reply)),

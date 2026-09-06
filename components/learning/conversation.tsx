@@ -4,6 +4,8 @@ import { useState, useRef, useEffect } from 'react';
 import { appendTurn } from '@/lib/transcript';
 import { difficulty } from '@/lib/difficulty';
 import { reviewExpressions } from '@/lib/review-expressions';
+import { sessionFocus } from '@/lib/session-focus';
+import type { Progress } from '@/lib/learning';
 import { useCapabilities } from './service-status';
 import type { ConversationDraft } from '@/lib/daily';
 import { Mic, Send, Volume2, RotateCcw } from 'lucide-react';
@@ -253,8 +255,32 @@ export function Conversation({
       setDone(true);
       audio.stop();
       onComplete?.(nextResults);
-      setProgress((p: any) => ({
+      const focus = sessionFocus(nextResults, scene.category);
+      setProgress((p: Progress) => ({
         ...p,
+        extraEntries: [
+          ...p.extraEntries.filter(
+            (entry) => !focus.some((f) => f.id === entry.id),
+          ),
+          ...focus.filter(
+            (entry) => !allEntries.some((e) => e.id === entry.id),
+          ),
+        ],
+        srs: {
+          ...p.srs,
+          ...Object.fromEntries(
+            focus.map((entry) => [
+              entry.id,
+              p.srs[entry.id] || {
+                due: Date.now(),
+                interval: 0,
+                streak: 0,
+                wrong: 0,
+                reason: '会话复盘重点',
+              },
+            ]),
+          ),
+        },
         days: [...new Set([...p.days, new Date().toLocaleDateString('sv-SE')])],
         completed: [...new Set([...p.completed, scene.id])],
         reviews: [
@@ -342,9 +368,7 @@ export function Conversation({
     }
     setBusy(false);
   }
-  const remembered = [
-    ...new Set(results.map((r) => r.entryId).filter(Boolean)),
-  ].slice(0, 5);
+  const remembered = sessionFocus(results, scene.category);
   return (
     <div className="conversation-layout">
       <div>
@@ -501,9 +525,7 @@ export function Conversation({
           <section className="review-result">
             <span className="tag">ふりかえり</span>
             <h2>一次真实的交流，比一句满分答案更有价值。</h2>
-            <p>
-              <Japanese text={scene.end} />
-            </p>
+            <Sentence entry={npcEntry(scene.end)} compact />
             <div className="stats">
               <div className="stat">
                 <span>场景完成</span>
@@ -609,17 +631,18 @@ export function Conversation({
                 )}
               </>
             )}
-            {remembered.map((id) => (
-              <Sentence
-                key={id}
-                compact
-                entry={allEntries.find((e) => e.id === id)!}
-              />
+            <p className="muted">
+              课程回应重点已加入复习；优先选择本轮未完成或反应慢的目标，最多五条。
+            </p>
+            {remembered.map((entry) => (
+              <Sentence key={entry.id} compact entry={entry} />
             ))}
             <div className="row">
               <button
                 className="primary"
-                onClick={() => remembered.forEach((id) => mark(id, 'review'))}
+                onClick={() =>
+                  remembered.forEach((entry) => mark(entry.id, 'review'))
+                }
               >
                 将本次重点加入 SRS
               </button>

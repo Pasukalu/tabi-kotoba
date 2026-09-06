@@ -7,7 +7,10 @@
     "source": "厚生劳动省",
     "sourceUrl": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000130600_00001.html",
     "lastVerified": "2026-09-05",
-    "type": "rule"
+    "type": "rule",
+    "scenes": [
+      "hotel"
+    ]
   },
   {
     "id": "ic",
@@ -17,7 +20,12 @@
     "source": "Tokyo Metro",
     "sourceUrl": "https://www.tokyometro.jp/en/tips/after.html",
     "lastVerified": "2026-09-05",
-    "type": "rule"
+    "type": "rule",
+    "scenes": [
+      "train",
+      "payment",
+      "convenience-store"
+    ]
   },
   {
     "id": "ex",
@@ -27,7 +35,10 @@
     "source": "SmartEX",
     "sourceUrl": "https://smart-ex.jp/en/entraining/",
     "lastVerified": "2026-09-05",
-    "type": "rule"
+    "type": "rule",
+    "scenes": [
+      "shinkansen"
+    ]
   },
   {
     "id": "baggage",
@@ -37,7 +48,10 @@
     "source": "SmartEX",
     "sourceUrl": "https://www.smart-ex.jp/reservation/reserve_smart/oversized-baggage/",
     "lastVerified": "2026-09-05",
-    "type": "rule"
+    "type": "rule",
+    "scenes": [
+      "shinkansen"
+    ]
   },
   {
     "id": "amenity",
@@ -47,7 +61,11 @@
     "type": "memo",
     "source": "教学情境提示，非统一规章",
     "sourceUrl": null,
-    "lastVerified": null
+    "lastVerified": null,
+    "scenes": [
+      "hotel",
+      "amenities"
+    ]
   },
   {
     "id": "onsen",
@@ -57,7 +75,11 @@
     "type": "memo",
     "source": "教学情境提示，非统一规章",
     "sourceUrl": null,
-    "lastVerified": null
+    "lastVerified": null,
+    "scenes": [
+      "hotel",
+      "booking"
+    ]
   },
   {
     "id": "otoshi",
@@ -67,7 +89,10 @@
     "type": "memo",
     "source": "教学情境提示，非统一规章",
     "sourceUrl": null,
-    "lastVerified": null
+    "lastVerified": null,
+    "scenes": [
+      "restaurant"
+    ]
   },
   {
     "id": "lastorder",
@@ -77,7 +102,11 @@
     "type": "memo",
     "source": "教学情境提示，非统一规章",
     "sourceUrl": null,
-    "lastVerified": null
+    "lastVerified": null,
+    "scenes": [
+      "restaurant",
+      "hotel"
+    ]
   },
   {
     "id": "train",
@@ -87,7 +116,10 @@
     "type": "memo",
     "source": "教学情境提示，非统一规章",
     "sourceUrl": null,
-    "lastVerified": null
+    "lastVerified": null,
+    "scenes": [
+      "train"
+    ]
   },
   {
     "id": "escalator",
@@ -97,7 +129,11 @@
     "type": "memo",
     "source": "教学情境提示，非统一规章",
     "sourceUrl": null,
-    "lastVerified": null
+    "lastVerified": null,
+    "scenes": [
+      "train",
+      "life"
+    ]
   },
   {
     "id": "trash",
@@ -107,7 +143,11 @@
     "type": "memo",
     "source": "教学情境提示，非统一规章",
     "sourceUrl": null,
-    "lastVerified": null
+    "lastVerified": null,
+    "scenes": [
+      "life",
+      "convenience-store"
+    ]
   },
   {
     "id": "booking",
@@ -117,7 +157,11 @@
     "type": "memo",
     "source": "教学情境提示，非统一规章",
     "sourceUrl": null,
-    "lastVerified": null
+    "lastVerified": null,
+    "scenes": [
+      "booking",
+      "restaurant"
+    ]
   },
   {
     "id": "hotel-time",
@@ -127,7 +171,10 @@
     "type": "memo",
     "source": "教学情境提示，非统一规章",
     "sourceUrl": null,
-    "lastVerified": null
+    "lastVerified": null,
+    "scenes": [
+      "hotel"
+    ]
   },
   {
     "id": "tickets",
@@ -137,7 +184,11 @@
     "type": "memo",
     "source": "教学情境提示，非统一规章",
     "sourceUrl": null,
-    "lastVerified": null
+    "lastVerified": null,
+    "scenes": [
+      "shinkansen",
+      "booking"
+    ]
   },
   {
     "id": "cash",
@@ -147,7 +198,11 @@
     "type": "memo",
     "source": "教学情境提示，非统一规章",
     "sourceUrl": null,
-    "lastVerified": null
+    "lastVerified": null,
+    "scenes": [
+      "payment",
+      "life"
+    ]
   },
   {
     "id": "food",
@@ -156,6 +211,277 @@
     "scope": "店舗による",
     "type": "memo",
     "source": "教学情境提示，非统一规章",
+    "sourceUrl": null,
+    "lastVerified": null,
+    "scenes": [
+      "restaurant",
+      "convenience-store"
+    ]
+  },
+  {
+    "id": "ticket-first",
+    "title": "先买食券还是先入座",
+    "text": "进店发现食券机时，先读入口说明并观察工作人员的引导。若要求先购票，选好商品后把食券交给店员；不能仅凭“拉面店”就认定所有店都先买票。",
+    "scope": "店舗による",
+    "scenes": [
+      "restaurant"
+    ],
+    "type": "memo",
+    "source": "情境核对提示，非全国统一规定",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "noodle-firmness",
+    "title": "店员问面硬度时",
+    "text": "面の硬さ是在问口感偏好。普通可以回答普通でお願いします。可选硬度和是否接受调整取决于店铺，听不清可请对方说明有哪些选项。",
+    "scope": "店舗による",
+    "scenes": [
+      "restaurant"
+    ],
+    "type": "memo",
+    "source": "情境核对提示，非全国统一规定",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "bag-confirmation",
+    "title": "袋子问题要回答具体对象",
+    "text": "收银时的袋はご利用ですか是在确认是否需要购物袋。需要时可再确认大小和费用；自带袋子可说マイバッグがあります。不要把“大丈夫です”机械理解成需要或不需要。",
+    "scope": "店舗による",
+    "scenes": [
+      "convenience-store",
+      "payment"
+    ],
+    "type": "memo",
+    "source": "情境核对提示，非全国统一规定",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "walking-food",
+    "title": "拿到外带食物以后",
+    "text": "买完食物先找店铺指定的食用区域或查看周边告示。能否在附近吃、是否需要离开店前、垃圾如何处理，都要看现场；“全日本禁止边走边吃”不是可通用的规则。",
+    "scope": "地域・施設による",
+    "scenes": [
+      "restaurant",
+      "life"
+    ],
+    "type": "memo",
+    "source": "情境核对提示，非全国统一规定",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "bin-location",
+    "title": "找不到垃圾桶时",
+    "text": "在车站、街道或商店没有看到垃圾桶时，不要把私人容器当公共垃圾桶。可以询问ごみはどこに捨てればいいですか，并按对方说明分类或自行带走。",
+    "scope": "地域・施設による",
+    "scenes": [
+      "life",
+      "convenience-store"
+    ],
+    "type": "memo",
+    "source": "情境核对提示，非全国统一规定",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "exit-number",
+    "title": "约见地点要确认哪个出口",
+    "text": "同一车站的不同出口可能通向不同街区。问路时带上目的地名称和出口编号，区分改札口、出口和乗換口；“到这个站”还不等于已经到达约见地点。",
+    "scope": "駅による",
+    "scenes": [
+      "train",
+      "life"
+    ],
+    "type": "memo",
+    "source": "情境核对提示，非全国统一规定",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "address-form",
+    "title": "日本地址表格怎么读",
+    "text": "看表格的欄位再填写，区分郵便番号、都道府県、市区町村、丁目・番地和建物名・部屋番号。不要假定日中地址顺序完全相反，也不要漏掉建筑名称和房号。",
+    "scope": "書式による",
+    "scenes": [
+      "booking",
+      "life",
+      "hotel"
+    ],
+    "type": "memo",
+    "source": "情境核对提示，非全国统一规定",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "shoes-entrance",
+    "title": "旅馆进门后鞋子放哪里",
+    "text": "遇到台阶、鞋柜或脱鞋告示时，确认从哪里换鞋。进入客房、榻榻米区域或厕所时可能还有不同拖鞋规则；不确定可问ここで靴を脱ぎますか。",
+    "scope": "旅館・施設による",
+    "scenes": [
+      "hotel",
+      "life"
+    ],
+    "type": "memo",
+    "source": "情境核对提示，非全国统一规定",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "tattoo-check",
+    "title": "纹身能否进入浴场",
+    "text": "有纹身时，在使用前查看设施政策或联系工作人员。是否允许、能否遮盖以及能否预约私汤各不相同，不要把某家设施的许可或限制套用到其他浴场。",
+    "scope": "施設による",
+    "scenes": [
+      "hotel",
+      "booking"
+    ],
+    "type": "memo",
+    "source": "情境核对提示，非全国统一规定",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "bill-location",
+    "title": "结账是在座位还是收银台",
+    "text": "用餐结束后观察账单和店员引导。桌边结账或到收银台付款都可能出现，可问お会計はこちらですか。不要把放到账单夹里的小票直接当作已经付款的凭证。",
+    "scope": "店舗による",
+    "scenes": [
+      "restaurant",
+      "payment"
+    ],
+    "type": "memo",
+    "source": "情境核对提示，非全国统一规定",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "breakfast-entry",
+    "title": "早餐结束时间与最后入场",
+    "text": "前台说的早餐終了、最終入店、ラストオーダー可能是不同时间。确认最后什么时候能入场，而不仅仅记住餐厅几点关门。",
+    "scope": "ホテルによる",
+    "scenes": [
+      "hotel",
+      "restaurant"
+    ],
+    "type": "memo",
+    "source": "情境核对提示，非全国统一规定",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "after-checkout",
+    "title": "退房后寄存要再确认",
+    "text": "退房后想继续游览，应询问是否能寄存、最晚领取时间和取件凭证。可保存引换牌或拍下编号；有无收费、能寄存多久由该酒店决定。",
+    "scope": "ホテルによる",
+    "scenes": [
+      "hotel"
+    ],
+    "type": "memo",
+    "source": "情境核对提示，非全国统一规定",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "courier-arrival",
+    "title": "寄行李前先确认能否及时送到",
+    "text": "先向收件酒店确认是否接收，再向承运方确认预计送达日期、受理截止和付款方式。不要把练习中的日期当作真实配送承诺。",
+    "scope": "運送会社・ホテルによる",
+    "scenes": [
+      "hotel",
+      "life"
+    ],
+    "type": "memo",
+    "source": "情境核对提示，非全国统一规定",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "seat-early",
+    "title": "热门时段的预约确认",
+    "text": "旅行日期确定后，查看目标餐厅、列车或设施在相应日期的预约情况。是否接受预约、何时开放、是否有自由席及改退条件应查看该服务的官方页面，不套用固定天数。",
+    "scope": "店舗・商品による",
+    "scenes": [
+      "booking",
+      "restaurant",
+      "shinkansen"
+    ],
+    "type": "memo",
+    "source": "情境核对提示，非全国统一规定",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "last-train-check",
+    "title": "末班车还要考虑换乘",
+    "text": "查末班车时要确认完整路线：第一段还在运行，不代表转乘的下一段也能赶上。留意目的地、换乘时间和当天的运行提示。",
+    "scope": "鉄道会社・日付による",
+    "scenes": [
+      "train"
+    ],
+    "type": "memo",
+    "source": "情境核对提示，非全国统一规定",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "smoking-area",
+    "title": "先找吸烟区域标识",
+    "text": "不要根据是否在室外来判断可以吸烟。查看所在地或设施告示，向工作人员确认喫煙所的位置；酒店吸烟房与公共区域的规则也不能混为一谈。",
+    "scope": "地域・施設による",
+    "scenes": [
+      "hotel",
+      "life",
+      "restaurant"
+    ],
+    "type": "memo",
+    "source": "情境核对提示，非全国统一规定",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "doorway",
+    "title": "车门和队列前留出通道",
+    "text": "在车门、闸机和电梯口留意人员流动，按地面标线或工作人员引导排队。携带行李时确认没有挡住通行；不要把某一站的排队位置推广到其他车站。",
+    "scope": "駅・施設による",
+    "scenes": [
+      "train",
+      "shinkansen",
+      "hotel"
+    ],
+    "type": "memo",
+    "source": "情境核对提示，非全国统一规定",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "airport-timing",
+    "title": "到机场的时间不是登机截止",
+    "text": "查询所乘航空公司的值机、托运和登机截止，再安排到机场的时间。国际或国内航班、机场和当天情况不同，不能仅记一个统一的提前小时数。",
+    "scope": "航空会社・空港による",
+    "scenes": [
+      "train",
+      "booking",
+      "life"
+    ],
+    "type": "memo",
+    "source": "情境核对提示，非全国统一规定",
+    "sourceUrl": null,
+    "lastVerified": null
+  },
+  {
+    "id": "charger-rating",
+    "title": "转换插头不等于变压器",
+    "text": "买电器或借转换插头时，向工作人员确认设备输入电压与插头形状。不要只看插得进去就判断可用；需要时展示设备铭牌请对方核对。",
+    "scope": "製品による",
+    "scenes": [
+      "hotel",
+      "life"
+    ],
+    "type": "memo",
+    "source": "情境核对提示，非全国统一规定",
     "sourceUrl": null,
     "lastVerified": null
   }

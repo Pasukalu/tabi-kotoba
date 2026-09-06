@@ -1,5 +1,6 @@
 'use client';
 import { useClock } from '@/lib/use-clock';
+import OfflineSettings from './offline-settings';
 import { useStopwatch } from '@/lib/use-stopwatch';
 import ExpressionCompare from './expression-compare';
 import { restorePreserving } from '@/lib/persistence';
@@ -125,6 +126,19 @@ export function Scenes() {
         </TabsList>
         <TabsContent value="learn">
           <CourseReader key={scene} scene={scene} />
+          <section aria-label="本场景日本生活提示">
+            <h3>日本生活メモ</h3>
+            <div className="culture-grid">
+              {rules
+                .filter((rule) => rule.scenes.includes(scene))
+                .map((rule) => (
+                  <Rule key={rule.id} rule={rule} />
+                ))}
+            </div>
+            {!rules.some((rule) => rule.scenes.includes(scene)) && (
+              <p className="muted">本专题请结合每句表达的语境说明练习。</p>
+            )}
+          </section>
           {scene === 'phrases' && <ContextQuiz />}
           <ExpressionCompare key={scene} scene={scene} />
         </TabsContent>
@@ -634,12 +648,22 @@ export function Reading({ scene = 'hotel' }: { scene?: string }) {
   const { answer } = useLearning(),
     [i, setI] = useState(0),
     [choice, setChoice] = useState(''),
-    [revealed, setRevealed] = useState(false);
+    [revealed, setRevealed] = useState(false),
+    [assisted, setAssisted] = useState(false);
   const timer = useStopwatch();
   const source = words.filter(
     (w) =>
-      w.scene === (['train', 'shinkansen'].includes(scene) ? 'train' : 'hotel'),
+      w.scene === scene ||
+      (scene === 'convenience-store' &&
+        ['payment', 'restaurant'].includes(w.scene)) ||
+      (scene === 'booking' && w.scene === 'life'),
   );
+  if (!source.length)
+    return (
+      <section className="panel">
+        <p>本专题通过上方的情境阅读练习，不混用其他场景的标识。</p>
+      </section>
+    );
   const e = source[i % source.length];
   const options = [
     e,
@@ -654,7 +678,10 @@ export function Reading({ scene = 'hotel' }: { scene?: string }) {
       <div className={'sign ' + (scene === 'train' ? 'station' : '')}>
         <span className="sign-number">{i + 1}</span>
         <button
-          onClick={() => setRevealed(!revealed)}
+          onClick={() => {
+            setRevealed(!revealed);
+            setAssisted(true);
+          }}
           aria-label="显示标识读音"
         >
           <Japanese text={e.japanese} mode={revealed ? 'ruby' : 'native'} />
@@ -673,7 +700,7 @@ export function Reading({ scene = 'hotel' }: { scene?: string }) {
             }
             onClick={() => {
               setChoice(o.id);
-              answer(e.id, o.id === e.id, timer.elapsed());
+              answer(e.id, o.id === e.id, timer.elapsed(), { assisted });
             }}
           >
             {o.chinese}
@@ -689,6 +716,7 @@ export function Reading({ scene = 'hotel' }: { scene?: string }) {
               setI((i + 1) % source.length);
               setChoice('');
               setRevealed(false);
+              setAssisted(false);
               timer.reset();
             }}
           >
@@ -775,16 +803,20 @@ export function Review() {
   const { progress, answer, entries } = useLearning(),
     [current, setCurrent] = useState(0),
     [reveal, setReveal] = useState(false),
+    [recallMs, setRecallMs] = useState(0),
     [session, setSession] = useState<string[]>([]),
     [active, setActive] = useState(false);
   const timer = useStopwatch();
   const due = Object.entries(progress.srs as Record<string, any>)
-    .filter(([, s]) => s.due <= now)
+    .filter(
+      ([id, s]) =>
+        s.due <= now && entries.some((e: { id: string }) => e.id === id),
+    )
     .sort((a, b) => b[1].wrong - a[1].wrong || a[1].due - b[1].due);
   const entry = entries.find((e: any) => e.id === session[current]);
   function grade(correct: boolean) {
     if (!entry) return;
-    answer(entry.id, correct, timer.elapsed());
+    answer(entry.id, correct, recallMs);
     setCurrent(current + 1);
     setReveal(false);
     timer.reset();
@@ -843,11 +875,21 @@ export function Review() {
             {current + 1} / {session.length} · {progress.srs[entry.id]?.reason}
           </span>
           <Sentence key={entry.id} entry={entry} compact defaultMode="hidden" />
-          <button className="secondary" onClick={() => setReveal(true)}>
+          <button
+            className="secondary"
+            disabled={reveal}
+            onClick={() => {
+              setRecallMs(timer.elapsed());
+              setReveal(true);
+            }}
+          >
             我已回忆，显示答案
           </button>
           {reveal && (
             <>
+              <p className="muted">
+                按显示答案前的回忆情况自评；阅读解释不会增加反应时长。
+              </p>
               <Sentence entry={entry} compact />
               <p>{entry.chinese}</p>
               <div className="row">
@@ -938,6 +980,12 @@ export function Review() {
                 <p>{x.why}</p>
               </div>
             ))}
+            <a
+              className="secondary"
+              href={'/conversation?scene=' + encodeURIComponent(r.scene)}
+            >
+              回到这个场景再练一次
+            </a>
           </details>
         ))
       ) : (
@@ -984,6 +1032,7 @@ export function Profile() {
         sub="文字、速度与训练强度都由你决定。罗马字默认隐藏。"
       />
       <div className="settings-grid">
+        <OfflineSettings />
         <ServiceStatus />
         <section className="panel settings-panel">
           <h2>文字と表示</h2>

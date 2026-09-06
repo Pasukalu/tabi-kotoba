@@ -74,6 +74,12 @@ const allIds = new Set(
   ].map((e) => e.id),
 );
 for (const q of qs) {
+  check(q.nativeOptions.length === q.options.length, 'native choices align');
+  for (const text of [q.nativeContext, ...q.nativeOptions])
+    check(
+      !/[一-龯々]/.test(text.replace(/\[[^\]]+\]/g, '')),
+      'native text has readings',
+    );
   check(q.correct >= 0 && q.correct < q.options.length, 'answer in range');
   check(allIds.has(q.entryId), 'quiz review resolves');
 }
