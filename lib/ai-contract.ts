@@ -12,12 +12,28 @@ const object = (v: unknown): v is Record<string, unknown> =>
   Boolean(v) && typeof v === 'object' && !Array.isArray(v);
 const text = (v: unknown, max = 3000): v is string =>
   typeof v === 'string' && v.length <= max;
-const japanese = (v: unknown) =>
-  text(v) && !/[一-龯々]/.test(v.replace(/\[[^|\]]+\|[^\]]+\]/g, ''));
+const japanese = (v: unknown): v is string => {
+  if (!text(v)) return false;
+  let valid = true;
+  const rest = v.replace(
+    /\[([^|\[\]]+)\|([^\[\]]+)\]/g,
+    (_whole, _word: string, reading: string) => {
+      if (!reading.trim() || /[\p{Script=Han}々|]/u.test(reading))
+        valid = false;
+      return '';
+    },
+  );
+  return valid && !/[\p{Script=Han}々\[\]]/u.test(rest);
+};
 /** Treat upstream JSON as untrusted data, including values used by React and star.repeat(). */
 export function validateAIOutput(value: unknown, review: boolean) {
   if (!object(value)) throw Error('AI response is not an object');
   if (!review) {
+    if (!japanese(value.japanese)) throw Error('NPC_JAPANESE');
+    if (!text(value.chinese)) throw Error('NPC_CHINESE');
+    if (!japanese(value.explanation)) throw Error('NPC_EXPLANATION');
+    if (typeof value.advance !== 'boolean') throw Error('NPC_ADVANCE');
+    if (typeof value.done !== 'boolean') throw Error('NPC_DONE');
     if (
       !japanese(value.japanese) ||
       !String(value.japanese).trim() ||

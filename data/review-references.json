@@ -1,0 +1,24 @@
+[
+  {
+    "id": "booking-state",
+    "scenes": ["hotel", "restaurant", "booking"],
+    "originals": ["予約しているパスカルです。"],
+    "entryId": "compare-reservation-1",
+    "why": "「予約している」可以表示已有预约的状态，入住或到店时这样报姓名很自然。不能因为预约动作已经完成，就要求改成「予約した」或「予約してあります」。原句无需修改。",
+    "written": "不是过于书面；在前台和餐厅接待处都可以自然使用。",
+    "overpolite": "没有敬语过度。",
+    "underpolite": "礼貌程度适合顾客向工作人员说明预约。",
+    "stars": 5
+  },
+  {
+    "id": "water-request",
+    "scenes": ["restaurant"],
+    "originals": ["水をください。", "お水をください。"],
+    "entryId": "compare-water-1",
+    "why": "语法正确，在餐厅也能自然使用。「ください」本身不是失礼；「お水、お願いします」是另一种常见、稍柔和的请求方式，并非唯一正确答案。",
+    "written": "不是过于书面。",
+    "overpolite": "没有敬语过度。",
+    "underpolite": "不能单凭「ください」判断礼貌不足，仍要看语气和当时的互动。",
+    "stars": 4
+  }
+]

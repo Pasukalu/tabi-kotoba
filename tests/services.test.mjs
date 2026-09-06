@@ -67,6 +67,8 @@ const npc = {
   done: false,
 };
 assert.equal(contract.validateAIOutput(npc, false).advance, true);
+for (const japanese of ['チェックアウト]', '[予約|予約]', '𠮷です。', '[予約]'])
+  assert.throws(() => contract.validateAIOutput({ ...npc, japanese }, false));
 assert.throws(() =>
   contract.validateAIOutput({ ...npc, japanese: '予約はありますか' }, false),
 );

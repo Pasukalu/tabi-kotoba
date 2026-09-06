@@ -238,7 +238,13 @@ export function Conversation({
       return;
     }
     setCustom(
-      ai ? { ...npcEntry(ai.japanese), chinese: ai.chinese || '' } : null,
+      ai
+        ? {
+            ...npcEntry(ai.japanese),
+            chinese: ai.chinese || '',
+            explanation: ai.explanation || '',
+          }
+        : null,
     );
     if (index === scene.steps.length - 1) {
       setDone(true);
@@ -264,6 +270,7 @@ export function Conversation({
     } else setIndex(index + 1);
   }
   async function reviewAI() {
+    if (busy || aiReview) return;
     const version = ++requestVersion.current;
     pendingRequest.current?.abort();
     pendingRequest.current = new AbortController();
@@ -361,6 +368,24 @@ export function Conversation({
             {settings.level}
           </div>
         </section>
+        {capabilities.conversation && (
+          <div className="row spaced">
+            <Choice
+              label="本次对话方式"
+              value={settings.ai ? 'ai' : 'offline'}
+              onChange={(v) => {
+                if (!busy) setSettings({ ...settings, ai: v === 'ai' });
+              }}
+              items={[
+                ['offline', '离线情景模拟'],
+                ['ai', '在线 AI 对话'],
+              ]}
+            />
+            <small className="muted">
+              完成目标后沿课程流程继续；AI 负责理解和澄清。
+            </small>
+          </div>
+        )}
         {history.length > 0 && (
           <details className="history">
             <summary>查看已发生的对话（{history.length}）</summary>
@@ -521,17 +546,25 @@ export function Conversation({
               ].map((k) => (
                 <div key={k}>
                   <span>{k}</span>
-                  <b>{aiReview?.metrics?.[k] ?? '待 AI 评估'}</b>
+                  <b>
+                    {aiReview?.metrics?.[k] ??
+                      (aiReview ? '无独立证据' : '待 AI 评估')}
+                  </b>
                 </div>
               ))}
             </div>
             {activeAI && (
-              <button className="secondary" onClick={reviewAI} disabled={busy}>
-                {busy ? '评估中…' : 'AI 语境复盘'}
+              <button
+                className="secondary"
+                onClick={reviewAI}
+                disabled={busy || !!aiReview}
+              >
+                {busy ? '评估中…' : aiReview ? '复盘已保存' : 'AI 语境复盘'}
               </button>
             )}
             {(aiReview?.items || results).map((r: any, i: number) => (
               <article className="review-item" key={i}>
+                {r.reference && <span className="tag">课程校对依据</span>}
                 <div className="row spaced">
                   <b>あなた：{r.original}</b>
                   <span className="tag">
