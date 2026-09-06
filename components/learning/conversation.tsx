@@ -1,4 +1,5 @@
 'use client';
+import { useStopwatch } from '@/lib/use-stopwatch';
 import { useState, useRef, useEffect } from 'react';
 import { appendTurn } from '@/lib/transcript';
 import { difficulty } from '@/lib/difficulty';
@@ -16,12 +17,14 @@ export function Conversation({
   onSnapshot,
   onComplete,
   locked = false,
+  challengeBrief,
 }: {
   initial?: string;
   draft?: ConversationDraft | null;
   onSnapshot?: (draft: ConversationDraft) => void;
   onComplete?: (results: any[]) => void;
   locked?: boolean;
+  challengeBrief?: string;
 }) {
   const { settings, setSettings, setProgress, mark, setNotice } = useLearning(),
     audio = useAudio();
@@ -44,7 +47,7 @@ export function Conversation({
     [recording, setRecording] = useState(false),
     [recordUrl, setRecordUrl] = useState(''),
     [aiReview, setAiReview] = useState<any>(draft?.aiReview || null);
-  const start = useRef(Date.now()),
+  const start = useStopwatch(),
     rec = useRef<MediaRecorder | null>(null),
     stream = useRef<MediaStream | null>(null),
     held = useRef(false),
@@ -67,7 +70,7 @@ export function Conversation({
     setDone(false);
     setCustom(null);
     setAiReview(null);
-    start.current = Date.now();
+    start.reset();
   }
   const initialRef = useRef(initial);
   useEffect(() => {
@@ -100,7 +103,7 @@ export function Conversation({
     onSnapshot,
   ]);
   useEffect(() => {
-    start.current = Date.now();
+    start.reset();
   }, [index]);
   useEffect(
     () => () => {
@@ -161,7 +164,7 @@ export function Conversation({
       return;
     }
     const original = input.trim(),
-      ms = Date.now() - start.current;
+      ms = start.elapsed();
     let accepted = acceptsLocal(original, step);
     const repeat = /もう一度|もういちど|聞き取れ|聞こえ|ゆっくり/.test(
       original,
@@ -175,7 +178,7 @@ export function Conversation({
         { role: 'staff', text: npc.japanese },
       ]);
       setInput('');
-      start.current = Date.now();
+      start.reset();
       return;
     }
     let ai: any = null;
@@ -234,7 +237,7 @@ export function Conversation({
             '[恐|おそ]れ[入|い]ります。もう[一度|いちど]お[願|ねが]いできますか。',
           ),
         );
-      start.current = Date.now();
+      start.reset();
       return;
     }
     setCustom(
@@ -347,7 +350,7 @@ export function Conversation({
       <div>
         <div className="row spaced">
           {locked ? (
-            <b>{scene.title}</b>
+            <b>{challengeBrief && !done ? '突发实战' : scene.title}</b>
           ) : (
             <Choice
               label="选择对话场景"
@@ -361,8 +364,8 @@ export function Conversation({
           </span>
         </div>
         <section className="task-brief">
-          <h2>{scene.title}</h2>
-          <p>{scene.description}</p>
+          <h2>{challengeBrief && !done ? '先听清，再处理。' : scene.title}</h2>
+          <p>{challengeBrief && !done ? challengeBrief : scene.description}</p>
           <div className="muted">
             {done ? '练习结束' : `进度 ${index + 1} / ${scene.steps.length}`} ·{' '}
             {settings.level}
@@ -476,7 +479,7 @@ export function Conversation({
                 </div>
               )}
             </form>
-            {!native && (
+            {!native && !challengeBrief && (
               <details
                 className="help"
                 open={difficulty(settings.level).help || undefined}

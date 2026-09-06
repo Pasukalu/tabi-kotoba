@@ -1,4 +1,6 @@
 'use client';
+import { useClock } from '@/lib/use-clock';
+import { useStopwatch } from '@/lib/use-stopwatch';
 import ExpressionCompare from './expression-compare';
 import { restorePreserving } from '@/lib/persistence';
 import { difficulty } from '@/lib/difficulty';
@@ -633,7 +635,7 @@ export function Reading({ scene = 'hotel' }: { scene?: string }) {
     [i, setI] = useState(0),
     [choice, setChoice] = useState(''),
     [revealed, setRevealed] = useState(false);
-  const timer = useRef(Date.now());
+  const timer = useStopwatch();
   const source = words.filter(
     (w) =>
       w.scene === (['train', 'shinkansen'].includes(scene) ? 'train' : 'hotel'),
@@ -671,7 +673,7 @@ export function Reading({ scene = 'hotel' }: { scene?: string }) {
             }
             onClick={() => {
               setChoice(o.id);
-              answer(e.id, o.id === e.id, Date.now() - timer.current);
+              answer(e.id, o.id === e.id, timer.elapsed());
             }}
           >
             {o.chinese}
@@ -687,7 +689,7 @@ export function Reading({ scene = 'hotel' }: { scene?: string }) {
               setI((i + 1) % source.length);
               setChoice('');
               setRevealed(false);
-              timer.current = Date.now();
+              timer.reset();
             }}
           >
             下一张标识
@@ -769,22 +771,23 @@ export function Culture() {
   );
 }
 export function Review() {
+  const now = useClock();
   const { progress, answer, entries } = useLearning(),
     [current, setCurrent] = useState(0),
     [reveal, setReveal] = useState(false),
     [session, setSession] = useState<string[]>([]),
     [active, setActive] = useState(false);
-  const timer = useRef(Date.now());
+  const timer = useStopwatch();
   const due = Object.entries(progress.srs as Record<string, any>)
-    .filter(([, s]) => s.due <= Date.now())
+    .filter(([, s]) => s.due <= now)
     .sort((a, b) => b[1].wrong - a[1].wrong || a[1].due - b[1].due);
   const entry = entries.find((e: any) => e.id === session[current]);
   function grade(correct: boolean) {
     if (!entry) return;
-    answer(entry.id, correct, Date.now() - timer.current);
+    answer(entry.id, correct, timer.elapsed());
     setCurrent(current + 1);
     setReveal(false);
-    timer.current = Date.now();
+    timer.reset();
   }
   return (
     <>
@@ -823,7 +826,7 @@ export function Review() {
               setSession(due.map((x) => x[0]));
               setActive(true);
               setCurrent(0);
-              timer.current = Date.now();
+              timer.reset();
             }}
           >
             开始 {due.length} 条复习 <ArrowRight size={16} />

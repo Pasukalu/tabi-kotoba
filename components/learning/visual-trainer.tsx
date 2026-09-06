@@ -1,5 +1,6 @@
 'use client';
-import { useRef, useState } from 'react';
+import { useStopwatch } from '@/lib/use-stopwatch';
+import { useState } from 'react';
 import tasks from '@/data/visual-tasks.json';
 import { useLearning, useAudio } from '@/lib/learning';
 import { Choice, Japanese } from './text';
@@ -15,7 +16,7 @@ export default function VisualTrainer({ category }: { category?: string }) {
     [done, setDone] = useState(false);
   const { settings, answer } = useLearning(),
     audio = useAudio(),
-    timer = useRef(Date.now());
+    timer = useStopwatch();
   const task = pool.find((t) => t.id === id) || pool[0],
     current = task.steps[Math.min(step, task.steps.length - 1)],
     native = settings.level === 'Native Challenge';
@@ -28,11 +29,11 @@ export default function VisualTrainer({ category }: { category?: string }) {
     setError('');
     setMistakes(0);
     setDone(false);
-    timer.current = Date.now();
+    timer.reset();
   }
   function choose(index: number) {
     const correct = index === current.correct;
-    answer(current.entryId, correct, Date.now() - timer.current, { assisted });
+    answer(current.entryId, correct, timer.elapsed(), { assisted });
     if (!correct) {
       setMistakes((m) => m + 1);
       setError(
@@ -47,7 +48,7 @@ export default function VisualTrainer({ category }: { category?: string }) {
     setAssisted(false);
     if (step === task.steps.length - 1) setDone(true);
     else setStep(step + 1);
-    timer.current = Date.now();
+    timer.reset();
   }
   return (
     <div className="visual-practice">

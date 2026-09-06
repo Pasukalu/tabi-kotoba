@@ -113,6 +113,14 @@ export default function Dashboard() {
             </div>
             <ArrowRight size={20} />
           </a>
+          <a className="machine-home-link" href="/challenge">
+            <ArrowRight size={22} />
+            <div>
+              <b>突发实战：不知道下一句会发生什么</b>
+              <p>只拿自己的行程信息，听懂异常、说明情况，再完成复盘。</p>
+            </div>
+            <ArrowRight size={20} />
+          </a>
           <div className="section-heading">
             <h2>
               今日の練習 <small>推荐练习</small>

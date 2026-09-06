@@ -1,5 +1,6 @@
 'use client';
-import { useRef, useState } from 'react';
+import { useStopwatch } from '@/lib/use-stopwatch';
+import { useState } from 'react';
 import { menus } from '@/lib/content';
 import { useLearning, useAudio } from '@/lib/learning';
 import { Japanese, Sentence } from './text';
@@ -17,7 +18,7 @@ export default function MenuQuiz() {
     [finished, setFinished] = useState(false);
   const { answer, settings } = useLearning(),
     audio = useAudio(),
-    timer = useRef(Date.now());
+    timer = useStopwatch();
   const entry = menus[index],
     key = aspects[step][0],
     correct = entry[key] || '需向店家确认';
@@ -37,7 +38,7 @@ export default function MenuQuiz() {
     const result = [...answers, value === correct];
     setAnswers(result);
     if (step === 3) {
-      answer(entry.id, result.every(Boolean), Date.now() - timer.current);
+      answer(entry.id, result.every(Boolean), timer.elapsed() / aspects.length);
       setFinished(true);
     }
   }
@@ -51,7 +52,7 @@ export default function MenuQuiz() {
       setPicked('');
       setAnswers([]);
       setFinished(false);
-      timer.current = Date.now();
+      timer.reset();
     }
   }
   return (
@@ -96,7 +97,7 @@ export default function MenuQuiz() {
             <>
               <p>
                 本菜完成：{answers.filter(Boolean).length} /
-                4。整道菜用时包含阅读与思考，不代表纯听力反应。
+                4。复习优先级使用四项判断的平均耗时，包含阅读与思考，不代表纯听力反应。
               </p>
               <Sentence entry={entry} />
             </>

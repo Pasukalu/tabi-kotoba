@@ -1,5 +1,6 @@
 'use client';
-import { useState, useRef } from 'react';
+import { useStopwatch } from '@/lib/use-stopwatch';
+import { useState } from 'react';
 import { ArrowRight, TrainFront, Ticket, Check } from 'lucide-react';
 import { task, blankBooking, Booking, checkBooking } from '@/lib/booking';
 import { allEntries } from '@/lib/content';
@@ -12,7 +13,7 @@ export default function TicketMachine() {
     [step, setStep] = useState(0),
     [error, setError] = useState(''),
     [mistakes, setMistakes] = useState<{ step: number; message: string }[]>([]);
-  const timer = useRef(Date.now());
+  const timer = useStopwatch();
   const train = task.trains.find((t) => t.id === b.train);
   const update = (key: keyof Booking, value: string | boolean) => {
     setB((p) => ({ ...p, [key]: value }));
@@ -21,11 +22,11 @@ export default function TicketMachine() {
   const native = settings.level === 'Native Challenge';
   function next() {
     const failure = checkBooking(step, b);
-    answer(task.steps[step].entryId, !failure, Date.now() - timer.current);
+    answer(task.steps[step].entryId, !failure, timer.elapsed());
     if (failure) {
       setError(failure);
       setMistakes((p) => [...p, { step, message: failure }]);
-      timer.current = Date.now();
+      timer.reset();
       return;
     }
     setError('');
@@ -39,7 +40,7 @@ export default function TicketMachine() {
         ].slice(0, 20),
       }));
     setStep(step + 1);
-    timer.current = Date.now();
+    timer.reset();
   }
   return (
     <div className="ticket-practice">
@@ -318,7 +319,7 @@ export default function TicketMachine() {
                   onClick={() => {
                     setStep(step - 1);
                     setError('');
-                    timer.current = Date.now();
+                    timer.reset();
                   }}
                 >
                   戻る
@@ -352,7 +353,7 @@ export default function TicketMachine() {
                     setStep(0);
                     setB({ ...blankBooking });
                     setMistakes([]);
-                    timer.current = Date.now();
+                    timer.reset();
                   }}
                 >
                   再练一次

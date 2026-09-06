@@ -237,7 +237,17 @@ export function validateProgress(p: any): Progress {
   )
     throw Error('对话草稿格式不正确。');
   // Reconstruct the top-level object, excluding accidental or obsolete fields.
+  const surpriseRun = p.surpriseRun ?? null;
+  if (
+    surpriseRun !== null &&
+    (!obj(surpriseRun) ||
+      typeof surpriseRun.taskId !== 'string' ||
+      surpriseRun.taskId.length > 100 ||
+      !finite(surpriseRun.startedAt))
+  )
+    throw Error('突发实战记录不正确。');
   return {
+    surpriseRun,
     conversationDrafts,
     days: p.days,
     mastered: p.mastered,

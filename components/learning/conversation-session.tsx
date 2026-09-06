@@ -40,6 +40,9 @@ export default function ConversationSession({ initial }: { initial: string }) {
   return (
     <>
       <div className="filter-bar">
+        <a className="secondary" href="/challenge">
+          进入突发实战
+        </a>
         <Choice
           label="对话场景"
           value={scene}

@@ -1,0 +1,50 @@
+[
+  {
+    "id": "hotel-unexpected-charge",
+    "sceneId": "hotel-unexpected-charge",
+    "category": "hotel",
+    "brief": "你住在508房，准备退房。你没有使用客房迷你吧；房卡和住宿账单在手边。"
+  },
+  {
+    "id": "hotel-breakfast-ticket",
+    "sceneId": "hotel-breakfast-ticket",
+    "category": "hotel",
+    "brief": "你住508房，预订含早餐，姓名是パスカル。现在准备去早餐餐厅，但没有找到早餐券。"
+  },
+  {
+    "id": "restaurant-missed-number",
+    "sceneId": "restaurant-missed-number",
+    "category": "restaurant",
+    "brief": "你是两位，手里有35号整理券。刚回到等候区，准备向接待人员确认座位。"
+  },
+  {
+    "id": "train-missing-entry",
+    "sceneId": "train-missing-entry",
+    "category": "train",
+    "brief": "你从新宿站乘车到本站，使用交通IC。现在闸机打不开，你已来到站务窗口。"
+  },
+  {
+    "id": "shinkansen-wrong-car",
+    "sceneId": "shinkansen-wrong-car",
+    "category": "shinkansen",
+    "brief": "车票写着「6号車・10番E席」。你已上车，正在找自己的座位。"
+  },
+  {
+    "id": "life-parcel-too-late",
+    "sceneId": "life-parcel-too-late",
+    "category": "life",
+    "brief": "你在柜台询问把行李寄到下一家酒店。你明天下午就会离开那家酒店。"
+  },
+  {
+    "id": "booking-notfound",
+    "sceneId": "hotel-booking-notfound",
+    "category": "hotel",
+    "brief": "你叫パスカル，正在办理入住，手里有酒店预约确认邮件。先听前台说明，再核对订单。"
+  },
+  {
+    "id": "coffee-machine",
+    "sceneId": "convenience-coffee",
+    "category": "convenience-store",
+    "brief": "你想买小杯冰咖啡，正在收银台询问。需要自己操作店内咖啡机。"
+  }
+]

@@ -2096,5 +2096,179 @@
       }
     ],
     "end": "[空席|くうせき]をお[調|しら]べしますので、[少々|しょうしょう]お[待|ま]ちください。"
+  },
+  {
+    "id": "hotel-unexpected-charge",
+    "category": "hotel",
+    "title": "退房账单出现陌生费用",
+    "description": "你正在退房，没有使用迷你吧。看到账单后先核对明细，让工作人员查证，不在确认前承认消费。",
+    "role": "ホテルスタッフ",
+    "steps": [
+      {
+        "npc": "hotel-unexpected-charge-npc-0",
+        "reply": "ミニバーは[利用|りよう]していないんですが、[明細|めいさい]を[確認|かくにん]していただけますか。",
+        "accept": "利用していな|使っていな|明細|確認",
+        "goal": "说明未消费并要求核对"
+      },
+      {
+        "npc": "hotel-unexpected-charge-npc-1",
+        "reply": "[五〇八号室|ごまるはちごうしつ]です。こちらがルームキーです。",
+        "accept": "508|五〇八|ごまるはち",
+        "goal": "给出用于核对的房号"
+      },
+      {
+        "npc": "hotel-unexpected-charge-npc-2",
+        "reply": "ありがとうございます。[訂正後|ていせいご]の[明細|めいさい]をいただけますか。",
+        "accept": "明細|訂正|いただ",
+        "goal": "保留更正后的凭证"
+      }
+    ],
+    "end": "[訂正|ていせい]した[明細|めいさい]でございます。ご[確認|かくにん]ください。"
+  },
+  {
+    "id": "hotel-breakfast-ticket",
+    "category": "hotel",
+    "title": "早餐券丢失",
+    "description": "你住508房，预订了含早餐的住宿，但找不到早餐券。请餐厅核对房号与姓名。",
+    "role": "ホテルスタッフ",
+    "steps": [
+      {
+        "npc": "hotel-breakfast-ticket-npc-0",
+        "reply": "[朝食券|ちょうしょくけん]をなくしてしまったんですが、[朝食付|ちょうしょくつ]きで[予約|よやく]しています。",
+        "accept": "なく|朝食付き|予約",
+        "goal": "说明票券遗失和预订内容"
+      },
+      {
+        "npc": "hotel-breakfast-ticket-npc-1",
+        "reply": "[五〇八号室|ごまるはちごうしつ]のパスカルです。",
+        "accept": "(508|五〇八|ごまるはち).*パスカル|パスカル.*(508|五〇八)",
+        "goal": "同时回答两个核对项目"
+      },
+      {
+        "npc": "hotel-breakfast-ticket-npc-2",
+        "reply": "ありがとうございます。",
+        "accept": "ありがとう|はい",
+        "goal": "确认核验完成"
+      }
+    ],
+    "end": "どうぞごゆっくりお[召|め]し[上|あ]がりください。"
+  },
+  {
+    "id": "restaurant-missed-number",
+    "category": "restaurant",
+    "title": "错过餐厅叫号",
+    "description": "你拿了35号整理券，临时离开后回来，发现已经叫到40号。询问如何重新安排，不直接插队。",
+    "role": "レストランスタッフ",
+    "steps": [
+      {
+        "npc": "restaurant-missed-number-npc-0",
+        "reply": "[三十五番|さんじゅうごばん]なんですが、[呼|よ]ばれたときに[席|せき]を[外|はず]していました。",
+        "accept": "三十五|35|さんじゅうご",
+        "goal": "主动说明号码与错过叫号"
+      },
+      {
+        "npc": "restaurant-missed-number-npc-1",
+        "reply": "わかりました。[二名|にめい]で[待|ま]っています。",
+        "accept": "わか|分か|待|二名",
+        "goal": "接受当前店铺的重新安排"
+      },
+      {
+        "npc": "restaurant-missed-number-npc-2",
+        "reply": "はい、カウンターで[大丈夫|だいじょうぶ]です。",
+        "accept": "はい|大丈夫|カウンター",
+        "goal": "回应新的座位条件"
+      }
+    ],
+    "end": "ありがとうございます。こちらのお[席|せき]へどうぞ。"
+  },
+  {
+    "id": "train-missing-entry",
+    "category": "train",
+    "title": "交通卡没有进站记录",
+    "description": "出站时卡片没有进站记录。你从新宿上车，向站务员说明并配合核算，不自行反复冲闸机。",
+    "role": "駅員",
+    "steps": [
+      {
+        "npc": "train-missing-entry-npc-0",
+        "reply": "[新宿|しんじゅく]から[乗|の]ったんですが、どうすればいいですか。",
+        "accept": "新宿|しんじゅく",
+        "goal": "说明实际上车站"
+      },
+      {
+        "npc": "train-missing-entry-npc-1",
+        "reply": "はい、お[願|ねが]いします。",
+        "accept": "はい|お願い",
+        "goal": "配合工作人员核对"
+      },
+      {
+        "npc": "train-missing-entry-npc-2",
+        "reply": "[支払|しはら]う[金額|きんがく]を[教|おし]えていただけますか。",
+        "accept": "金額|いくら|教",
+        "goal": "先确认本次核算金额"
+      },
+      {
+        "npc": "train-missing-entry-payment",
+        "reply": "はい。[三百円|さんびゃくえん]ですね。こちらでお[願|ねが]いします。",
+        "accept": "三百|300|さんびゃく|はい|お願い",
+        "goal": "确认本次核算金额并配合付款"
+      }
+    ],
+    "end": "[精算|せいさん]が[済|す]みました。こちらの[改札|かいさつ]からお[出|で]ください。"
+  },
+  {
+    "id": "shinkansen-wrong-car",
+    "category": "shinkansen",
+    "title": "找座位时进错车厢",
+    "description": "你的指定席是6号车10番E席，但你走到了7号车。核对车厢与座位，听懂如何移动。",
+    "role": "駅員",
+    "steps": [
+      {
+        "npc": "shinkansen-wrong-car-npc-0",
+        "reply": "[六号車|ろくごうしゃ]の[十番|じゅうばん]E[席|せき]です。",
+        "accept": "六号車|6号車|ろくごうしゃ",
+        "goal": "核对自己的车厢"
+      },
+      {
+        "npc": "shinkansen-wrong-car-npc-1",
+        "reply": "この[先|さき]ですね。[車内|しゃない]から[移動|いどう]できますか。",
+        "accept": "移動|車内|この先",
+        "goal": "确认移动方向和通道"
+      },
+      {
+        "npc": "shinkansen-wrong-car-npc-2",
+        "reply": "ありがとうございます。[荷物|にもつ]を[持|も]って[移動|いどう]します。",
+        "accept": "ありがとう|移動|荷物",
+        "goal": "理解车内移动方法"
+      }
+    ],
+    "end": "はい、お[足元|あしもと]にお[気|き]をつけください。"
+  },
+  {
+    "id": "life-parcel-too-late",
+    "category": "life",
+    "title": "行李配送赶不上行程",
+    "description": "你明天下午离开酒店，配送最快后天到。决定不寄这件行李，确认尚未办理寄送。",
+    "role": "受付スタッフ",
+    "steps": [
+      {
+        "npc": "life-parcel-too-late-npc-0",
+        "reply": "[明日|あした]の[午後|ごご]には[出発|しゅっぱつ]するので、[間|ま]に[合|あ]わないですね。",
+        "accept": "間に合|明日|出発",
+        "goal": "把送达时间与自己的行程比较"
+      },
+      {
+        "npc": "life-parcel-too-late-npc-1",
+        "reply": "では、[今回|こんかい]は[送|おく]るのをやめておきます。",
+        "accept": "やめ|送らな|見送",
+        "goal": "理解婉拒并取消寄送意向"
+      },
+      {
+        "npc": "life-parcel-too-late-npc-2",
+        "reply": "わかりました。ありがとうございます。",
+        "accept": "わか|分か|ありがとう",
+        "goal": "确认尚未寄出并取回行李"
+      }
+    ],
+    "end": "かしこまりました。ありがとうございました。"
   }
 ]

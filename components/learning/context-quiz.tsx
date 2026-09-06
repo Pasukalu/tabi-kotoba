@@ -1,5 +1,6 @@
 'use client';
-import { useState, useRef } from 'react';
+import { useStopwatch } from '@/lib/use-stopwatch';
+import { useState } from 'react';
 import questions from '@/data/context-quiz.json';
 import { useLearning, useAudio } from '@/lib/learning';
 import { Japanese } from './text';
@@ -10,7 +11,7 @@ export default function ContextQuiz() {
   const [i, setI] = useState(0),
     [chosen, setChosen] = useState<number | null>(null),
     [correct, setCorrect] = useState(0);
-  const timer = useRef(Date.now());
+  const timer = useStopwatch();
   const q = questions[i];
   return (
     <section className="panel context-quiz">
@@ -60,7 +61,7 @@ export default function ContextQuiz() {
             onClick={() => {
               setChosen(n);
               if (n === q.correct) setCorrect(correct + 1);
-              answer(q.entryId, n === q.correct, Date.now() - timer.current);
+              answer(q.entryId, n === q.correct, timer.elapsed());
             }}
             key={text}
           >
@@ -89,7 +90,7 @@ export default function ContextQuiz() {
                   setI(0);
                   setChosen(null);
                   setCorrect(0);
-                  timer.current = Date.now();
+                  timer.reset();
                 }}
               >
                 重新练习
@@ -101,7 +102,7 @@ export default function ContextQuiz() {
               onClick={() => {
                 setI(i + 1);
                 setChosen(null);
-                timer.current = Date.now();
+                timer.reset();
               }}
             >
               下一个语境 <ArrowRight size={17} />

@@ -1,4 +1,5 @@
 'use client';
+import { useClock } from '@/lib/use-clock';
 import VisualTrainer from '@/components/learning/visual-trainer';
 import BroadcastTraining from '@/components/learning/broadcast-training';
 import { useState, useEffect, useRef } from 'react';
@@ -38,6 +39,7 @@ import {
 } from '@/components/learning/views';
 import ConversationSession from '@/components/learning/conversation-session';
 import DailyChallenge from '@/components/learning/daily-challenge';
+import SurprisePractice from '@/components/learning/surprise-practice';
 const nav = [
   ['ホーム', '', Home],
   ['シーン', 'scenes', Map],
@@ -50,6 +52,7 @@ const nav = [
   ['プロフィール', 'profile', UserRound],
 ] as const;
 function Shell() {
+  const now = useClock();
   const { settings, setSettings, progress } = useLearning();
   const pathname = usePathname(),
     searchParams = useSearchParams();
@@ -79,7 +82,7 @@ function Shell() {
     };
   }, []);
   const due = Object.values(progress.srs as Record<string, any>).filter(
-    (s) => s.due <= Date.now(),
+    (s) => s.due <= now,
   ).length;
   return (
     <SidebarProvider style={{ '--sidebar-width': '224px' } as any}>
@@ -161,6 +164,8 @@ function Shell() {
           ) : path === 'daily' ||
             (path === 'conversation' && params?.get('daily') === '1') ? (
             <DailyChallenge />
+          ) : path === 'challenge' ? (
+            <SurprisePractice />
           ) : path === 'conversation' ? (
             <>
               <Heading
