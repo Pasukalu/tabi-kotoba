@@ -1,3 +1,4 @@
+import { readAudioClip, saveAudioClip } from './audio-cache';
 export interface TTSProvider {
   /** Resolves only after the utterance has finished, not when it is queued. */
   play(text: string, rate: number, onEnd?: () => void): Promise<void>;
@@ -101,7 +102,8 @@ export class CloudTTS implements TTSProvider {
     let blob: Blob;
     try {
       const key = JSON.stringify([text, rate]);
-      const saved = this.cache.get(key);
+      const saved = this.cache.get(key) || (await readAudioClip(key));
+      if (generation !== this.generation) throw cancelled();
       if (saved) blob = saved;
       else {
         const r = await fetch('/api/speech', {
@@ -113,6 +115,7 @@ export class CloudTTS implements TTSProvider {
         if (!r.ok)
           throw Error('云端语音尚未配置或服务不可用，请切换设备日语语音。');
         blob = await r.blob();
+        if (generation === this.generation) void saveAudioClip(key, blob);
         if (blob.size <= 5_000_000 && generation === this.generation) {
           this.cache.set(key, blob);
           while (this.cache.size > 20)
@@ -174,6 +177,10 @@ export class CloudTTS implements TTSProvider {
   }
 }
 let browser: BrowserTTS, cloud: CloudTTS;
+export function clearMemoryAudio() {
+  cloud?.stop();
+  cloud = new CloudTTS();
+}
 export function tts(provider = 'browser', voiceName?: string): TTSProvider {
   if (provider === 'cloud') return (cloud ||= new CloudTTS());
   browser ||= new BrowserTTS();

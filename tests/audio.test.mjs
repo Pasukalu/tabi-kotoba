@@ -27,6 +27,10 @@ const synth = {
 };
 const ctx = {
   exports: {},
+  require: () => ({
+    readAudioClip: async () => null,
+    saveAudioClip: async () => {},
+  }),
   window: { speechSynthesis: synth },
   speechSynthesis: synth,
   SpeechSynthesisUtterance: Utterance,
@@ -98,6 +102,7 @@ checks++;
 let release;
 ctx.fetch = () => new Promise((r) => (release = r));
 const late = cloud.play('遅延', 1);
+await new Promise(setImmediate);
 cloud.stop();
 release({ ok: true, blob: async () => new Blob(['late']) });
 await assert.rejects(late, { name: 'AbortError' });

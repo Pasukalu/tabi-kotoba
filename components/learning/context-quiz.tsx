@@ -1,22 +1,43 @@
 'use client';
 import { useStopwatch } from '@/lib/use-stopwatch';
 import { useState } from 'react';
-import questions from '@/data/context-quiz.json';
+import allQuestions from '@/data/context-quiz.json';
 import { useLearning, useAudio } from '@/lib/learning';
-import { Japanese } from './text';
+import { Japanese, Choice } from './text';
 import { Volume2, ArrowRight } from 'lucide-react';
 export default function ContextQuiz() {
   const { answer, settings } = useLearning(),
     { play } = useAudio();
-  const [i, setI] = useState(0),
+  const [group, setGroup] = useState(0),
+    [i, setI] = useState(0),
     [chosen, setChosen] = useState<number | null>(null),
     [correct, setCorrect] = useState(0);
   const timer = useStopwatch();
+  const questions = allQuestions.slice(group * 6, group * 6 + 6);
   const q = questions[i];
   return (
     <section className="panel context-quiz">
       <span className="tag">ことばと文脈</span>
       <h2>同一句话，在这里是什么意思？</h2>
+      <Choice
+        label="语感练习组"
+        value={String(group)}
+        onChange={(value) => {
+          setGroup(Number(value));
+          setI(0);
+          setChosen(null);
+          setCorrect(0);
+          timer.reset();
+        }}
+        items={Array.from(
+          { length: Math.ceil(allQuestions.length / 6) },
+          (_, n) =>
+            [String(n), `第 ${n + 1} 组 · ${allQuestions[n * 6].context}`] as [
+              string,
+              string,
+            ],
+        )}
+      />
       <p className="muted">
         {i + 1} / {questions.length} · {q.context}
       </p>

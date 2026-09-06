@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react';
 import { useLearning } from '@/lib/learning';
 import { Choice } from './text';
+import { clearAudioClips } from '@/lib/audio-cache';
+import { clearMemoryAudio } from '@/lib/audio';
 export function useCapabilities() {
   const [state, setState] = useState<{
     conversation: boolean;
@@ -42,6 +44,7 @@ export function useCapabilities() {
   return state;
 }
 export default function ServiceStatus() {
+  const [cacheMessage, setCacheMessage] = useState('');
   const c = useCapabilities(),
     { settings, setSettings } = useLearning();
   return (
@@ -78,6 +81,24 @@ export default function ServiceStatus() {
         发音可使用设备或浏览器提供的日语声音，也可连接独立云端日语语音。DeepSeek
         负责文字对话与复盘，发音服务单独配置。
       </p>
+      <p className="muted">
+        成功播放过的云端语音可在本机保存 30 天，最多 60 条、25
+        MB；相同文本和速度可复用。浏览器可能清理缓存，尚未生成的语音仍需要联网。
+      </p>
+      <button
+        className="secondary"
+        onClick={async () => {
+          clearMemoryAudio();
+          setCacheMessage(
+            (await clearAudioClips())
+              ? '已清除本机云端语音缓存。'
+              : '当前无法访问音频缓存；内存缓存已清除。',
+          );
+        }}
+      >
+        清除本机语音缓存
+      </button>
+      <output>{cacheMessage}</output>
     </section>
   );
 }
