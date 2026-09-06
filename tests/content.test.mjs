@@ -43,6 +43,13 @@ check(c.roman('はい。') === 'hai.', 'hai');
 for (const q of ['退房', 'チェックアウト', 'せいひょうき', 'yoyaku'])
   check(c.searchEntries(q).length > 0, 'search ' + q);
 const scenes = JSON.parse(fs.readFileSync(root + 'data/scenarios.json'));
+const comparisons = JSON.parse(fs.readFileSync(root + 'data/comparisons.json'));
+for (const group of comparisons) {
+  check(
+    group.entries.every((id) => ids.has(id)),
+    'comparison references ' + group.id,
+  );
+}
 for (const s of scenes) {
   for (const step of s.steps) {
     check(

@@ -1,0 +1,63 @@
+[
+  {
+    "id": "price",
+    "title": "询价：完整句与口语提题",
+    "scenes": ["life", "payment", "restaurant"],
+    "entries": [
+      "compare-price-0",
+      "compare-price-1",
+      "compare-price-2",
+      "compare-price-3",
+      "compare-price-4",
+      "compare-price-5"
+    ]
+  },
+  {
+    "id": "water",
+    "title": "要水：请求不必一律升级敬语",
+    "scenes": ["restaurant", "hotel", "amenities"],
+    "entries": [
+      "compare-water-0",
+      "compare-water-1",
+      "compare-water-2",
+      "compare-water-3",
+      "compare-water-4"
+    ]
+  },
+  {
+    "id": "directions",
+    "title": "问路：说明情况，留给对方接话",
+    "scenes": ["train", "shinkansen", "life"],
+    "entries": [
+      "compare-directions-0",
+      "compare-directions-1",
+      "compare-directions-2",
+      "compare-directions-3",
+      "compare-directions-4"
+    ]
+  },
+  {
+    "id": "bag",
+    "title": "拒绝袋子：减少大丈夫的歧义",
+    "scenes": ["convenience-store", "payment", "life"],
+    "entries": [
+      "compare-bag-0",
+      "compare-bag-1",
+      "compare-bag-2",
+      "compare-bag-3",
+      "compare-bag-4"
+    ]
+  },
+  {
+    "id": "reservation",
+    "title": "说明预约：顾客与工作人员的立场",
+    "scenes": ["booking", "hotel", "restaurant"],
+    "entries": [
+      "compare-reservation-0",
+      "compare-reservation-1",
+      "compare-reservation-2",
+      "compare-reservation-3",
+      "compare-reservation-4"
+    ]
+  }
+]

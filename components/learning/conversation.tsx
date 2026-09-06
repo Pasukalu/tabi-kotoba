@@ -1,17 +1,11 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
+import { appendTurn } from '@/lib/transcript';
 import { difficulty } from '@/lib/difficulty';
 import { reviewExpressions } from '@/lib/review-expressions';
 import { useCapabilities } from './service-status';
 import type { ConversationDraft } from '@/lib/daily';
-import {
-  Mic,
-  Send,
-  Square,
-  Volume2,
-  ArrowRight,
-  RotateCcw,
-} from 'lucide-react';
+import { Mic, Send, Volume2, RotateCcw } from 'lucide-react';
 import { useLearning, useAudio } from '@/lib/learning';
 import { scenarios, npcEntry, assessLocal, acceptsLocal } from '@/lib/dialogue';
 import { plain, allEntries } from '@/lib/content';
@@ -35,6 +29,10 @@ export function Conversation({
   const activeAI = settings.ai && capabilities.conversation;
   const pendingRequest = useRef<AbortController | null>(null);
   const requestVersion = useRef(0);
+  const runId = useRef(draft?.runId || '');
+  useEffect(() => {
+    if (!runId.current) runId.current = crypto.randomUUID();
+  }, []);
   const [sceneId, setSceneId] = useState(initial),
     [index, setIndex] = useState(draft?.index || 0),
     [input, setInput] = useState(draft?.input || ''),
@@ -56,6 +54,7 @@ export function Conversation({
   const npc = custom || npcEntry(step.npc);
   const native = settings.level === 'Native Challenge';
   function reset(id: string) {
+    runId.current = crypto.randomUUID();
     requestVersion.current++;
     pendingRequest.current?.abort();
     setBusy(false);
@@ -79,6 +78,7 @@ export function Conversation({
   }, [initial]);
   useEffect(() => {
     onSnapshot?.({
+      runId: runId.current,
       sceneId,
       index,
       input,
@@ -152,6 +152,14 @@ export function Conversation({
   }
   async function submit() {
     if (!input.trim() || busy) return;
+    if (settings.ai && !capabilities.conversation) {
+      setNotice(
+        capabilities.loaded
+          ? 'AI 尚未配置。请明确切换到离线模拟后继续。'
+          : '正在检查 AI 配置，请稍候。',
+      );
+      return;
+    }
     const original = input.trim(),
       ms = Date.now() - start.current;
     let accepted = acceptsLocal(original, step);
@@ -163,8 +171,7 @@ export function Conversation({
       if (rate !== settings.speed) setSettings({ ...settings, speed: rate });
       audio.play(npc.japanese, false, rate);
       setHistory((h) => [
-        ...h,
-        { role: 'user', text: original },
+        ...appendTurn(h, npc.japanese, original),
         { role: 'staff', text: npc.japanese },
       ]);
       setInput('');
@@ -172,11 +179,7 @@ export function Conversation({
       return;
     }
     let ai: any = null;
-    const nextHistory = [
-      ...history,
-      { role: 'staff', text: npc.japanese },
-      { role: 'user', text: original },
-    ];
+    const nextHistory = appendTurn(history, npc.japanese, original);
     if (activeAI) {
       const version = ++requestVersion.current;
       pendingRequest.current?.abort();
@@ -246,7 +249,12 @@ export function Conversation({
         days: [...new Set([...p.days, new Date().toLocaleDateString('sv-SE')])],
         completed: [...new Set([...p.completed, scene.id])],
         reviews: [
-          { scene: scene.id, at: Date.now(), results: nextResults },
+          {
+            id: runId.current,
+            scene: scene.id,
+            at: Date.now(),
+            results: nextResults,
+          },
           ...p.reviews,
         ].slice(0, 30),
       }));
@@ -303,12 +311,21 @@ export function Conversation({
         },
       }));
       setAiReview(d);
-      setProgress((p: any) => ({
-        ...p,
-        reviews: p.reviews.map((r: any, i: number) =>
-          i === 0 && r.scene === scene.id ? { ...r, aiReview: d } : r,
-        ),
-      }));
+      setProgress((p: any) => {
+        const target = p.reviews.findIndex(
+          (r: any) =>
+            r.id === runId.current ||
+            (!r.id &&
+              r.scene === scene.id &&
+              JSON.stringify(r.results) === JSON.stringify(results)),
+        );
+        return {
+          ...p,
+          reviews: p.reviews.map((r: any, i: number) =>
+            i === target ? { ...r, aiReview: d } : r,
+          ),
+        };
+      });
     } catch (e: any) {
       if (version !== requestVersion.current) return;
       setNotice(e.message);
@@ -607,6 +624,14 @@ export function Conversation({
                 ? 'AI 已配置。选择在线模式后，对话内容会发送给配置的模型服务。'
                 : 'DeepSeek 尚未配置。填写私有配置后刷新页面即可启用。'}
           </p>
+          {settings.ai && capabilities.loaded && !capabilities.conversation && (
+            <button
+              className="secondary"
+              onClick={() => setSettings({ ...settings, ai: false })}
+            >
+              切换到离线情景模拟
+            </button>
+          )}
           <button
             className="secondary"
             onClick={() => audio.play(npc.japanese)}

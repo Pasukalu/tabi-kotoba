@@ -2,6 +2,7 @@ import visualPhrases from '@/data/visual-phrases.json';
 import broadcasts from '@/data/broadcasts.json';
 import scenarioPhrases from '@/data/scenario-phrases.json';
 import hotel from '@/data/hotel.json';
+import booking from '@/data/booking.json';
 import restaurant from '@/data/restaurant.json';
 import train from '@/data/train.json';
 import shinkansen from '@/data/shinkansen.json';
@@ -39,6 +40,7 @@ export type Entry = {
   components?: { text: string; meaning: string }[];
 };
 export const lessons: Record<string, Entry[]> = {
+  booking,
   hotel,
   restaurant,
   train,
@@ -62,6 +64,7 @@ export const allEntries = [
   ...visualPhrases,
 ];
 export const names: Record<string, string> = {
+  booking: '予約・変更',
   hotel: 'ホテル',
   restaurant: 'レストラン',
   train: '電車・地下鉄',
@@ -175,7 +178,12 @@ export function roman(j: string) {
       let s = p.reading.replace(/[ァ-ヶ]/g, (c) =>
         String.fromCharCode(c.charCodeAt(0) - 96),
       );
-      if (index > 0 && parts[index - 1].text !== parts[index - 1].reading)
+      if (
+        index > 0 &&
+        p.text === p.reading &&
+        /^[はへ]/.test(p.text) &&
+        parts[index - 1].text !== parts[index - 1].reading
+      )
         s = s.replace(/^は/, 'わ').replace(/^へ/, 'え');
       let out = '',
         double = false;

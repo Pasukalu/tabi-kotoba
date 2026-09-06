@@ -2397,3 +2397,18 @@ small,
     scroll-behavior: auto !important;
   }
 }
+
+.recovery-banner {
+  position: relative;
+  z-index: 60;
+  padding: 1rem;
+  background: var(--background);
+  border-bottom: 2px solid var(--primary);
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.recovery-banner p {
+  flex: 1 1 20rem;
+}

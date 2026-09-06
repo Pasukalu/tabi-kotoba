@@ -1,5 +1,6 @@
 import plans from '@/data/daily-plans.json';
 export type ConversationDraft = {
+  runId?: string;
   sceneId: string;
   index: number;
   input: string;

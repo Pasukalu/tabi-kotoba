@@ -9,6 +9,7 @@ import {
 } from 'react';
 import { allEntries, plain } from './content';
 import { validateProgress, normalizeSettings } from './storage';
+import { readPreserving, recoveryCopies } from './persistence';
 import { tts } from './audio';
 export type Srs = {
   due: number;
@@ -80,14 +81,36 @@ export function Provider({ children }: { children: ReactNode }) {
     [settings, setSettings] = useState<Settings>(initial),
     [loaded, setLoaded] = useState(false),
     [notice, setNotice] = useState('');
+  const writable = useRef({ progress: false, settings: false });
+  const [recoveryMessage, setRecoveryMessage] = useState('');
   useEffect(() => {
     try {
-      const p = JSON.parse(localStorage.getItem('tabi-progress-v1') || 'null'),
-        s = JSON.parse(localStorage.getItem('tabi-settings-v1') || 'null');
-      if (p) setProgress(validateProgress(p));
-      if (s) setSettings(normalizeSettings(s));
+      const p = readPreserving(
+        localStorage,
+        'tabi-progress-v1',
+        validateProgress,
+        empty,
+      );
+      const s = readPreserving(
+        localStorage,
+        'tabi-settings-v1',
+        normalizeSettings,
+        initial,
+      );
+      setProgress(p.value);
+      setSettings(s.value);
+      writable.current = { progress: p.canSave, settings: s.canSave };
+      setRecoveryMessage(
+        p.issue ||
+          s.issue ||
+          (Object.keys(recoveryCopies(localStorage)).length
+            ? '浏览器中保存着以前无法读取的记录副本，可下载保留。'
+            : ''),
+      );
     } catch {
-      setNotice('保存的数据无法读取，已使用默认设置。');
+      setRecoveryMessage(
+        '浏览器暂不允许保存。本次练习可继续，原记录不会被覆盖。',
+      );
     }
     setLoaded(true);
     if ('serviceWorker' in navigator)
@@ -106,7 +129,7 @@ export function Provider({ children }: { children: ReactNode }) {
               !x.pathname.includes('__')
             );
           });
-          const cache = await caches.open('tabi-v1');
+          const cache = await caches.open('tabi-v6');
           await Promise.allSettled(urls.map((u) => cache.add(u)));
         })
         .catch(() => {});
@@ -114,8 +137,10 @@ export function Provider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!loaded) return;
     try {
-      localStorage.setItem('tabi-progress-v1', JSON.stringify(progress));
-      localStorage.setItem('tabi-settings-v1', JSON.stringify(settings));
+      if (writable.current.progress)
+        localStorage.setItem('tabi-progress-v1', JSON.stringify(progress));
+      if (writable.current.settings)
+        localStorage.setItem('tabi-settings-v1', JSON.stringify(settings));
     } catch {
       setNotice('浏览器未允许保存，本次进度可能无法保留。');
     }
@@ -270,6 +295,49 @@ export function Provider({ children }: { children: ReactNode }) {
         entries: [...allEntries, ...progress.extraEntries],
       }}
     >
+      {recoveryMessage && (
+        <aside className="recovery-banner" role="status">
+          <p>{recoveryMessage}</p>
+          <button
+            className="secondary"
+            onClick={() => {
+              try {
+                const copies = recoveryCopies(localStorage);
+                if (!writable.current.progress)
+                  copies['original-progress'] =
+                    localStorage.getItem('tabi-progress-v1') || '';
+                if (!writable.current.settings)
+                  copies['original-settings'] =
+                    localStorage.getItem('tabi-settings-v1') || '';
+                const url = URL.createObjectURL(
+                  new Blob(
+                    [
+                      JSON.stringify(
+                        { format: 'tabi-recovery-raw', copies },
+                        null,
+                        2,
+                      ),
+                    ],
+                    { type: 'application/json' },
+                  ),
+                );
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'tabi-recovery.json';
+                link.click();
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+              } catch {
+                setNotice('无法读取副本，请检查浏览器的存储权限。');
+              }
+            }}
+          >
+            下载原始记录副本
+          </button>
+          <button className="secondary" onClick={() => setRecoveryMessage('')}>
+            暂时收起
+          </button>
+        </aside>
+      )}
       {children}
       {notice && (
         <div className="notice" role="status">

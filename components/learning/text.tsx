@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { Volume2, Star, RotateCcw, Check, Square, Repeat } from 'lucide-react';
-import { Entry, tokens, kana, roman, plain } from '@/lib/content';
+import { Entry, tokens, kana, roman } from '@/lib/content';
 import { useLearning, useAudio } from '@/lib/learning';
 import {
   Select,
@@ -24,15 +24,17 @@ export function Choice({
   onChange,
   items,
   label,
+  id,
 }: {
   value: string;
   onChange: (x: string) => void;
   items: readonly (readonly [string, string])[];
   label: string;
+  id?: string;
 }) {
   return (
     <Select value={value} onValueChange={(v) => v && onChange(v)}>
-      <SelectTrigger aria-label={label} className="choice">
+      <SelectTrigger id={id} aria-label={label} className="choice">
         <SelectValue>
           {items.find((x) => x[0] === value)?.[1] || value}
         </SelectValue>
@@ -64,7 +66,7 @@ export function Japanese({
             {onWord ? (
               <button
                 className="word-button"
-                onClick={() => onWord(t.text)}
+                onClick={() => onWord(t.reading)}
                 aria-label={'播放 ' + t.text}
               >
                 {t.text}
@@ -75,7 +77,19 @@ export function Japanese({
             <rt>{t.reading}</rt>
           </ruby>
         ) : (
-          <span key={i}>{t.text}</span>
+          <span key={i}>
+            {onWord && /[一-龯々ぁ-んァ-ヶA-Za-z0-9]/.test(t.text) ? (
+              <button
+                className="word-button"
+                onClick={() => onWord(t.reading)}
+                aria-label={'播放 ' + t.text}
+              >
+                {t.text}
+              </button>
+            ) : (
+              t.text
+            )}
+          </span>
         ),
       )}
     </span>

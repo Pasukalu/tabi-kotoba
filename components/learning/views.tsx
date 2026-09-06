@@ -1,4 +1,6 @@
 'use client';
+import ExpressionCompare from './expression-compare';
+import { restorePreserving } from '@/lib/persistence';
 import { difficulty } from '@/lib/difficulty';
 import { componentText } from '@/lib/menu-text';
 import { parseBackup } from '@/lib/storage';
@@ -9,17 +11,10 @@ import ServiceStatus from './service-status';
 import { useState, useEffect, useRef } from 'react';
 import {
   ArrowRight,
-  Hotel,
-  TrainFront,
-  Utensils,
-  Store,
-  BookOpen,
   Headphones,
   Volume2,
   ArrowUpRight,
   Search,
-  Star,
-  Check,
   Download,
 } from 'lucide-react';
 import {
@@ -31,10 +26,6 @@ import {
   rules,
   menus,
   searchEntries,
-  plain,
-  tokens,
-  kana,
-  roman,
 } from '@/lib/content';
 import { useLearning, useAudio } from '@/lib/learning';
 import { Sentence, Japanese, Choice, modes, AudioBar } from './text';
@@ -42,7 +33,6 @@ import { scenarios } from '@/lib/dialogue';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
-import { Progress } from '@/components/ui/progress';
 import TicketMachine from './ticket-machine';
 import ContextQuiz from './context-quiz';
 import {
@@ -133,7 +123,8 @@ export function Scenes() {
         </TabsList>
         <TabsContent value="learn">
           <CourseReader key={scene} scene={scene} />
-          {scene === 'phrases' ? <ContextQuiz /> : <ExpressionCompare />}
+          {scene === 'phrases' && <ContextQuiz />}
+          <ExpressionCompare key={scene} scene={scene} />
         </TabsContent>
         <TabsContent value="simulate">
           <div className="scene-grid">
@@ -176,76 +167,51 @@ export function Scenes() {
         )}
         <TabsContent value="map">
           <div className="panel">
-            <h3>完整课程目录</h3>
-            <p className="muted">
-              已开放本页核心表达与关联模拟。下面是后续扩充专题目录，并非每项都已有独立课程。
-            </p>
-            <div className="topic-map">
-              {map
-                .find((m) => m.id === scene)
-                ?.topics.map((t, i) => (
-                  <div key={t}>
-                    <span>{String(i + 1).padStart(2, '0')}</span>
-                    {t}
-                  </div>
+            <h3>选择一条可以走完的训练路线</h3>
+            <div className="scene-grid">
+              {scenarios
+                .filter((s) => s.category === scene)
+                .map((s) => (
+                  <a
+                    className="scene-card"
+                    key={s.id}
+                    href={'/conversation?scene=' + s.id}
+                  >
+                    <h3>{s.title}</h3>
+                    <p>{s.description}</p>
+                    <span className="tag">
+                      {progress.completed.includes(s.id)
+                        ? '✓ 已完成'
+                        : `${s.steps.length} 个沟通节点`}
+                    </span>
+                  </a>
                 ))}
             </div>
+            {!scenarios.some((s) => s.category === scene) && (
+              <p>
+                本专题先通过「学习」和「实战阅读」练习，再进入相关服务场景使用表达。
+              </p>
+            )}
+            <details className="help">
+              <summary>查看完整专题规划与内容边界</summary>
+              <p className="muted">
+                下面保留所有专题规划；部分细分项目尚未有独立课程。上方列出的路线均可实际练习。
+              </p>
+              <div className="topic-map">
+                {map
+                  .find((m) => m.id === scene)
+                  ?.topics.map((t, i) => (
+                    <div key={t}>
+                      <span>{String(i + 1).padStart(2, '0')}</span>
+                      {t}
+                    </div>
+                  ))}
+              </div>
+            </details>
           </div>
         </TabsContent>
       </Tabs>
     </>
-  );
-}
-function ExpressionCompare() {
-  const { play } = useAudio();
-  const rows = [
-    [
-      '教科書',
-      'これはいくらですか。',
-      '完整中性，完全正确；不是必须纠正的错误。',
-    ],
-    ['自然', 'これ、いくらですか。', '省略话题助词，日常购物很自然。'],
-    [
-      'かなり自然',
-      'これっていくらですか。',
-      '更口语的提题方式；不表示比其他说法永远更好。',
-    ],
-    [
-      '店員表現',
-      'こちらは[千円|せんえん]でございます。',
-      '工作人员回答价格，游客通常不需要使用「ございます」。',
-    ],
-    [
-      'カジュアル',
-      'これ、いくら？',
-      '适合熟人间；对陌生店员通常加ですか更稳妥。',
-    ],
-    [
-      'NG',
-      'これ、いくらだよ。',
-      '此语气在向陌生店员询价时可能显得强硬；标签只针对这个语境。',
-    ],
-  ];
-  return (
-    <section className="panel compare">
-      <h3>教科书与日常：同一场景，不同距离。</h3>
-      {rows.map(([tag, j, n]) => (
-        <div key={tag}>
-          <span className="tag">{tag}</span>
-          <p className="jp">
-            <Japanese text={j} />
-            <button
-              className="icon-btn"
-              aria-label="播放例句"
-              onClick={() => play(j)}
-            >
-              <Volume2 size={16} />
-            </button>
-          </p>
-          <p className="muted">{n}</p>
-        </div>
-      ))}
-    </section>
   );
 }
 export function Dictionary({
@@ -1018,18 +984,20 @@ export function Profile() {
         <ServiceStatus />
         <section className="panel settings-panel">
           <h2>文字と表示</h2>
-          <label>
+          <label htmlFor="profile-choice-1">
             默认显示
             <Choice
+              id="profile-choice-1"
               value={settings.mode}
               label="默认显示"
               onChange={(v) => update('mode', v)}
               items={modes}
             />
           </label>
-          <label className="row spaced">
+          <label className="row spaced" htmlFor="profile-dark">
             深色模式
             <Switch
+              id="profile-dark"
               checked={settings.dark}
               onCheckedChange={(v) => update('dark', v)}
               aria-label="深色模式"
@@ -1061,9 +1029,10 @@ export function Profile() {
         </section>
         <section className="panel settings-panel">
           <h2>難易度と音声</h2>
-          <label>
+          <label htmlFor="profile-choice-2">
             训练等级
             <Choice
+              id="profile-choice-2"
               value={settings.level}
               label="训练等级"
               onChange={(v) => update('level', v)}
@@ -1082,18 +1051,20 @@ export function Profile() {
             等级会调整建议语速、帮助显示和在线 NPC 提问复杂度，不等同 JLPT
             成绩。离线情景的业务流程相同；Native 隐藏翻译、读音与提示。
           </p>
-          <label>
+          <label htmlFor="profile-choice-3">
             语速
             <Choice
+              id="profile-choice-3"
               value={String(settings.speed)}
               label="语速"
               onChange={(v) => update('speed', Number(v))}
               items={['0.7', '0.85', '1', '1.15'].map((x) => [x, x + '×'])}
             />
           </label>
-          <label>
+          <label htmlFor="profile-choice-4">
             语音来源
             <Choice
+              id="profile-choice-4"
               value={settings.audioProvider}
               label="语音来源"
               onChange={(v) => update('audioProvider', v)}
@@ -1103,9 +1074,10 @@ export function Profile() {
               ]}
             />
           </label>
-          <label>
+          <label htmlFor="profile-choice-5">
             选择日语声音
             <Choice
+              id="profile-choice-5"
               label="日语声音"
               value={settings.voiceName || 'auto'}
               onChange={(v) => update('voiceName', v === 'auto' ? '' : v)}
@@ -1155,17 +1127,14 @@ export function Profile() {
                   if (!f) return;
                   if (f.size > 8000000) throw Error();
                   const d = parseBackup(await f.text());
-                  localStorage.setItem(
-                    'tabi-progress-v1',
-                    JSON.stringify(d.progress),
-                  );
-                  localStorage.setItem(
-                    'tabi-settings-v1',
-                    JSON.stringify(d.settings),
-                  );
+                  restorePreserving(localStorage, d);
                   location.reload();
-                } catch {
-                  setNotice('备份格式不正确，当前记录未更改。');
+                } catch (error) {
+                  setNotice(
+                    error instanceof Error
+                      ? error.message
+                      : '无法恢复备份，请检查文件和浏览器存储权限。',
+                  );
                 }
               }}
             />

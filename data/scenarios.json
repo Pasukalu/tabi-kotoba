@@ -277,7 +277,7 @@
   },
   {
     "id": "booking-late",
-    "category": "life",
+    "category": "booking",
     "title": "予約に遅れそう",
     "description": "你预约了今晚七点、两位，姓名パスカル。预计迟到15分钟。打电话说明并确认是否可以保留。",
     "role": "レストランスタッフ",
@@ -485,7 +485,7 @@
   },
   {
     "id": "booking-change",
-    "category": "life",
+    "category": "booking",
     "title": "予約の時間を変更する",
     "description": "你叫パスカル，明天下午三点预约了两位。希望改成下午四点；四点满了，可以接受四点半。",
     "role": "予約受付スタッフ",
@@ -1390,5 +1390,711 @@
       }
     ],
     "end": "かしこまりました。ありがとうございました。"
+  },
+  {
+    "id": "hotel-roomservice",
+    "category": "hotel",
+    "title": "客房送餐与过单时间",
+    "description": "你在508房，希望点三明治。厨房已停止接单，改为询问馆内微波炉位置。",
+    "role": "ホテルスタッフ",
+    "steps": [
+      {
+        "npc": "hotel-roomservice-npc-0",
+        "reply": "[五〇八号室|ごまるはちごうしつ]ですが、サンドイッチをお[願|ねが]いできますか。",
+        "accept": "サンド|508|五〇八",
+        "goal": "说明房号与需求"
+      },
+      {
+        "npc": "hotel-roomservice-npc-1",
+        "reply": "そうですか。[電子|でんし]レンジは[館内|かんない]にありますか。",
+        "accept": "レンジ|電子",
+        "goal": "询问替代用餐设施"
+      },
+      {
+        "npc": "hotel-roomservice-npc-2",
+        "reply": "[二階|にかい]ですね。ありがとうございます。",
+        "accept": "二階|2階|ありがとう",
+        "goal": "确认位置"
+      }
+    ],
+    "end": "かしこまりました。ありがとうございました。"
+  },
+  {
+    "id": "hotel-booking-notfound",
+    "category": "hotel",
+    "title": "预约姓名查不到",
+    "description": "前台没有查到你的姓名。出示确认邮件，发现订的是明晚，询问今晚是否还有空房，不假定免费改期。",
+    "role": "ホテルスタッフ",
+    "steps": [
+      {
+        "npc": "hotel-booking-notfound-npc-0",
+        "reply": "こちらの[予約確認|よやくかくにん]メールを[見|み]ていただけますか。",
+        "accept": "メール|予約確認|見て",
+        "goal": "出示订单依据"
+      },
+      {
+        "npc": "hotel-booking-notfound-npc-1",
+        "reply": "[日付|ひづけ]を[間違|まちが]えたようです。[今夜|こんや]、[空|あ]いている[部屋|へや]はありますか。",
+        "accept": "今夜|空|日付",
+        "goal": "说明日期错误并询问现房"
+      },
+      {
+        "npc": "hotel-booking-notfound-npc-2",
+        "reply": "はい。[料金|りょうきん]と、[元|もと]の[予約|よやく]の[扱|あつか]いを[確認|かくにん]したいです。",
+        "accept": "料金|元の|予約|確認",
+        "goal": "同时确认新费用与原订单"
+      }
+    ],
+    "end": "かしこまりました。ありがとうございました。"
+  },
+  {
+    "id": "hotel-facilities",
+    "category": "hotel",
+    "title": "洗衣房与制冰机",
+    "description": "你想洗衣服，并取冰块。先问洗衣机洗衣液是否自动加入，再找到制冰机和冰桶。",
+    "role": "ホテルスタッフ",
+    "steps": [
+      {
+        "npc": "hotel-facilities-npc-0",
+        "reply": "[洗剤|せんざい]は[自動|じどう]で[入|はい]りますか。",
+        "accept": "洗剤|自動",
+        "goal": "确认洗衣液供应方式"
+      },
+      {
+        "npc": "hotel-facilities-npc-1",
+        "reply": "[氷|こおり]を[入|い]れる[容器|ようき]はどこにありますか。",
+        "accept": "容器|氷|入れる",
+        "goal": "询问冰桶位置"
+      },
+      {
+        "npc": "hotel-facilities-npc-2",
+        "reply": "[部屋|へや]から[持|も]っていけばいいんですね。",
+        "accept": "部屋|持|はい",
+        "goal": "确认应自带冰桶"
+      }
+    ],
+    "end": "かしこまりました。ありがとうございました。"
+  },
+  {
+    "id": "hotel-shuttle",
+    "category": "hotel",
+    "title": "接驳车与停车场",
+    "description": "你明天需要搭酒店接驳车到车站。模拟酒店要求预约，选择八点班次，确认乘车处。",
+    "role": "ホテルスタッフ",
+    "steps": [
+      {
+        "npc": "hotel-shuttle-npc-0",
+        "reply": "[明日|あした]の[朝|あさ][八時|はちじ]の[便|びん]を[予約|よやく]できますか。",
+        "accept": "八時|8時|はちじ",
+        "goal": "提出班次需求"
+      },
+      {
+        "npc": "hotel-shuttle-npc-1",
+        "reply": "[一人|ひとり]です。[乗|の]り[場|ば]はどちらですか。",
+        "accept": "一人|1人|ひとり",
+        "goal": "说明人数并询问乘车处"
+      },
+      {
+        "npc": "hotel-shuttle-npc-2",
+        "reply": "[駐車場側|ちゅうしゃじょうがわ]ですね。わかりました。",
+        "accept": "駐車場|わか|分か",
+        "goal": "区分两个入口"
+      }
+    ],
+    "end": "かしこまりました。ありがとうございました。"
+  },
+  {
+    "id": "restaurant-yakiniku",
+    "category": "restaurant",
+    "title": "烧肉店与夹具",
+    "description": "两位吃烧肉，先选单点。工作人员说明生肉用夹子和熟食筷子要分开，并提醒最后加点。",
+    "role": "レストランスタッフ",
+    "steps": [
+      {
+        "npc": "restaurant-yakiniku-npc-0",
+        "reply": "[単品|たんぴん]でお[願|ねが]いします。",
+        "accept": "単品|たんぴん",
+        "goal": "选择单点"
+      },
+      {
+        "npc": "restaurant-yakiniku-npc-1",
+        "reply": "[食|た]べる[箸|はし]とは[分|わ]けるんですね。",
+        "accept": "箸|分け|トング",
+        "goal": "确认夹具使用区别"
+      },
+      {
+        "npc": "restaurant-yakiniku-npc-2",
+        "reply": "カルビを[一人前|いちにんまえ]、[追加|ついか]でお[願|ねが]いします。",
+        "accept": "カルビ|追加",
+        "goal": "在截止前加点"
+      }
+    ],
+    "end": "かしこまりました。ありがとうございました。"
+  },
+  {
+    "id": "restaurant-family",
+    "category": "restaurant",
+    "title": "家庭餐厅与自助饮料",
+    "description": "点汉堡排套餐，选择少饭，并加点饮料吧。确认饮料吧需自己取用。",
+    "role": "レストランスタッフ",
+    "steps": [
+      {
+        "npc": "restaurant-family-npc-0",
+        "reply": "[少|すく]なめでお[願|ねが]いします。",
+        "accept": "少な|すくな",
+        "goal": "选择少饭"
+      },
+      {
+        "npc": "restaurant-family-npc-1",
+        "reply": "はい、お[願|ねが]いします。[自分|じぶん]で[取|と]りに[行|い]けばいいですか。",
+        "accept": "はい|お願い|自分",
+        "goal": "加点并确认取用方式"
+      },
+      {
+        "npc": "restaurant-family-npc-2",
+        "reply": "ありがとうございます。",
+        "accept": "ありがとう|はい",
+        "goal": "理解自助取用"
+      }
+    ],
+    "end": "かしこまりました。ありがとうございました。"
+  },
+  {
+    "id": "life-depachika",
+    "category": "life",
+    "title": "百货地下食品区",
+    "description": "你想买两块蛋糕，带回酒店约一小时。需要保冷剂，不需要礼品包装。",
+    "role": "スタッフ",
+    "steps": [
+      {
+        "npc": "life-depachika-npc-0",
+        "reply": "このケーキを[二|ふた]つください。",
+        "accept": "二|2|ふたつ",
+        "goal": "说明数量"
+      },
+      {
+        "npc": "life-depachika-npc-1",
+        "reply": "[一時間|いちじかん]くらいです。[保冷剤|ほれいざい]をお[願|ねが]いします。",
+        "accept": "一時間|1時間|保冷剤",
+        "goal": "说明携带时间与保冷需求"
+      },
+      {
+        "npc": "life-depachika-npc-2",
+        "reply": "はい。[包装|ほうそう]は[簡単|かんたん]で[大丈夫|だいじょうぶ]です。",
+        "accept": "はい|包装|大丈夫",
+        "goal": "说明不需礼品包装"
+      }
+    ],
+    "end": "かしこまりました。ありがとうございました。"
+  },
+  {
+    "id": "convenience-coffee",
+    "category": "convenience-store",
+    "title": "便利店咖啡机",
+    "description": "买小杯冰咖啡，按收银员提示去冷柜取杯，再在机器选冰咖啡小杯，不按热咖啡。",
+    "role": "スタッフ",
+    "steps": [
+      {
+        "npc": "convenience-coffee-npc-0",
+        "reply": "[小|ちい]さいサイズのカップですね。",
+        "accept": "小|サイズ|カップ",
+        "goal": "确认杯子规格"
+      },
+      {
+        "npc": "convenience-coffee-npc-1",
+        "reply": "アイスのSを[押|お]せばいいですか。",
+        "accept": "アイス|S|エス",
+        "goal": "确认机器选项"
+      },
+      {
+        "npc": "convenience-coffee-npc-2",
+        "reply": "わかりました。ありがとうございます。",
+        "accept": "わか|分か|ありがとう",
+        "goal": "理解冷热按钮区别"
+      }
+    ],
+    "end": "かしこまりました。ありがとうございました。"
+  },
+  {
+    "id": "convenience-print",
+    "category": "convenience-store",
+    "title": "复印机与店员协助",
+    "description": "要打印手机中的PDF，不知道是复印还是网络打印。询问店员操作入口，不向店员透露任何账户密码。",
+    "role": "スタッフ",
+    "steps": [
+      {
+        "npc": "convenience-print-npc-0",
+        "reply": "スマホのPDFを[印刷|いんさつ]したいんですが。",
+        "accept": "PDF|スマホ|印刷",
+        "goal": "说明文件在手机里"
+      },
+      {
+        "npc": "convenience-print-npc-1",
+        "reply": "[操作|そうさ]の[案内|あんない]はどこで[見|み]られますか。",
+        "accept": "案内|操作|どこ",
+        "goal": "寻找设备对应说明"
+      },
+      {
+        "npc": "convenience-print-npc-2",
+        "reply": "ありがとうございます。[読|よ]んでみます。",
+        "accept": "ありがとう|読",
+        "goal": "按该机器说明操作"
+      }
+    ],
+    "end": "かしこまりました。ありがとうございました。"
+  },
+  {
+    "id": "booking-attraction",
+    "category": "booking",
+    "title": "景点预约与时段",
+    "description": "你预约了两位上午十点入场。想改到下午一点，先核实是否可改以及原预约是否取消。",
+    "role": "スタッフ",
+    "steps": [
+      {
+        "npc": "booking-attraction-npc-0",
+        "reply": "[予約番号|よやくばんごう]はABC123です。[時間|じかん]を[変更|へんこう]したいんですが。",
+        "accept": "ABC123|変更",
+        "goal": "说明订单和变更需求"
+      },
+      {
+        "npc": "booking-attraction-npc-1",
+        "reply": "[午後|ごご][一時|いちじ]に[変更|へんこう]をお[願|ねが]いします。",
+        "accept": "一時|1時|変更",
+        "goal": "确认目标时段"
+      },
+      {
+        "npc": "booking-attraction-npc-2",
+        "reply": "はい。[新|あたら]しい[確認|かくにん]メールをいただけますか。",
+        "accept": "メール|確認",
+        "goal": "索取更改后的凭证"
+      }
+    ],
+    "end": "かしこまりました。ありがとうございました。"
+  },
+  {
+    "id": "life-rental",
+    "category": "life",
+    "title": "租车还车与加油",
+    "description": "模拟租车要求还车时加满指定燃料，今晚六点前返还。确认燃料是普通汽油并保留收据。",
+    "role": "スタッフ",
+    "steps": [
+      {
+        "npc": "life-rental-npc-0",
+        "reply": "[午後|ごご][六時|ろくじ]までですね。",
+        "accept": "六時|6時|十八|18",
+        "goal": "确认24小时制时间"
+      },
+      {
+        "npc": "life-rental-npc-1",
+        "reply": "レギュラーを[満|まん]タンですね。[給油|きゅうゆ]のレシートも[必要|ひつよう]ですか。",
+        "accept": "レギュラー|レシート",
+        "goal": "确认燃料及凭证"
+      },
+      {
+        "npc": "life-rental-npc-2",
+        "reply": "わかりました。レシートを[取|と]っておきます。",
+        "accept": "レシート|取|わか|分か",
+        "goal": "确认保留收据"
+      }
+    ],
+    "end": "かしこまりました。ありがとうございました。"
+  },
+  {
+    "id": "life-laundry",
+    "category": "life",
+    "title": "洗衣店与取衣时间",
+    "description": "一件外套需要干洗。你明天下午离开，最快明晚才能取，决定暂不送洗。",
+    "role": "スタッフ",
+    "steps": [
+      {
+        "npc": "life-laundry-npc-0",
+        "reply": "はい。いつ[仕上|しあ]がりますか。",
+        "accept": "いつ|仕上",
+        "goal": "询问完成时间"
+      },
+      {
+        "npc": "life-laundry-npc-1",
+        "reply": "[明日|あした]の[昼|ひる]に[出発|しゅっぱつ]するので、それより[早|はや]くは[難|むずか]しいですか。",
+        "accept": "早|昼|出発",
+        "goal": "说明时间限制"
+      },
+      {
+        "npc": "life-laundry-npc-2",
+        "reply": "では、[今回|こんかい]はやめておきます。ありがとうございます。",
+        "accept": "やめ|見送|ありがとう",
+        "goal": "理解婉拒并取消送洗"
+      }
+    ],
+    "end": "かしこまりました。ありがとうございました。"
+  },
+  {
+    "id": "booking-restaurant-phone",
+    "category": "booking",
+    "title": "电话预约餐厅",
+    "description": "你想预约明晚七点，两位；店里只有七点半。接受新时间，留下姓名和练习用电话号码。",
+    "role": "予約受付スタッフ",
+    "steps": [
+      {
+        "npc": "booking-restaurant-phone-npc-0",
+        "reply": "[明日|あした]の[夜|よる][七時|しちじ]に、[二名|にめい]で[予約|よやく]したいんですが。",
+        "accept": "明日|七時|二名",
+        "goal": "说明日期、时间和人数"
+      },
+      {
+        "npc": "booking-restaurant-phone-npc-1",
+        "reply": "では、[七時半|しちじはん]でお[願|ねが]いします。",
+        "accept": "七時半|7時半|19時30|しちじはん",
+        "goal": "接受替代时段"
+      },
+      {
+        "npc": "booking-restaurant-phone-npc-2",
+        "reply": "パスカルです。[番号|ばんごう]は090-0000-0000です。",
+        "accept": "パスカル.*(090|ゼロ)|090.*パスカル",
+        "goal": "使用任务中的虚构联系方式"
+      },
+      {
+        "npc": "booking-restaurant-phone-npc-3",
+        "reply": "はい、よろしくお[願|ねが]いします。",
+        "accept": "はい|よろしく",
+        "goal": "核对预约确认"
+      }
+    ],
+    "end": "かしこまりました。ありがとうございました。"
+  },
+  {
+    "id": "booking-hotel-phone",
+    "category": "booking",
+    "title": "预约酒店与取消条件",
+    "description": "订十月十日起两晚，一位，禁烟房。不含早餐；付款前询问取消条件。",
+    "role": "予約受付スタッフ",
+    "steps": [
+      {
+        "npc": "booking-hotel-phone-npc-0",
+        "reply": "[十月|じゅうがつ][十日|とおか]から[二泊|にはく]、[一名|いちめい]です。",
+        "accept": "二泊|2泊|十日|10日",
+        "goal": "说明入住日期与晚数"
+      },
+      {
+        "npc": "booking-hotel-phone-npc-1",
+        "reply": "そのプランでお[願|ねが]いします。キャンセル[料|りょう]はいつからかかりますか。",
+        "accept": "キャンセル|取消",
+        "goal": "确认取消费起算时间"
+      },
+      {
+        "npc": "booking-hotel-phone-npc-2",
+        "reply": "ありがとうございます。[内容|ないよう]を[確認|かくにん]します。",
+        "accept": "確認|ありがとう",
+        "goal": "保留并阅读方案条款"
+      }
+    ],
+    "end": "かしこまりました。ありがとうございました。"
+  },
+  {
+    "id": "booking-bus",
+    "category": "booking",
+    "title": "巴士预约与上车地点",
+    "description": "预约明早八点去机场的巴士。一位、一只行李箱；上车处在西口，并非东口。",
+    "role": "予約受付スタッフ",
+    "steps": [
+      {
+        "npc": "booking-bus-npc-0",
+        "reply": "[明日|あした]の[朝|あさ][八時|はちじ]、[空港行|くうこうゆ]きを[一名|いちめい]でお[願|ねが]いします。",
+        "accept": "空港|八時|8時",
+        "goal": "说明目的地、日期和班次"
+      },
+      {
+        "npc": "booking-bus-npc-1",
+        "reply": "スーツケースが[一|ひと]つあります。[乗|の]り[場|ば]は[東口|ひがしぐち]ですか。",
+        "accept": "スーツケース|一つ|東口",
+        "goal": "说明行李并核实站口"
+      },
+      {
+        "npc": "booking-bus-npc-2",
+        "reply": "[西口|にしぐち]の[三番|さんばん]ですね。[七時五十分|しちじごじゅっぷん]までに[行|い]きます。",
+        "accept": "西口|七時五十|7時50",
+        "goal": "纠正位置并理解集合截止时间"
+      }
+    ],
+    "end": "かしこまりました。ありがとうございました。"
+  },
+  {
+    "id": "booking-exhibition",
+    "category": "booking",
+    "title": "展览预约与入场名额",
+    "description": "想订周六两位下午两点入场，但该时段已满。选择三点，不把入场时段当作闭馆时间。",
+    "role": "予約受付スタッフ",
+    "steps": [
+      {
+        "npc": "booking-exhibition-npc-0",
+        "reply": "[土曜日|どようび]の[午後|ごご][二時|にじ]に、[二人|ふたり]で[入場|にゅうじょう]したいです。",
+        "accept": "土曜|二時|2時|二人",
+        "goal": "说明参观时段"
+      },
+      {
+        "npc": "booking-exhibition-npc-1",
+        "reply": "では、[三時|さんじ]の[枠|わく]でお[願|ねが]いします。",
+        "accept": "三時|3時|15時",
+        "goal": "选择仍有余票的时段"
+      },
+      {
+        "npc": "booking-exhibition-npc-2",
+        "reply": "わかりました。[閉館|へいかん]は[何時|なんじ]ですか。",
+        "accept": "閉館|何時",
+        "goal": "另外确认闭馆时间"
+      }
+    ],
+    "end": "[閉館|へいかん]は[十八時|じゅうはちじ]です。"
+  },
+  {
+    "id": "booking-onsen",
+    "category": "booking",
+    "title": "私汤预约与使用时间",
+    "description": "预约今晚八点的私人浴池，确认费用和是否包含换衣时间。该设施每次使用五十分钟。",
+    "role": "予約受付スタッフ",
+    "steps": [
+      {
+        "npc": "booking-onsen-npc-0",
+        "reply": "はい。[今夜|こんや][八時|はちじ]は[空|あ]いていますか。",
+        "accept": "八時|8時|20時",
+        "goal": "询问可用时段"
+      },
+      {
+        "npc": "booking-onsen-npc-1",
+        "reply": "[着替|きが]えの[時間|じかん]も[含|ふく]めて[五十分|ごじゅっぷん]ですか。",
+        "accept": "着替|含|五十分",
+        "goal": "核实时间范围"
+      },
+      {
+        "npc": "booking-onsen-npc-2",
+        "reply": "わかりました。[八時|はちじ]でお[願|ねが]いします。",
+        "accept": "八時|8時|お願い",
+        "goal": "理解条件后确认预约"
+      }
+    ],
+    "end": "かしこまりました。ありがとうございました。"
+  },
+  {
+    "id": "booking-salon",
+    "category": "booking",
+    "title": "美容院预约与服务内容",
+    "description": "约明天下午剪发，不染发。接受四点班次，并先确认费用是否含洗发。",
+    "role": "予約受付スタッフ",
+    "steps": [
+      {
+        "npc": "booking-salon-npc-0",
+        "reply": "カットだけお[願|ねが]いしたいんですが、[明日|あした]の[午後|ごご]は[空|あ]いていますか。",
+        "accept": "カット|明日",
+        "goal": "明确预约服务而非店内点餐菜单"
+      },
+      {
+        "npc": "booking-salon-npc-1",
+        "reply": "[四時|よじ]ですね。[料金|りょうきん]にシャンプーは[含|ふく]まれていますか。",
+        "accept": "シャンプー|料金",
+        "goal": "核实服务包含项目"
+      },
+      {
+        "npc": "booking-salon-npc-2",
+        "reply": "では、その[時間|じかん]でお[願|ねが]いします。",
+        "accept": "お願い|その時間",
+        "goal": "确认预约"
+      }
+    ],
+    "end": "かしこまりました。ありがとうございました。"
+  },
+  {
+    "id": "payment-contactless",
+    "category": "payment",
+    "title": "信用卡感应与插卡",
+    "description": "用信用卡付款，感应没有成功。按店员要求改为插卡，确认一次付清。",
+    "role": "店員",
+    "steps": [
+      {
+        "npc": "payment-contactless-npc-0",
+        "reply": "クレジットカードのタッチ[決済|けっさい]でお[願|ねが]いします。",
+        "accept": "クレジット|タッチ|カード",
+        "goal": "明确卡的支付方式"
+      },
+      {
+        "npc": "payment-contactless-npc-1",
+        "reply": "はい、こちらに[差|さ]し[込|こ]めばいいですか。",
+        "accept": "差し込|はい",
+        "goal": "听懂感应与插卡的区别"
+      },
+      {
+        "npc": "payment-contactless-npc-2",
+        "reply": "はい、[一括|いっかつ]でお[願|ねが]いします。",
+        "accept": "一括|いっかつ",
+        "goal": "理解付款次数"
+      }
+    ],
+    "end": "かしこまりました。ありがとうございました。"
+  },
+  {
+    "id": "payment-ic-cash",
+    "category": "payment",
+    "title": "交通IC余额不足与替代付款",
+    "description": "原本想用交通IC支付，但余额不足。店内不能充值，改用现金，不假定支持余额与现金混付。",
+    "role": "店員",
+    "steps": [
+      {
+        "npc": "payment-ic-cash-npc-0",
+        "reply": "[交通系|こうつうけい]ICでお[願|ねが]いします。",
+        "accept": "IC|アイシー|交通系",
+        "goal": "说明支付工具"
+      },
+      {
+        "npc": "payment-ic-cash-npc-1",
+        "reply": "ここでチャージできますか。",
+        "accept": "チャージ",
+        "goal": "先询问是否提供充值"
+      },
+      {
+        "npc": "payment-ic-cash-npc-2",
+        "reply": "では、[現金|げんきん]で[払|はら]います。",
+        "accept": "現金|げんきん",
+        "goal": "接受店铺限制并更换方式"
+      }
+    ],
+    "end": "かしこまりました。ありがとうございました。"
+  },
+  {
+    "id": "payment-qr",
+    "category": "payment",
+    "title": "二维码支付与金额确认",
+    "description": "本模拟店支持PayPay，需扫店铺二维码输入一千二百日元，完成前让店员确认金额。",
+    "role": "店員",
+    "steps": [
+      {
+        "npc": "payment-qr-npc-0",
+        "reply": "PayPayは[使|つか]えますか。",
+        "accept": "PayPay|ペイペイ",
+        "goal": "询问当前店铺是否支持"
+      },
+      {
+        "npc": "payment-qr-npc-1",
+        "reply": "[千二百円|せんにひゃくえん]ですね。この[金額|きんがく]で[合|あ]っていますか。",
+        "accept": "千二百|1200|1,200|金額",
+        "goal": "在完成付款前核对金额"
+      },
+      {
+        "npc": "payment-qr-npc-2",
+        "reply": "こちらで[確認|かくにん]をお[願|ねが]いします。",
+        "accept": "確認|こちら",
+        "goal": "向店员展示完成页面"
+      }
+    ],
+    "end": "かしこまりました。ありがとうございました。"
+  },
+  {
+    "id": "payment-invoice-name",
+    "category": "payment",
+    "title": "小票、收据与抬头",
+    "description": "结账后需要写姓名的领收书，抬头用パスカル。不把日本领收书直接等同中国税务发票。",
+    "role": "店員",
+    "steps": [
+      {
+        "npc": "payment-invoice-name-npc-0",
+        "reply": "[領収書|りょうしゅうしょ]をいただけますか。",
+        "accept": "領収書|りょうしゅうしょ",
+        "goal": "提出凭证需求"
+      },
+      {
+        "npc": "payment-invoice-name-npc-1",
+        "reply": "パスカルでお[願|ねが]いします。",
+        "accept": "パスカル",
+        "goal": "给出抬头名称"
+      },
+      {
+        "npc": "payment-invoice-name-npc-2",
+        "reply": "はい、[大丈夫|だいじょうぶ]です。ありがとうございます。",
+        "accept": "大丈夫|ありがとう|はい",
+        "goal": "核对金额与姓名"
+      }
+    ],
+    "end": "かしこまりました。ありがとうございました。"
+  },
+  {
+    "id": "convenience-hotfood",
+    "category": "convenience-store",
+    "title": "炸物与关东煮",
+    "description": "要一块炸鸡、一份萝卜和一个鸡蛋。店员告知萝卜售罄，改为只要鸡蛋，并拒绝芥末。",
+    "role": "店員",
+    "steps": [
+      {
+        "npc": "convenience-hotfood-npc-0",
+        "reply": "フライドチキンを[一|ひと]つと、おでんの[大根|だいこん]と[卵|たまご]をお[願|ねが]いします。",
+        "accept": "チキン|大根|卵",
+        "goal": "说明柜台食品名称和数量"
+      },
+      {
+        "npc": "convenience-hotfood-npc-1",
+        "reply": "では、おでんは[卵|たまご]だけでお[願|ねが]いします。",
+        "accept": "卵|たまご",
+        "goal": "处理售罄并明确保留的商品"
+      },
+      {
+        "npc": "convenience-hotfood-npc-2",
+        "reply": "からしはなしで[大丈夫|だいじょうぶ]です。",
+        "accept": "なし|いりません|不要",
+        "goal": "明确拒绝附加品"
+      }
+    ],
+    "end": "かしこまりました。ありがとうございました。"
+  },
+  {
+    "id": "convenience-facilities",
+    "category": "convenience-store",
+    "title": "ATM、厕所与垃圾桶",
+    "description": "询问ATM和厕所，再问刚买饮料的空瓶如何丢弃。本店厕所须借钥匙，垃圾桶在店内。",
+    "role": "店員",
+    "steps": [
+      {
+        "npc": "convenience-facilities-npc-0",
+        "reply": "すみません、ATMはどこですか。",
+        "accept": "ATM|エーティーエム",
+        "goal": "询问设施位置"
+      },
+      {
+        "npc": "convenience-facilities-npc-1",
+        "reply": "ありがとうございます。トイレもお[借|か]りしていいですか。",
+        "accept": "トイレ|借り",
+        "goal": "询问厕所能否使用"
+      },
+      {
+        "npc": "convenience-facilities-npc-2",
+        "reply": "ありがとうございます。ここで[買|か]ったペットボトルは、どこに[捨|す]てればいいですか。",
+        "accept": "ペットボトル|捨|ごみ|ゴミ",
+        "goal": "询问店铺实际分类位置"
+      }
+    ],
+    "end": "[店内|てんない]の[分別|ぶんべつ]ボックスをご[利用|りよう]ください。"
+  },
+  {
+    "id": "booking-shinkansen",
+    "category": "booking",
+    "title": "新干线柜台预约与行李",
+    "description": "从东京去京都，明天上午出发。你想坐窗边，并带着三边合计180厘米的箱子。先让工作人员核实适合的座席；完整购票和进站在新干线实战机器中继续训练。",
+    "role": "駅員",
+    "steps": [
+      {
+        "npc": "booking-shinkansen-npc-0",
+        "reply": "[明日|あした]の[午前中|ごぜんちゅう]に、[東京|とうきょう]から[京都|きょうと]まで[行|い]きたいんですが。",
+        "accept": "京都|東京|午前",
+        "goal": "说明出发地、目的地和时间"
+      },
+      {
+        "npc": "booking-shinkansen-npc-1",
+        "reply": "[窓側|まどがわ]をお[願|ねが]いします。[大|おお]きなスーツケースもあるので、[荷物|にもつ]の[置|お]き[場所|ばしょ]を[確認|かくにん]したいです。",
+        "accept": "窓|荷物|スーツケース",
+        "goal": "同时说明座位和行李需求"
+      },
+      {
+        "npc": "booking-shinkansen-npc-2",
+        "reply": "[合計|ごうけい]で[百八十|ひゃくはちじゅう]センチです。[対応|たいおう]する[席|せき]の[空|あ]きを[調|しら]べてもらえますか。",
+        "accept": "百八十|180",
+        "goal": "提供尺寸后请工作人员查可用安排"
+      }
+    ],
+    "end": "[空席|くうせき]をお[調|しら]べしますので、[少々|しょうしょう]お[待|ま]ちください。"
   }
 ]

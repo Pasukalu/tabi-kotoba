@@ -84,9 +84,10 @@ export default function TicketMachine() {
               />
               {step === 0 && (
                 <div className="booking-fields">
-                  <label>
+                  <label htmlFor="ticket-choice-1">
                     出発駅
                     <Choice
+                      id="ticket-choice-1"
                       label="出发站"
                       value={b.origin}
                       onChange={(v) => update('origin', v)}
@@ -94,9 +95,10 @@ export default function TicketMachine() {
                     />
                   </label>
                   <ArrowRight />
-                  <label>
+                  <label htmlFor="ticket-choice-2">
                     到着駅
                     <Choice
+                      id="ticket-choice-2"
                       label="到达站"
                       value={b.destination}
                       onChange={(v) => update('destination', v)}
@@ -278,9 +280,10 @@ export default function TicketMachine() {
                     </p>
                   </div>
                   <div className="booking-fields">
-                    <label>
+                    <label htmlFor="ticket-choice-3">
                       ホーム
                       <Choice
+                        id="ticket-choice-3"
                         label="选择站台"
                         value={b.platform}
                         onChange={(v) => update('platform', v)}
@@ -290,9 +293,10 @@ export default function TicketMachine() {
                         ])}
                       />
                     </label>
-                    <label>
+                    <label htmlFor="ticket-choice-4">
                       号車
                       <Choice
+                        id="ticket-choice-4"
                         label="选择车厢"
                         value={b.car}
                         onChange={(v) => update('car', v)}
