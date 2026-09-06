@@ -36,7 +36,7 @@ export function acceptsLocal(
   )
     return false;
   if (
-    /^パスカルです/.test(expected) &&
+    expected.startsWith('パスカルです') &&
     /パスカル.{0,4}(ではない|じゃない|ではありません|じゃありません)/.test(text)
   )
     return false;

@@ -24,7 +24,7 @@ export default function DailyChallenge() {
     if (!loaded || run) return;
     setProgress((p: any) => ({
       ...p,
-      dailyRuns: { ...(p.dailyRuns || {}), [date]: makeDaily(date) },
+      dailyRuns: { ...p.dailyRuns, [date]: makeDaily(date) },
     }));
   }, [loaded, date, !!run, setProgress]);
   const snapshot = useCallback(

@@ -1,4 +1,5 @@
 'use client';
+import { useStopwatch } from '@/lib/use-stopwatch';
 import { useState, useRef, useEffect } from 'react';
 import { Volume2, ArrowRight, Headphones } from 'lucide-react';
 import tasks from '@/data/broadcast-tasks.json';
@@ -16,7 +17,7 @@ export default function BroadcastTraining() {
     [playing, setPlaying] = useState(false),
     [results, setResults] = useState<any[]>([]),
     [finished, setFinished] = useState(false);
-  const timer = useRef(0),
+  const timer = useStopwatch(),
     generation = useRef(0);
   const q = tasks[i],
     entry = allEntries.find((e) => e.id === q.entryId)!,
@@ -36,7 +37,7 @@ export default function BroadcastTraining() {
     setPlaying(false);
     if (completed) {
       setHeard(true);
-      timer.current = performance.now();
+      timer.reset();
     }
   }
   function stop() {
@@ -47,7 +48,7 @@ export default function BroadcastTraining() {
   }
   function choose(n: number) {
     if (selected !== null || !heard || playing) return;
-    const ms = Math.max(0, performance.now() - timer.current),
+    const ms = timer.elapsed(),
       correct = n === q.correct;
     const result = { id: q.entryId, correct, assisted, ms };
     setSelected(n);

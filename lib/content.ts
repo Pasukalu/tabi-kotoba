@@ -76,7 +76,7 @@ export const names: Record<string, string> = {
   phrases: '日本人っぽい言い方',
 };
 export function tokens(j: string) {
-  return [...j.matchAll(/\[([^|\]]+)\|([^\]]+)\]|([^\[]+)/g)].map((x) => ({
+  return [...j.matchAll(/\[([^|\]]+)\|([^\]]+)\]|([^[]+)/g)].map((x) => ({
     text: x[1] || x[3],
     reading: x[2] || x[3],
   }));
@@ -188,7 +188,7 @@ export function roman(j: string) {
       let out = '',
         double = false;
       for (let i = 0; i < s.length; i++) {
-        let c = s[i];
+        const c = s[i];
         if (c === 'っ') {
           double = true;
           continue;

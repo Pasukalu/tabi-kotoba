@@ -6,8 +6,10 @@ import {
   useState,
   useRef,
   ReactNode,
+  type Dispatch,
+  type SetStateAction,
 } from 'react';
-import { allEntries, plain } from './content';
+import { allEntries, plain, type Entry } from './content';
 import { validateProgress, normalizeSettings } from './storage';
 import { readPreserving, recoveryCopies } from './persistence';
 import { tts } from './audio';
@@ -77,8 +79,29 @@ const initial: Settings = {
   audioProvider: 'browser',
   ai: false,
 };
-const C = createContext<any>(null);
-export const useLearning = () => useContext(C);
+type LearningContext = {
+  notice: string;
+  settings: Settings;
+  setSettings: Dispatch<SetStateAction<Settings>>;
+  progress: Progress;
+  setProgress: Dispatch<SetStateAction<Progress>>;
+  loaded: boolean;
+  setNotice: Dispatch<SetStateAction<string>>;
+  entries: Entry[];
+  mark: (id: string, type: string) => void;
+  answer: (
+    id: string,
+    correct: boolean,
+    ms: number,
+    options?: { assisted?: boolean },
+  ) => void;
+};
+const C = createContext<LearningContext | null>(null);
+export const useLearning = () => {
+  const context = useContext(C);
+  if (!context) throw Error('Learning provider is required');
+  return context;
+};
 export function Provider({ children }: { children: ReactNode }) {
   const [progress, setProgress] = useState<Progress>(empty),
     [settings, setSettings] = useState<Settings>(initial),

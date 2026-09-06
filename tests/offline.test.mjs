@@ -29,7 +29,7 @@ assert.equal(
   origin + '/scenes?category=hotel',
 );
 const handlers = {};
-let looked = [];
+const looked = [];
 const sw = {
   self: {
     addEventListener: (name, fn) => (handlers[name] = fn),

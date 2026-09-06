@@ -18,7 +18,7 @@ for (const bucket of byFirst.values())
 
 /** Complete missing readings only from unambiguous, authored vocabulary; never guess an unknown reading. */
 export function fillKnownReadings(input: string) {
-  if (/[\[\]]/.test(input.replace(/\[[^|\[\]]+\|[^\[\]]+\]/g, '')))
+  if (/[[\]]/.test(input.replace(/\[[^|[\]]+\|[^[\]]+\]/g, '')))
     return input;
   let length = 0;
   const parts = tokens(input).map((part) => {

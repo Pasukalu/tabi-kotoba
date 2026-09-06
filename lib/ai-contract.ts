@@ -16,14 +16,14 @@ const japanese = (v: unknown): v is string => {
   if (!text(v)) return false;
   let valid = true;
   const rest = v.replace(
-    /\[([^|\[\]]+)\|([^\[\]]+)\]/g,
+    /\[([^|[\]]+)\|([^[\]]+)\]/g,
     (_whole, _word: string, reading: string) => {
       if (!reading.trim() || /[\p{Script=Han}々|]/u.test(reading))
         valid = false;
       return '';
     },
   );
-  return valid && !/[\p{Script=Han}々\[\]]/u.test(rest);
+  return valid && !/[\p{Script=Han}々[\]]/u.test(rest);
 };
 /** Treat upstream JSON as untrusted data, including values used by React and star.repeat(). */
 export function validateAIOutput(value: unknown, review: boolean) {

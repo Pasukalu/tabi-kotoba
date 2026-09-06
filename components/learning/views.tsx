@@ -1,5 +1,7 @@
 'use client';
 import { useClock } from '@/lib/use-clock';
+import listeningMeanings from '@/data/listening-meanings.json';
+import { searchScenarios } from '@/lib/scenario-search';
 import OfflineSettings from './offline-settings';
 import { useStopwatch } from '@/lib/use-stopwatch';
 import ExpressionCompare from './expression-compare';
@@ -260,6 +262,23 @@ export function Dictionary({
             : !!progress.srs[e.id])),
   );
   const pages = Math.ceil(list.length / 12);
+  const matchedScenarios = global && q.trim() ? searchScenarios(q, scene) : [];
+  const matchedRules =
+    global && q.trim()
+      ? rules.filter(
+          (rule) =>
+            (scene === 'all' || rule.scenes.includes(scene)) &&
+            (rule.title + rule.text)
+              .normalize('NFKC')
+              .toLocaleLowerCase()
+              .includes(q.normalize('NFKC').toLocaleLowerCase().trim()),
+        )
+      : [];
+  const pageNumbers = [
+    ...new Set([1, page - 2, page - 1, page, page + 1, page + 2, pages]),
+  ]
+    .filter((number) => number >= 1 && number <= pages)
+    .sort((a, b) => a - b);
   return (
     <>
       <Heading
@@ -311,16 +330,33 @@ export function Dictionary({
         找到 {list.length} 条{global ? '学习内容' : '词汇'} · 第{' '}
         {Math.min(page, pages) || 1} 页
       </p>
-      {global &&
-        rules
-          .filter((r) => (r.title + r.text).includes(q) && q)
-          .map((r) => <Rule key={r.id} rule={r} />)}
+      {matchedScenarios.length > 0 && (
+        <section>
+          <h2>相关对话 · {matchedScenarios.length}</h2>
+          <div className="scene-grid">
+            {matchedScenarios.slice(0, 6).map((item) => (
+              <a
+                className="scene-card"
+                key={item.id}
+                href={'/conversation?scene=' + item.id}
+              >
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+                <span className="text-link">进入对话 →</span>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+      {matchedRules.map((r) => (
+        <Rule key={r.id} rule={r} />
+      ))}
       <div className="dictionary-grid">
         {list.slice((page - 1) * 12, page * 12).map((e) => (
           <Sentence key={e.id} entry={e} />
         ))}
       </div>
-      {!list.length && (
+      {!list.length && !matchedScenarios.length && !matchedRules.length && (
         <div className="empty-state">
           暂无匹配。试试日语读音、中文词义或切换场景。
         </div>
@@ -328,17 +364,17 @@ export function Dictionary({
       {pages > 1 && (
         <Pagination>
           <PaginationContent>
-            {Array.from({ length: pages }, (_, i) => (
-              <PaginationItem key={i}>
+            {pageNumbers.map((number) => (
+              <PaginationItem key={number}>
                 <PaginationLink
-                  href={'?page=' + (i + 1)}
-                  isActive={i + 1 === page}
+                  href={'?page=' + number}
+                  isActive={number === page}
                   onClick={(e) => {
                     e.preventDefault();
-                    setPage(i + 1);
+                    setPage(number);
                   }}
                 >
-                  {i + 1}
+                  {number}
                 </PaginationLink>
               </PaginationItem>
             ))}
@@ -373,7 +409,7 @@ export function Listening() {
     [usedTranscript, setUsedTranscript] = useState(false),
     [score, setScore] = useState(0),
     [finished, setFinished] = useState(false);
-  const timer = useRef(0),
+  const timer = useStopwatch(),
     playbackId = useRef(0);
   useEffect(
     () => () => {
@@ -396,7 +432,7 @@ export function Listening() {
     const correct = options[n].id === entry.id;
     setSelected(n);
     if (correct && !usedTranscript) setScore(score + 1);
-    answer(entry.id, correct, Date.now() - timer.current, {
+    answer(entry.id, correct, timer.elapsed(), {
       assisted: usedTranscript,
     });
   }
@@ -436,7 +472,7 @@ export function Listening() {
               if (id !== playbackId.current) return;
               setPlaying(false);
               if (heard) {
-                timer.current = Date.now();
+                timer.reset();
                 setStarted(true);
               }
             }}
@@ -480,7 +516,16 @@ export function Listening() {
                 onClick={() => choose(n)}
               >
                 <span>{String.fromCharCode(65 + n)}</span>
-                {e.chinese}
+                {settings.level === 'Native Challenge' ? (
+                  <Japanese
+                    text={
+                      listeningMeanings[e.id as keyof typeof listeningMeanings]
+                    }
+                    mode="native"
+                  />
+                ) : (
+                  e.chinese
+                )}
                 {selected === n && (e.id === entry.id ? ' ✓' : ' ✗')}
               </button>
             ))}

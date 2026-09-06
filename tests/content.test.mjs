@@ -44,6 +44,16 @@ for (const q of ['退房', 'チェックアウト', 'せいひょうき', 'yoyak
   check(c.searchEntries(q).length > 0, 'search ' + q);
 const scenes = JSON.parse(fs.readFileSync(root + 'data/scenarios.json'));
 const comparisons = JSON.parse(fs.readFileSync(root + 'data/comparisons.json'));
+const listeningMeanings = JSON.parse(
+  fs.readFileSync(root + 'data/listening-meanings.json'),
+);
+for (const [id, meaning] of Object.entries(listeningMeanings)) {
+  check(ids.has(id), 'listening choice refers to existing audio');
+  check(
+    !/[一-龯々]/.test(meaning.replace(/\[[^\]]+\]/g, '')),
+    'listening meaning has readings',
+  );
+}
 for (const group of comparisons) {
   check(
     group.entries.every((id) => ids.has(id)),
