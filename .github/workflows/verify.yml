@@ -1,0 +1,29 @@
+name: Verify application
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          package-manager-cache: false
+      - name: Check source and history for credentials
+        run: node scripts/check-secrets.mjs --history
+      - run: npm ci
+      - name: Validate learning logic and data
+        run: node --test --test-concurrency=1 tests/*.test.mjs
+      - name: Check types
+        run: node node_modules/typescript/bin/tsc --noEmit
+      - name: Build without service credentials
+        run: npm run build

@@ -5,6 +5,7 @@
 ## 运行
 
 Node 22.13+，npm install、npm run dev。生产构建 npm run build；数据与逻辑检查 npm test，类型检查 tsc --noEmit。
+上传前运行 npm run check:secrets。凭证保存和 GitHub 自动检查说明见 [SECURITY.md](SECURITY.md)。
 保留 Sites 生成的 Vinext（Next.js 兼容）、React、TypeScript、Tailwind 和 shadcn 组件。
 
 ## 当前可用
@@ -80,3 +81,5 @@ N5至Native设置调整语速、提示及在线NPC复杂度；离线不是七套
 2026-09-07：14组自动检查通过，内容检查4484项。清理部分旧静态检查问题并为学习上下文增加类型约束；严格lint仍未全部通过。
 
 2026-09-07复习更新：可按场景选择5/10/20/50/100条批次，暂停与刷新续练，随进度备份恢复。旧备份自动补空复习会话；缺失词条可跳过，不会误报整轮已完成。新增复习会话检查，15组自动检查通过。
+
+2026-09-07上传准备：16组自动检查和类型检查通过；新增凭证检查可识别仅暂存的密钥、历史已删除的密钥与环境配置文件。GitHub 工作流已准备，尚未上传或在 GitHub 运行。
