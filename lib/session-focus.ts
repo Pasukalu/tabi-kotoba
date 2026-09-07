@@ -4,6 +4,7 @@ export type FocusResult = {
   natural: string;
   goal?: string;
   accepted: boolean;
+  assisted?: boolean;
   ms: number;
 };
 export function sessionFocus(results: FocusResult[], scene: string): Entry[] {
@@ -11,6 +12,7 @@ export function sessionFocus(results: FocusResult[], scene: string): Entry[] {
   const prioritized = [...results].sort(
     (a, b) =>
       Number(b.accepted === false) - Number(a.accepted === false) ||
+      Number(!!b.assisted) - Number(!!a.assisted) ||
       Number(b.ms > 10000) - Number(a.ms > 10000),
   );
   const selected: Entry[] = [];
