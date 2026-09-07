@@ -7,9 +7,11 @@
 
 ## 在线体验
 
-- **Live Demo**: <https://tabi-nihongo-lab.pasukalu0.chatgpt.site>
+- **Live Demo（GitHub Pages）**: <https://pasukalu.github.io/tabi-kotoba/>
 - **GitHub**: <https://github.com/Pasukalu/tabi-kotoba>
 - **CI**: [Verify application](https://github.com/Pasukalu/tabi-kotoba/actions/workflows/verify.yml)
+
+GitHub Pages 版本是公开的静态、离线优先构建：课程、进度保存、浏览器 `ja-JP` 发音和 Service Worker 可直接使用。DeepSeek 对话与云端 TTS API 需要带服务端密钥的部署环境，因此不会把密钥放进 Pages 或前端代码；完整服务端部署仍可按下方变量运行。
 
 ## 已实现的训练链路
 
@@ -78,14 +80,15 @@ AI 请求只接收受限场景和对话数据，服务端会校验返回结构�
 ## 目录结构
 
 ~~~text
-app/                    # 页面路由与全局样式
+app/                    # 页面路由、静态导出入口与全局样式
+components/app-shell.tsx   # 浏览器端学习应用壳
 components/learning/    # 首页、课程、对话、复习和每日挑战视图
 components/ui/          # 基于 shadcn / Base UI 的界面组件
 data/                   # 可扩展的课程、词典、菜单、规则和任务数据
 lib/                    # 内容解析、对话流程、SRS、音频、AI 契约和持久化
 public/                 # PWA manifest、Service Worker、图标
 tests/                  # 自动化内容、流程、音频、备份和接口契约测试
-scripts/                # 凭证扫描等维护脚本
+scripts/                # 凭证扫描、GitHub Pages 构建整理等维护脚本
 ~~~
 
 ## 验证和安全
