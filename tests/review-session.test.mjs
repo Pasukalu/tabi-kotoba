@@ -57,6 +57,17 @@ const restored = parseBackup(
   JSON.stringify({ version: 1, progress: { ...base, reviewSession: next } }),
 ).progress.reviewSession;
 assert.equal(restored.cursor, 1);
+for (const mode of ['listening', 'reading', 'production']) {
+  const savedMode = validateProgress({
+    ...base,
+    reviewSession: { ...next, mode },
+  }).reviewSession;
+  assert.equal(savedMode.mode, mode);
+  assert.equal(advanceReview(savedMode, 'b', true).mode, mode);
+}
+assert.throws(() =>
+  validateProgress({ ...base, reviewSession: { ...next, mode: 'unknown' } }),
+);
 assert.throws(() =>
   validateProgress({ ...base, reviewSession: { ...next, cursor: 3 } }),
 );

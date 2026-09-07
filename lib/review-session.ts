@@ -1,6 +1,7 @@
 import type { Entry } from './content';
 import type { Srs } from './learning';
 export type ReviewSession = {
+  mode?: 'listening' | 'reading' | 'production';
   ids: string[];
   cursor: number;
   correct: number;

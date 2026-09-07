@@ -251,6 +251,8 @@ export function validateProgress(p: any): Progress {
       reviewSession.correct < 0 ||
       reviewSession.correct > reviewSession.cursor ||
       typeof reviewSession.paused !== 'boolean' ||
+      (reviewSession.mode !== undefined &&
+        !['listening', 'reading', 'production'].includes(reviewSession.mode)) ||
       !finite(reviewSession.startedAt))
   )
     throw Error('复习进度格式不正确。');

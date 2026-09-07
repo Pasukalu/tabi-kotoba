@@ -1,4 +1,5 @@
 'use client';
+import ReviewCard from './review-card';
 import { useClock } from '@/lib/use-clock';
 import { reviewQueue, advanceReview } from '@/lib/review-session';
 import listeningMeanings from '@/data/listening-meanings.json';
@@ -263,6 +264,7 @@ export function Dictionary({
             : !!progress.srs[e.id])),
   );
   const pages = Math.ceil(list.length / 12);
+  const currentPage = Math.min(page, Math.max(1, pages));
   const matchedScenarios = global && q.trim() ? searchScenarios(q, scene) : [];
   const matchedRules =
     global && q.trim()
@@ -276,7 +278,15 @@ export function Dictionary({
         )
       : [];
   const pageNumbers = [
-    ...new Set([1, page - 2, page - 1, page, page + 1, page + 2, pages]),
+    ...new Set([
+      1,
+      currentPage - 2,
+      currentPage - 1,
+      currentPage,
+      currentPage + 1,
+      currentPage + 2,
+      pages,
+    ]),
   ]
     .filter((number) => number >= 1 && number <= pages)
     .sort((a, b) => a - b);
@@ -353,7 +363,7 @@ export function Dictionary({
         <Rule key={r.id} rule={r} />
       ))}
       <div className="dictionary-grid">
-        {list.slice((page - 1) * 12, page * 12).map((e) => (
+        {list.slice((currentPage - 1) * 12, currentPage * 12).map((e) => (
           <Sentence key={e.id} entry={e} />
         ))}
       </div>
@@ -369,7 +379,7 @@ export function Dictionary({
               <PaginationItem key={number}>
                 <PaginationLink
                   href={'?page=' + number}
-                  isActive={number === page}
+                  isActive={number === currentPage}
                   onClick={(e) => {
                     e.preventDefault();
                     setPage(number);
@@ -590,8 +600,8 @@ export function Listening() {
             <h3>重点不是听见每一个字。</h3>
             <p>先抓动作：袋子、加热、付款、站台或停运，再确认自己该做什么。</p>
             <p className="muted">
-              本轮是中文释义测验。Native Challenge
-              请到会话页，使用隐藏字幕的日语任务。
+              普通模式选择中文释义；Native Challenge
+              使用日语释义，不显示振假名。
             </p>
             <a
               className="text-link"
@@ -712,10 +722,17 @@ export function Reading({ scene = 'hotel' }: { scene?: string }) {
     );
   const e = source[i % source.length];
   const options = [
-    e,
-    source[(i + 3) % source.length],
-    source[(i + 5) % source.length],
-  ].sort((a, b) => a.id.localeCompare(b.id));
+    ...new Map(
+      [
+        e,
+        source[(i + 3) % source.length],
+        source[(i + 5) % source.length],
+        ...source,
+      ].map((item) => [item.id, item]),
+    ).values(),
+  ]
+    .slice(0, 3)
+    .sort((a, b) => a.id.localeCompare(b.id));
   return (
     <section className="reading">
       <p className="muted">
@@ -847,8 +864,9 @@ export function Culture() {
 export function Review() {
   const now = useClock();
   const { progress, setProgress, answer, entries } = useLearning(),
-    [reveal, setReveal] = useState(false),
-    [recallMs, setRecallMs] = useState(0),
+    [reviewMode, setReviewMode] = useState<
+      'listening' | 'reading' | 'production'
+    >('listening'),
     [scene, setScene] = useState('all'),
     [batchSize, setBatchSize] = useState('20');
   const saved = progress.reviewSession;
@@ -862,7 +880,7 @@ export function Review() {
     scene,
     Number(batchSize),
   );
-  const timer = useStopwatch();
+
   const due = Object.entries(progress.srs as Record<string, any>)
     .filter(
       ([id, s]) =>
@@ -870,8 +888,8 @@ export function Review() {
     )
     .sort((a, b) => b[1].wrong - a[1].wrong || a[1].due - b[1].due);
   const entry = entries.find((e: any) => e.id === session[current]);
-  function grade(correct: boolean) {
-    if (!entry || !reveal || !saved || saved.paused) return;
+  function grade(correct: boolean, recallMs: number) {
+    if (!entry || !saved || saved.paused) return;
     answer(entry.id, correct, recallMs);
     setProgress((p) => ({
       ...p,
@@ -879,8 +897,6 @@ export function Review() {
         ? advanceReview(p.reviewSession, entry.id, correct)
         : null,
     }));
-    setReveal(false);
-    timer.reset();
   }
   return (
     <>
@@ -911,6 +927,16 @@ export function Review() {
           <h2>今日の復習</h2>
           <div className="filter-bar">
             <Choice
+              label="复习方式"
+              value={reviewMode}
+              onChange={(v) => setReviewMode(v as typeof reviewMode)}
+              items={[
+                ['listening', '听音辨义'],
+                ['reading', '看日语回忆'],
+                ['production', '按意思表达'],
+              ]}
+            />
+            <Choice
               label="复习场景"
               value={scene}
               onChange={setScene}
@@ -933,8 +959,6 @@ export function Review() {
                     ? { ...p.reviewSession, paused: false }
                     : null,
                 }));
-                setReveal(false);
-                timer.reset();
               }}
             >
               继续上次复习 · {saved.cursor}/{saved.ids.length}
@@ -950,6 +974,7 @@ export function Review() {
               setProgress((p) => ({
                 ...p,
                 reviewSession: {
+                  mode: reviewMode,
                   ids: queue,
                   cursor: 0,
                   correct: 0,
@@ -957,8 +982,6 @@ export function Review() {
                   startedAt: Date.now(),
                 },
               }));
-              setReveal(false);
-              timer.reset();
             }}
           >
             {saved?.paused ? '替换暂停记录，开始新一轮' : '开始新一轮'} ·{' '}
@@ -988,34 +1011,12 @@ export function Review() {
           <span className="tag">
             {current + 1} / {session.length} · {progress.srs[entry.id]?.reason}
           </span>
-          <Sentence key={entry.id} entry={entry} compact defaultMode="hidden" />
-          <button
-            className="secondary"
-            disabled={reveal}
-            onClick={() => {
-              setRecallMs(timer.elapsed());
-              setReveal(true);
-            }}
-          >
-            我已回忆，显示答案
-          </button>
-          {reveal && (
-            <>
-              <p className="muted">
-                按显示答案前的回忆情况自评；阅读解释不会增加反应时长。
-              </p>
-              <Sentence entry={entry} compact />
-              <p>{entry.chinese}</p>
-              <div className="row">
-                <button className="secondary" onClick={() => grade(false)}>
-                  没想起来 · 10分钟
-                </button>
-                <button className="primary" onClick={() => grade(true)}>
-                  顺利想起 ✓
-                </button>
-              </div>
-            </>
-          )}
+          <ReviewCard
+            key={entry.id + current}
+            entry={entry}
+            mode={saved?.mode || 'listening'}
+            onGrade={grade}
+          />
         </section>
       ) : (
         <section className="panel">
