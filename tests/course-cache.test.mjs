@@ -34,6 +34,18 @@ const content = load('lib/content.ts', (p) =>
 const { filterCourse } = load('lib/course-filter.ts', () => content);
 const scenes = JSON.parse(fs.readFileSync('data/scenarios.json'));
 const hotel = content.lessons.hotel;
+for (const scene of scenes) {
+  const available = content.allEntries.filter(
+    (entry) =>
+      entry.scene === scene.category &&
+      entry.category !== 'word' &&
+      entry.category !== 'menu',
+  );
+  assert.ok(
+    filterCourse(available, scene.id, '', scenes).length > 0,
+    'Every simulation has readable lesson content: ' + scene.id,
+  );
+}
 assert.ok(
   filterCourse(hotel, 'hotel-checkin', '', scenes).some(
     (e) => e.id === 'hotel-welcome',
@@ -44,7 +56,23 @@ assert.ok(filterCourse(hotel, 'all', 'YOYAKU', scenes).length);
 assert.ok(filterCourse(hotel, 'all', 'よやく', scenes).length);
 assert.ok(
   filterCourse(hotel, 'staff', '', scenes).every(
-    (e) => e.formality === '店員側',
+    (e) =>
+      e.formality === '店員側' ||
+      scenes.some((scene) =>
+        scene.steps.some(
+          (step) => step.npc === e.id || step.npc === e.japanese,
+        ),
+      ),
+  ),
+);
+assert.ok(
+  filterCourse(hotel, 'staff', '', scenes).some(
+    (e) => e.id === 'hotel-welcome',
+  ),
+);
+assert.ok(
+  !filterCourse(hotel, 'reply', '', scenes).some(
+    (e) => e.id === 'hotel-welcome',
   ),
 );
 assert.ok(

@@ -1,22 +1,43 @@
 'use client';
 import { useState } from 'react';
-import { lessons } from '@/lib/content';
+import { allEntries, plain } from '@/lib/content';
 import { filterCourse } from '@/lib/course-filter';
 import { scenarios } from '@/lib/dialogue';
 import { Sentence, AudioBar, Choice } from './text';
-export default function CourseReader({ scene }: { scene: string }) {
-  const [unit, setUnit] = useState('all'),
+export default function CourseReader({
+  scene,
+  initialUnit = 'all',
+}: {
+  scene: string;
+  initialUnit?: string;
+}) {
+  const [unit, setUnit] = useState(initialUnit),
     [page, setPage] = useState(0),
     [query, setQuery] = useState('');
-  const source = lessons[scene] || [];
-  const list = filterCourse(source, unit, query, scenarios);
+  const source = allEntries.filter(
+    (entry) =>
+      entry.scene === scene &&
+      entry.category !== 'word' &&
+      entry.category !== 'menu',
+  );
+  const filtered = filterCourse(source, unit, query, scenarios);
+  const list = [
+    ...new Map(
+      filtered.map((entry) => [plain(entry.japanese), entry]),
+    ).values(),
+  ];
   const units = scenarios.filter(
     (s) =>
       s.category === scene &&
       source.some(
         (e) =>
           e.id.startsWith(s.id + '-') ||
-          s.steps.some((step) => step.npc === e.id),
+          s.steps.some(
+            (step) =>
+              step.npc === e.id ||
+              step.npc === e.japanese ||
+              step.reply === e.japanese,
+          ),
       ),
   );
   const pages = Math.max(1, Math.ceil(list.length / 10)),

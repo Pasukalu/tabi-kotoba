@@ -64,6 +64,26 @@ check(
   'aggregate correct',
 );
 check(sum.reviewIds.length === 1, 'review deduplicated');
+const assistedSummary = summarizeDaily({
+  ...run,
+  records: [
+    {
+      scene: run.scenes[0],
+      at: 1,
+      results: [
+        { entryId: 'phrases-fine', accepted: true, assisted: true, ms: 500 },
+      ],
+    },
+  ],
+});
+check(
+  assistedSummary.accepted === 0,
+  'using example is not independent success',
+);
+check(
+  assistedSummary.reviewIds.includes('phrases-fine'),
+  'assisted reply enters review',
+);
 const qs = JSON.parse(fs.readFileSync(root + 'data/context-quiz.json'));
 const allIds = new Set(
   [

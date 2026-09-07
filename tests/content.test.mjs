@@ -40,9 +40,54 @@ check(c.plain('[予約|よやく]しています。') === '予約しています
 check(c.kana('[予約|よやく]しています。') === 'よやくしています。', 'kana');
 check(c.roman('[予約|よやく]') === 'yoyaku', 'roman');
 check(c.roman('はい。') === 'hai.', 'hai');
+for (const word of c.words) {
+  const example = c.allEntries.find(
+    (entry) => entry.id === word.id + '-example',
+  );
+  check(!!example, 'word has a structured example ' + word.id);
+  check(
+    c.plain(example.japanese).includes(c.plain(word.japanese)),
+    'example uses the target word ' + word.id,
+  );
+  check(
+    example.chinese !== word.chinese,
+    'example has sentence-level translation ' + word.id,
+  );
+}
 for (const q of ['退房', 'チェックアウト', 'せいひょうき', 'yoyaku'])
   check(c.searchEntries(q).length > 0, 'search ' + q);
 const scenes = JSON.parse(fs.readFileSync(root + 'data/scenarios.json'));
+const dialogueContext = {
+  exports: {},
+  require: (p) => (p === './content' ? c : scenes),
+};
+vm.runInNewContext(
+  ts.transpileModule(fs.readFileSync('lib/dialogue.ts', 'utf8'), {
+    compilerOptions: {
+      module: ts.ModuleKind.CommonJS,
+      target: ts.ScriptTarget.ES2022,
+      esModuleInterop: true,
+    },
+  }).outputText,
+  dialogueContext,
+);
+const { acceptsLocal } = dialogueContext.exports;
+const cafeStep = scenes.find((scene) => scene.id === 'restaurant-cafe')
+  .steps[0];
+check(
+  !acceptsLocal('持ち帰りです。', cafeStep),
+  'partial order is insufficient',
+);
+check(
+  acceptsLocal('アイスラテ、Mで。持ち帰りです。', cafeStep),
+  'order components can be reordered',
+);
+const rapidStep = scenes.find((scene) => scene.id === 'convenience-rapid')
+  .steps[0];
+check(
+  !acceptsLocal('ポイントカードはあります。袋はいりません。', rapidStep),
+  'contradictory answers do not satisfy the task',
+);
 const comparisons = JSON.parse(fs.readFileSync(root + 'data/comparisons.json'));
 const listeningMeanings = JSON.parse(
   fs.readFileSync(root + 'data/listening-meanings.json'),
@@ -66,6 +111,10 @@ for (const s of scenes) {
     'closing sentence missing display/audio data ' + s.id,
   );
   for (const step of s.steps) {
+    check(
+      acceptsLocal(c.plain(step.reply), step),
+      'authored reply completes its own task ' + s.id,
+    );
     check(
       new RegExp(step.accept, 'i').test(c.plain(step.reply)),
       'example does not pass ' + s.id + ' ' + step.reply,

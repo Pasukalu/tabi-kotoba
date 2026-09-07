@@ -148,7 +148,7 @@ export default function DailyChallenge() {
             <p>今天完成了 {run.scenes.length} 个真实沟通任务。</p>
             <div className="stats">
               <div className="stat">
-                <span>信息识别率</span>
+                <span>独立回应通过率</span>
                 <strong>
                   {summary.total
                     ? Math.round((summary.accepted / summary.total) * 100)

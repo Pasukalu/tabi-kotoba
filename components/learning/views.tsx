@@ -69,10 +69,19 @@ export function Heading({
 }
 export function Scenes() {
   const [scene, setScene] = useState('hotel'),
+    [initialUnit, setInitialUnit] = useState('all'),
     [tab, setTab] = useState('learn');
   useEffect(() => {
     const c = new URLSearchParams(location.search).get('category');
     if (c && lessons[c]) setScene(c);
+    const requestedUnit = new URLSearchParams(location.search).get('unit');
+    if (
+      requestedUnit &&
+      scenarios.some(
+        (item) => item.id === requestedUnit && item.category === (c || 'hotel'),
+      )
+    )
+      setInitialUnit(requestedUnit);
     if (new URLSearchParams(location.search).get('tab') === 'machine')
       setTab('machine');
   }, []);
@@ -89,6 +98,7 @@ export function Scenes() {
             className={'secondary ' + (id === scene ? 'selected' : '')}
             onClick={() => {
               setScene(id);
+              setInitialUnit('all');
               setTab('learn');
             }}
             key={id}
@@ -129,7 +139,11 @@ export function Scenes() {
           <TabsTrigger value="map">课程地图</TabsTrigger>
         </TabsList>
         <TabsContent value="learn">
-          <CourseReader key={scene} scene={scene} />
+          <CourseReader
+            key={scene + initialUnit}
+            scene={scene}
+            initialUnit={initialUnit}
+          />
           <section aria-label="本场景日本生活提示">
             <h3>日本生活メモ</h3>
             <div className="culture-grid">
@@ -192,11 +206,7 @@ export function Scenes() {
               {scenarios
                 .filter((s) => s.category === scene)
                 .map((s) => (
-                  <a
-                    className="scene-card"
-                    key={s.id}
-                    href={'/conversation?scene=' + s.id}
-                  >
+                  <div className="scene-card" key={s.id}>
                     <h3>{s.title}</h3>
                     <p>{s.description}</p>
                     <span className="tag">
@@ -204,7 +214,21 @@ export function Scenes() {
                         ? '✓ 已完成'
                         : `${s.steps.length} 个沟通节点`}
                     </span>
-                  </a>
+                    <div className="row">
+                      <a
+                        className="secondary"
+                        href={'/scenes?category=' + scene + '&unit=' + s.id}
+                      >
+                        学习台词
+                      </a>
+                      <a
+                        className="primary"
+                        href={'/conversation?scene=' + s.id}
+                      >
+                        进入模拟 →
+                      </a>
+                    </div>
+                  </div>
                 ))}
             </div>
             {!scenarios.some((s) => s.category === scene) && (

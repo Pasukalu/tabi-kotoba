@@ -39,6 +39,7 @@ export function Conversation({
     if (!runId.current) runId.current = crypto.randomUUID();
   }, []);
   const [sceneId, setSceneId] = useState(initial),
+    [assisted, setAssisted] = useState(!!draft?.assisted),
     [index, setIndex] = useState(draft?.index || 0),
     [input, setInput] = useState(draft?.input || ''),
     [history, setHistory] = useState<any[]>(draft?.history || []),
@@ -65,6 +66,7 @@ export function Conversation({
     setBusy(false);
     audio.stop();
     setSceneId(id);
+    setAssisted(false);
     setIndex(0);
     setInput('');
     setHistory([]);
@@ -89,6 +91,7 @@ export function Conversation({
       input,
       history,
       results,
+      assisted,
       done,
       custom,
       aiReview,
@@ -99,6 +102,7 @@ export function Conversation({
     input,
     history,
     results,
+    assisted,
     done,
     custom,
     aiReview,
@@ -225,6 +229,7 @@ export function Conversation({
     setInput('');
     const result = {
       ...assessLocal(original, step.reply, accepted, ms),
+      assisted,
       entryId:
         allEntries.find((e) => e.id === step.npc)?.id ||
         allEntries.find((e) => e.id === scene.id + '-step-' + index)?.id,
@@ -294,9 +299,12 @@ export function Conversation({
         ].slice(0, 30),
       }));
       nextResults
-        .filter((x) => x.entryId && (!x.accepted || x.ms > 10000))
+        .filter((x) => x.entryId && (!x.accepted || x.assisted || x.ms > 10000))
         .forEach((x) => mark(x.entryId, 'review'));
-    } else setIndex(index + 1);
+    } else {
+      setAssisted(false);
+      setIndex(index + 1);
+    }
   }
   async function reviewAI() {
     if (busy || aiReview) return;
@@ -514,10 +522,18 @@ export function Conversation({
                 </p>
                 <button
                   className="text-link"
-                  onClick={() => setInput(plain(step.reply))}
+                  onClick={() => {
+                    setAssisted(true);
+                    setInput(plain(step.reply));
+                  }}
                 >
                   显示并使用示例回答
                 </button>
+                {assisted && (
+                  <p>
+                    本步骤使用过示例，会保留完成进度并加入巩固，不计作独立回应。
+                  </p>
+                )}
               </details>
             )}
           </>
@@ -532,10 +548,10 @@ export function Conversation({
                 <strong>✓</strong>
               </div>
               <div className="stat">
-                <span>信息识别率</span>
+                <span>独立回应通过率</span>
                 <strong>
                   {Math.round(
-                    (results.filter((x) => x.accepted).length /
+                    (results.filter((x) => x.accepted && !x.assisted).length /
                       Math.max(1, results.length)) *
                       100,
                   )}

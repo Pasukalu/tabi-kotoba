@@ -64,6 +64,7 @@ const results = (v: any) =>
         'underpolite',
       ].every((k) => typeof x[k] === 'string') &&
       finite(x.ms) &&
+      (x.assisted === undefined || typeof x.assisted === 'boolean') &&
       typeof x.accepted === 'boolean',
   );
 export function validateProgress(p: any): Progress {
@@ -225,6 +226,7 @@ export function validateProgress(p: any): Progress {
         !obj(d) ||
         typeof d.sceneId !== 'string' ||
         typeof d.input !== 'string' ||
+        (d.assisted !== undefined && typeof d.assisted !== 'boolean') ||
         !Number.isInteger(d.index) ||
         d.index < 0 ||
         !results(d.results) ||

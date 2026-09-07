@@ -20,9 +20,26 @@ export const NPC_PROMPT = `你不是日语老师，而是现实日本服务业�
 export const REVIEW_PROMPT = `你是日本本土日语教师。基于完整对话语境评价自然度、语法、词汇、敬语、反应速度、场景适切度、听力理解、表达效率。缺乏证据的维度为null，不推测发音或隐藏的听力能力。不要把自然省略改成书面长句。水をください不应判错；大丈夫です结合上文判断；不是只有一种正确说法。输出JSON：{metrics:{维度:0到100或null},items:[{original,natural,common,staff,why,written,overpolite,underpolite,stars:1到5}],remember:[{japanese:带标注的日语表达,chinese:中文意思,explanation:带标注的日语释义}]}。所有新增日语汉字需[汉字|假名]标注。`;
 export function acceptsLocal(
   original: string,
-  step: { accept: string; reply: string },
+  step: {
+    accept: string;
+    reply: string;
+    requirements?: string[];
+    reject?: string[];
+  },
 ) {
   const text = original.normalize('NFKC');
+  if (step.reject?.some((pattern) => new RegExp(pattern, 'i').test(text)))
+    return false;
+  if (
+    step.requirements?.some((pattern) => !new RegExp(pattern, 'i').test(text))
+  )
+    return false;
+  const normalizeReply = (value: string) =>
+    plain(value)
+      .normalize('NFKC')
+      .replace(/[。！!？?\s]/g, '')
+      .toLowerCase();
+  if (normalizeReply(original) === normalizeReply(step.reply)) return true;
   if (
     /わかりません|分かりません|わからない|分からない|知りません|どういう意味/.test(
       text,

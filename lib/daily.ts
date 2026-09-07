@@ -1,5 +1,6 @@
 import plans from '@/data/daily-plans.json';
 export type ConversationDraft = {
+  assisted?: boolean;
   runId?: string;
   sceneId: string;
   index: number;
@@ -74,7 +75,7 @@ export function summarizeDaily(run: DailyRun) {
   return {
     completed: run.records.length,
     total,
-    accepted: results.filter((r) => r.accepted).length,
+    accepted: results.filter((r) => r.accepted && !r.assisted).length,
     slow: results.filter((r) => r.ms > 10000).length,
     averageSeconds: total
       ? results.reduce((s, r) => s + (Number.isFinite(r.ms) ? r.ms : 0), 0) /
@@ -84,7 +85,7 @@ export function summarizeDaily(run: DailyRun) {
     reviewIds: [
       ...new Set(
         results
-          .filter((r) => !r.accepted || r.ms > 10000)
+          .filter((r) => !r.accepted || r.assisted || r.ms > 10000)
           .map((r) => r.entryId)
           .filter(Boolean),
       ),

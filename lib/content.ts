@@ -1,4 +1,5 @@
 import visualPhrases from '@/data/visual-phrases.json';
+import vocabularyExamples from '@/data/vocabulary-examples.json';
 import broadcasts from '@/data/broadcasts.json';
 import scenarioPhrases from '@/data/scenario-phrases.json';
 import hotel from '@/data/hotel.json';
@@ -62,6 +63,7 @@ export const allEntries = [
   ...scenarioPhrases,
   ...broadcasts,
   ...visualPhrases,
+  ...vocabularyExamples,
 ];
 export const names: Record<string, string> = {
   booking: '予約・変更',
@@ -240,6 +242,7 @@ export function roman(j: string) {
     .replace(/。/g, '.')
     .replace(/？/g, '?');
 }
+const searchIndex = new WeakMap<Entry, string>();
 export function searchEntries(q: string, items = allEntries) {
   const normalize = (v: string) =>
     v
@@ -252,16 +255,24 @@ export function searchEntries(q: string, items = allEntries) {
       )
       .replace(/\s/g, '');
   const k = normalize(q);
-  return items.filter((e) =>
-    normalize(
-      [
-        plain(e.japanese),
-        kana(e.japanese),
-        roman(e.japanese),
-        e.chinese,
-        e.notes,
-        names[e.scene],
-      ].join(' '),
-    ).includes(k),
-  );
+  if (!k) return items;
+  return items.filter((e) => {
+    let indexed = searchIndex.get(e);
+    if (indexed === undefined) {
+      indexed = normalize(
+        [
+          plain(e.japanese),
+          kana(e.japanese),
+          roman(e.japanese),
+          e.kana || '',
+          e.romaji || '',
+          e.chinese,
+          e.notes,
+          names[e.scene],
+        ].join(' '),
+      );
+      searchIndex.set(e, indexed);
+    }
+    return indexed.includes(k);
+  });
 }

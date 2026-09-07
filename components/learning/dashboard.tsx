@@ -13,8 +13,13 @@ import { scenarios } from '@/lib/dialogue';
 import { lessons } from '@/lib/content';
 import { Progress } from '@/components/ui/progress';
 import { Sentence } from './text';
+import NextPractice from './next-practice';
+import { learningInsights } from '@/lib/learning-insights';
+import { useClock } from '@/lib/use-clock';
 export default function Dashboard() {
-  const { progress, settings } = useLearning();
+  const { progress, settings, entries } = useLearning();
+  const now = useClock();
+  const insights = learningInsights(progress, entries, scenarios, now);
   let streak = 0;
   const day = new Date();
   if (!progress.days.includes(day.toLocaleDateString('sv-SE')))
@@ -36,18 +41,22 @@ export default function Dashboard() {
       <div className="stats">
         {[
           ['连续学习', String(streak), '天'],
-          ['掌握词汇', String(progress.mastered.length), '词'],
-          ['已完成场景', String(progress.completed.length), '个'],
+          [
+            '掌握词汇',
+            String(
+              entries.filter(
+                (entry) =>
+                  entry.category === 'word' &&
+                  progress.mastered.includes(entry.id),
+              ).length,
+            ),
+            '词',
+          ],
+          ['已完成场景', String(insights.completed), '个'],
           [
             '课程完成度',
-            progress.completed.length
-              ? String(
-                  Math.round(
-                    (progress.completed.length / scenarios.length) * 100,
-                  ),
-                )
-              : '—',
-            progress.completed.length ? '%' : '待开始',
+            insights.completed ? String(Math.round(insights.coverage)) : '—',
+            insights.completed ? '%' : '待开始',
           ],
         ].map(([label, n, unit]) => (
           <div className="stat" key={label}>
@@ -202,14 +211,8 @@ export default function Dashboard() {
             </div>
             <div className="readiness">
               <span>
-                {progress.completed.length
-                  ? Math.round(
-                      (progress.completed.length / scenarios.length) * 100,
-                    )
-                  : '—'}
-                <small>
-                  {progress.completed.length ? '课程完成度 %' : '未评估'}
-                </small>
+                {insights.completed ? Math.round(insights.coverage) : '—'}
+                <small>{insights.completed ? '课程完成度 %' : '未评估'}</small>
               </span>
             </div>
             <p className="center muted">
@@ -270,6 +273,7 @@ export default function Dashboard() {
           </div>
         </aside>
       </div>
+      <NextPractice />
       <div className="section-heading">
         <h2>
           最近のつまずき <small>最近错误</small>

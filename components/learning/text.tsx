@@ -1,7 +1,11 @@
 'use client';
 import { useState } from 'react';
 import { Volume2, Star, RotateCcw, Check, Square, Repeat } from 'lucide-react';
-import { Entry, tokens, kana, roman } from '@/lib/content';
+import { Entry, tokens, kana, roman, allEntries } from '@/lib/content';
+import { scenarios } from '@/lib/dialogue';
+const staffLines = new Set(
+  scenarios.flatMap((scene) => scene.steps.map((step) => step.npc)),
+);
 import { useLearning, useAudio } from '@/lib/learning';
 import {
   Select,
@@ -110,6 +114,14 @@ export function Sentence({
     [loop, setLoop] = useState(false);
   let mode = local || defaultMode || settings.mode;
   const native = settings.level === 'Native Challenge';
+  const staff =
+    entry.formality === '店員側' ||
+    staffLines.has(entry.id) ||
+    staffLines.has(entry.japanese);
+  const exampleEntry =
+    entry.category === 'word'
+      ? allEntries.find((item) => item.id === entry.id + '-example')
+      : undefined;
   if (native && ['ruby', 'kana', 'romaji', 'zh', 'explain'].includes(mode))
     mode = 'native';
   return (
@@ -118,9 +130,11 @@ export function Sentence({
         <span className="tag">
           {entry.category === 'word'
             ? entry.jlpt
-            : entry.formality === '丁寧'
-              ? '自然・丁寧'
-              : entry.formality}
+            : staff
+              ? '店員表現・店員側'
+              : entry.formality === '丁寧'
+                ? '自然・丁寧'
+                : entry.formality}
         </span>
         <div className="row">
           <Choice
@@ -202,22 +216,31 @@ export function Sentence({
               <summary>语境、自然度与用法</summary>
               <p>{entry.chinese}</p>
               <p>{entry.notes || entry.pitfalls}</p>
+              {staff && (
+                <p>
+                  这是工作人员对顾客的表达。重点是听懂并回应，顾客不必照搬这一套敬语。
+                </p>
+              )}
               <small>
                 {entry.category === 'word'
                   ? `${entry.formality} · 频度 ${entry.frequency}/5 · ${entry.nativeFrequency}`
                   : '同一意思可以有多种自然说法。'}
               </small>
-              {entry.example && (
-                <div className="example">
-                  <Japanese text={entry.example} />
-                  <button
-                    aria-label="播放例句"
-                    className="icon-btn"
-                    onClick={() => play(entry.example!)}
-                  >
-                    <Volume2 size={16} />
-                  </button>
-                </div>
+              {exampleEntry ? (
+                <Sentence entry={exampleEntry} compact defaultMode={mode} />
+              ) : (
+                entry.example && (
+                  <div className="example">
+                    <Japanese text={entry.example} />
+                    <button
+                      aria-label="播放例句"
+                      className="icon-btn"
+                      onClick={() => play(entry.example!)}
+                    >
+                      <Volume2 size={16} />
+                    </button>
+                  </div>
+                )
               )}
             </details>
           )}
