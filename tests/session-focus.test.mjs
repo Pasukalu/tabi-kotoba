@@ -57,6 +57,23 @@ assert.ok(custom.id.startsWith('course-'));
 assert.ok(custom.kana && custom.romaji && custom.chinese);
 assert.equal(sessionFocus([], 'hotel').length, 0);
 assert.equal(
+  plain(
+    sessionFocus(
+      [
+        { natural: 'はい。', accepted: true, ms: 100 },
+        {
+          natural: 'お[願|ねが]いします。',
+          accepted: true,
+          assisted: true,
+          ms: 100,
+        },
+      ],
+      'hotel',
+    )[0].japanese,
+  ),
+  'お願いします。',
+);
+assert.equal(
   sessionFocus(
     Array.from({ length: 10 }, (_, i) => ({
       natural: 'はい。' + i,
