@@ -1,5 +1,6 @@
 'use client';
 import { useClock } from '@/lib/use-clock';
+import { reviewQueue, advanceReview } from '@/lib/review-session';
 import listeningMeanings from '@/data/listening-meanings.json';
 import { searchScenarios } from '@/lib/scenario-search';
 import OfflineSettings from './offline-settings';
@@ -845,12 +846,22 @@ export function Culture() {
 }
 export function Review() {
   const now = useClock();
-  const { progress, answer, entries } = useLearning(),
-    [current, setCurrent] = useState(0),
+  const { progress, setProgress, answer, entries } = useLearning(),
     [reveal, setReveal] = useState(false),
     [recallMs, setRecallMs] = useState(0),
-    [session, setSession] = useState<string[]>([]),
-    [active, setActive] = useState(false);
+    [scene, setScene] = useState('all'),
+    [batchSize, setBatchSize] = useState('20');
+  const saved = progress.reviewSession;
+  const session = saved?.ids || [];
+  const current = saved?.cursor || 0;
+  const active = !!saved && !saved.paused;
+  const queue = reviewQueue(
+    entries,
+    progress.srs,
+    now,
+    scene,
+    Number(batchSize),
+  );
   const timer = useStopwatch();
   const due = Object.entries(progress.srs as Record<string, any>)
     .filter(
@@ -860,9 +871,14 @@ export function Review() {
     .sort((a, b) => b[1].wrong - a[1].wrong || a[1].due - b[1].due);
   const entry = entries.find((e: any) => e.id === session[current]);
   function grade(correct: boolean) {
-    if (!entry) return;
+    if (!entry || !reveal || !saved || saved.paused) return;
     answer(entry.id, correct, recallMs);
-    setCurrent(current + 1);
+    setProgress((p) => ({
+      ...p,
+      reviewSession: p.reviewSession
+        ? advanceReview(p.reviewSession, entry.id, correct)
+        : null,
+    }));
     setReveal(false);
     timer.reset();
   }
@@ -893,29 +909,82 @@ export function Review() {
       {!active ? (
         <section className="panel">
           <h2>今日の復習</h2>
+          <div className="filter-bar">
+            <Choice
+              label="复习场景"
+              value={scene}
+              onChange={setScene}
+              items={[['all', '全部场景'], ...Object.entries(names)]}
+            />
+            <Choice
+              label="每轮数量"
+              value={batchSize}
+              onChange={setBatchSize}
+              items={['5', '10', '20', '50', '100'].map((n) => [n, n + ' 条'])}
+            />
+          </div>
+          {saved?.paused && (
+            <button
+              className="primary"
+              onClick={() => {
+                setProgress((p) => ({
+                  ...p,
+                  reviewSession: p.reviewSession
+                    ? { ...p.reviewSession, paused: false }
+                    : null,
+                }));
+                setReveal(false);
+                timer.reset();
+              }}
+            >
+              继续上次复习 · {saved.cursor}/{saved.ids.length}
+            </button>
+          )}
           <p className="muted">
             回答错误或超过10秒，下次10分钟后复习；顺利回忆则按1天起逐步延长。连续三次正确后标记掌握。
           </p>
           <button
             className="primary"
-            disabled={!due.length}
+            disabled={!queue.length}
             onClick={() => {
-              setSession(due.map((x) => x[0]));
-              setActive(true);
-              setCurrent(0);
+              setProgress((p) => ({
+                ...p,
+                reviewSession: {
+                  ids: queue,
+                  cursor: 0,
+                  correct: 0,
+                  paused: false,
+                  startedAt: Date.now(),
+                },
+              }));
+              setReveal(false);
               timer.reset();
             }}
           >
-            开始 {due.length} 条复习 <ArrowRight size={16} />
+            {saved?.paused ? '替换暂停记录，开始新一轮' : '开始新一轮'} ·{' '}
+            {queue.length} 条 <ArrowRight size={16} />
           </button>
-          {!due.length && (
+          {!queue.length && (
             <p className="empty-state">
-              现在没有到期内容。可在词典标记「不会」，或完成听力练习。
+              当前场景没有到期内容。可切换场景，或在词典标记「不会」。
             </p>
           )}
         </section>
       ) : entry ? (
         <section className="panel review-flash">
+          <button
+            className="secondary"
+            onClick={() =>
+              setProgress((p) => ({
+                ...p,
+                reviewSession: p.reviewSession
+                  ? { ...p.reviewSession, paused: true }
+                  : null,
+              }))
+            }
+          >
+            暂停并保存
+          </button>
           <span className="tag">
             {current + 1} / {session.length} · {progress.srs[entry.id]?.reason}
           </span>
@@ -950,9 +1019,51 @@ export function Review() {
         </section>
       ) : (
         <section className="panel">
-          <h2>✓ 本轮复习完成</h2>
-          <p>下次时间已经按本轮表现安排。</p>
-          <button className="secondary" onClick={() => setActive(false)}>
+          <h2>
+            {current < session.length
+              ? '当前条目的课程内容不可用'
+              : '✓ 本轮复习完成'}
+          </h2>
+          {current < session.length ? (
+            <>
+              <p>
+                记录中包含当前版本没有的词条。保留已完成记录，跳过缺失条目后继续。
+              </p>
+              <button
+                className="secondary"
+                onClick={() =>
+                  setProgress((p) => ({
+                    ...p,
+                    reviewSession: p.reviewSession
+                      ? {
+                          ...p.reviewSession,
+                          ids: [
+                            ...p.reviewSession.ids.slice(
+                              0,
+                              p.reviewSession.cursor,
+                            ),
+                            ...p.reviewSession.ids
+                              .slice(p.reviewSession.cursor)
+                              .filter((id) => entries.some((e) => e.id === id)),
+                          ],
+                        }
+                      : null,
+                  }))
+                }
+              >
+                跳过缺失内容
+              </button>
+            </>
+          ) : (
+            <p>
+              本轮自评顺利回忆 {saved?.correct || 0}/{session.length}{' '}
+              条。下次时间已经按本轮表现安排。
+            </p>
+          )}
+          <button
+            className="secondary"
+            onClick={() => setProgress((p) => ({ ...p, reviewSession: null }))}
+          >
             返回复习概览
           </button>
         </section>

@@ -237,6 +237,23 @@ export function validateProgress(p: any): Progress {
   )
     throw Error('对话草稿格式不正确。');
   // Reconstruct the top-level object, excluding accidental or obsolete fields.
+  const reviewSession = p.reviewSession ?? null;
+  if (
+    reviewSession !== null &&
+    (!obj(reviewSession) ||
+      !strings(reviewSession.ids) ||
+      reviewSession.ids.length > 100 ||
+      new Set(reviewSession.ids).size !== reviewSession.ids.length ||
+      !Number.isInteger(reviewSession.cursor) ||
+      reviewSession.cursor < 0 ||
+      reviewSession.cursor > reviewSession.ids.length ||
+      !Number.isInteger(reviewSession.correct) ||
+      reviewSession.correct < 0 ||
+      reviewSession.correct > reviewSession.cursor ||
+      typeof reviewSession.paused !== 'boolean' ||
+      !finite(reviewSession.startedAt))
+  )
+    throw Error('复习进度格式不正确。');
   const surpriseRun = p.surpriseRun ?? null;
   if (
     surpriseRun !== null &&
@@ -247,6 +264,7 @@ export function validateProgress(p: any): Progress {
   )
     throw Error('突发实战记录不正确。');
   return {
+    reviewSession,
     surpriseRun,
     conversationDrafts,
     days: p.days,

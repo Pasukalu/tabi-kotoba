@@ -22,6 +22,7 @@ export type Srs = {
   reason: string;
 };
 export type Progress = {
+  reviewSession: import('./review-session').ReviewSession | null;
   surpriseRun: import('./surprise').SurpriseRun | null;
   conversationDrafts: Record<string, import('./daily').ConversationDraft>;
   extraEntries: import('./content').Entry[];
@@ -43,6 +44,7 @@ export type Progress = {
   dailyRuns: Record<string, import('./daily').DailyRun>;
 };
 const empty: Progress = {
+  reviewSession: null,
   surpriseRun: null,
   conversationDrafts: {},
   extraEntries: [],
