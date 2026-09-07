@@ -13,7 +13,7 @@ import { allEntries, plain, type Entry } from './content';
 import { validateProgress, normalizeSettings } from './storage';
 import { readPreserving, recoveryCopies } from './persistence';
 import { tts } from './audio';
-import { offlineCache, cacheableLearningUrl } from './offline';
+import { offlineCache, publicBasePath, cacheableLearningUrl } from './offline';
 export type Srs = {
   due: number;
   interval: number;
@@ -143,7 +143,7 @@ export function Provider({ children }: { children: ReactNode }) {
     setLoaded(true);
     if ('serviceWorker' in navigator)
       navigator.serviceWorker
-        .register('/sw.js')
+        .register(`${publicBasePath}/sw.js`)
         .then(async () => {
           await navigator.serviceWorker.ready;
           const urls = [
@@ -299,7 +299,7 @@ export function Provider({ children }: { children: ReactNode }) {
             )
               throw Error('Invalid expression IDs');
             input.ids.forEach((id: string) => mark(id, 'review'));
-            history.pushState({}, '', '/review');
+            history.pushState({}, '', `${publicBasePath}/review`);
             window.dispatchEvent(new PopStateEvent('popstate'));
             return { queued: input.ids };
           },

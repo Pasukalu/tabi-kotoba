@@ -1,4 +1,6 @@
 export const offlineCache = 'tabi-v10';
+export const publicBasePath =
+  typeof process !== 'undefined' ? process.env.NEXT_PUBLIC_BASE_PATH || '' : '';
 export const learningRoutes = [
   '/',
   '/scenes',
@@ -16,7 +18,7 @@ export const learningRoutes = [
   '/reading',
   '/manifest.webmanifest',
   '/icon.svg',
-];
+].map((route) => `${publicBasePath}${route}`);
 export function cacheableLearningUrl(value: string, origin: string) {
   try {
     const url = new URL(value, origin);
@@ -39,7 +41,9 @@ export async function cacheLearningPages(
 ) {
   if (!('caches' in window) || !('serviceWorker' in navigator))
     throw Error('此浏览器不支持离线课程保存。');
-  const registration = await navigator.serviceWorker.register('/sw.js');
+  const registration = await navigator.serviceWorker.register(
+    `${publicBasePath}/sw.js`,
+  );
   if (!registration.active && !navigator.serviceWorker.controller) {
     await Promise.race([
       navigator.serviceWorker.ready,

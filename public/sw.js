@@ -1,11 +1,18 @@
 const CACHE = 'tabi-v10';
+const BASE =
+  typeof self !== 'undefined' && self.registration?.scope
+    ? new URL(self.registration.scope).pathname.replace(/\/$/, '')
+    : '';
+const path = (value) => `${BASE}${value}`;
 self.addEventListener('install', (event) => {
   event.waitUntil(
     Promise.all([
       self.skipWaiting(),
       caches
         .open(CACHE)
-        .then((cache) => cache.addAll(['/manifest.webmanifest', '/icon.svg'])),
+        .then((cache) =>
+          cache.addAll([path('/manifest.webmanifest'), path('/icon.svg')]),
+        ),
     ]),
   );
 });
@@ -30,7 +37,7 @@ self.addEventListener('fetch', (event) => {
   if (
     event.request.method !== 'GET' ||
     url.origin !== self.location.origin ||
-    url.pathname.startsWith('/api/') ||
+    url.pathname.startsWith(path('/api/')) ||
     url.pathname.includes('/auth') ||
     url.pathname.includes('__')
   )
@@ -55,20 +62,20 @@ self.addEventListener('fetch', (event) => {
         if (
           event.request.mode === 'navigate' &&
           [
-            '/',
-            '/scenes',
-            '/conversation',
-            '/daily',
-            '/challenge',
-            '/listening',
-            '/broadcasts',
-            '/menu',
-            '/dictionary',
-            '/search',
-            '/life',
-            '/review',
-            '/profile',
-            '/reading',
+            path('/'),
+            path('/scenes'),
+            path('/conversation'),
+            path('/daily'),
+            path('/challenge'),
+            path('/listening'),
+            path('/broadcasts'),
+            path('/menu'),
+            path('/dictionary'),
+            path('/search'),
+            path('/life'),
+            path('/review'),
+            path('/profile'),
+            path('/reading'),
           ].includes(url.pathname)
         ) {
           const page = await caches.match(
